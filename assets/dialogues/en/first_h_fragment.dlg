@@ -1,0 +1,14 @@
+@1 ui/portraits/player h
+@2 ui/portraits/q.png Q
+@3 ui/portraits/big_h_distorted.png ???
+@script
+@2 h! Come in! Are you okay?
+@1 What's wrong?
+@2 Good, you're alright.
+@2 The energy reading is off the charts, I've never seen anything like this.
+@1 What do you want me to do about it?
+@3 Hel-
+@2 What was that? Can you see something?
+@1 No, nothing...
+@2 Just... be careful, okay?
+@1 Alright.

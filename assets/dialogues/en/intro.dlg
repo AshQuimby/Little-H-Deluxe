@@ -1,0 +1,9 @@
+@1 ui/portraits/player h
+@2 ui/portraits/q.png Q
+@3 ui/portraits/q_hidden.png ???
+@script
+@3 Hello? Hello? Can you hear me?
+@1 I can hear you, loud and clear.
+@2 h? It's me, Q. Get ready for your first mission.
+@2 We tracked down a Goal Crystal somewhere in this area, your job is to find it and I'll warp you out of there.
+@1 Alright, I'm on it.

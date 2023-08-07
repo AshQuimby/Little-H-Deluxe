@@ -1,0 +1,165 @@
+package com.sab.littleh.game.level;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.LittleH;
+import com.sab.littleh.game.tile.Tile;
+import com.sab.littleh.settings.Settings;
+import com.sab.littleh.util.sab_format.*;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+
+public class LevelLoader {
+    public static final SabData tagsByTile;
+
+    private static String[] expectedProperties = new String[] {
+            "crouching",
+            "double_jumping",
+            "wall_sliding",
+            "author",
+            "name",
+            "background",
+            "time_limit",
+            "version"
+    };
+    private static String[] defaultValues = new String[] {
+            "true",
+            "true",
+            "true",
+            Settings.localSettings.authorName.value,
+            "My Level",
+            "mountains",
+            "-1",
+            "0.1"
+    };
+
+    static {
+        try {
+            tagsByTile = SabReader.read(LevelLoader.class.getResourceAsStream("/scripts/base_tags.sab"));
+        } catch (SabParsingException e) {
+            System.out.println("AshQuimby forgot to put the file there :P");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Level readLevel(SabData mapData, File file) throws IOException {
+        boolean invertY = false;
+        // Updates for if the level was originally made in the Little H as opposed to the Little H Deluxe
+
+        for (int i = 0; i < expectedProperties.length; i++) {
+            String string = expectedProperties[i];
+            if (!mapData.getValues().containsKey(string)) {
+                mapData.insertValue(string, defaultValues[i]);
+            }
+        }
+
+        if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
+            invertY = true;
+            mapData.insertValue("is_deluxe", new SabValue("true"));
+        }
+        Level level = new Level(mapData);
+        Scanner scanner = SabReader.skipSabPreface(new Scanner(file));
+
+        List<Tile> tiles = new ArrayList<>();
+
+        int levelWidth = 31;
+        int levelHeight = 31;
+
+        Set<Point> usedPositions = new HashSet<>();
+
+        while (scanner.hasNext()) {
+            Tile tile = getTile(scanner.nextLine());
+            if (tile != null && !tile.image.equals("delete")) {
+                Point tilePosition = new Point(tile.x, tile.y);
+                if (usedPositions.contains(tilePosition)) continue;
+                levelWidth = Math.max(levelWidth, tile.x);
+                levelHeight = Math.max(levelHeight, tile.y);
+                if (tile.hasTag("start"))
+                    LittleH.program.dynamicCamera.targetPosition = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
+                tiles.add(tile);
+                usedPositions.add(tilePosition);
+            }
+        }
+
+        levelWidth += 1;
+        levelHeight += 1;
+
+        if (invertY) {
+            for (Tile tile : tiles) {
+                tile.y = levelHeight - tile.y - 1;
+                if (tile.hasTag("start"))
+                    LittleH.program.dynamicCamera.targetPosition = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
+            }
+        }
+
+        scanner.close();
+
+        level.addTiles(tiles, levelWidth, levelHeight);
+
+        if (invertY) {
+            saveLevel(file, level);
+        }
+
+        return level;
+    }
+
+    public static Tile getTile(String string) {
+        Scanner scanner = new Scanner(string + " ");
+        try {
+            // Position & image
+            int x = scanner.nextInt();
+            int y = scanner.nextInt();
+            String image = scanner.next();
+
+            // Set up identifier for tags
+            String identifier = image;
+            if (!image.startsWith("."))
+                identifier = image.substring(image.lastIndexOf("/") + 1);
+
+            if (identifier.equals("delete"))
+                return null;
+
+            // Tile type (which part of the spritesheet)
+            int tileType = scanner.nextInt();
+
+            String extra = scanner.nextLine().stripTrailing();
+            if (extra.isBlank())
+                // Save RAM by not storing a reference to a blank string
+                extra = null;
+
+            // Generate the tile
+            scanner.close();
+            return new Tile(x, y, image, tileType, getTileTags(identifier), extra);
+        } catch (NumberFormatException e) {
+            scanner.close();
+            return null;
+        }
+    }
+
+    public static String[] getTileTags(String tileId) {
+        return tagsByTile.getValue(tileId).asStringArray();
+    }
+
+    public static void saveLevel(File file, Level level) {
+        try {
+            file.delete();
+            file.createNewFile();
+            SabWriter.write(file, level.mapData);
+            FileWriter writer = new FileWriter(file, true);
+            for (Tile tile : level.allTiles) {
+                writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
+                if (tile.extra != null)
+                    writer.write(tile.extra + " ");
+                writer.write("\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

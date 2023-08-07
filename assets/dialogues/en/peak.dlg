@@ -1,0 +1,8 @@
+@1 ui/portraits/player h
+@2 ui/portraits/q.png Q
+@script
+@2 h, we've sent you to a new region.
+@1 What's so special about here, then?
+@2 Well... you're on a mountain, for instance.
+@1 Ok...
+@2 Just be careful, wouldn't want you falling off.
