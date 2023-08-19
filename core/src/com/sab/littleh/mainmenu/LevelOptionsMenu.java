@@ -40,6 +40,7 @@ public class LevelOptionsMenu extends MainMenu {
                         LittleH.pendingMenu = gameMenu;
                     }
                 } catch (IOException e) {
+                    e.printStackTrace();
                     LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted");
                 }
             });
@@ -51,6 +52,7 @@ public class LevelOptionsMenu extends MainMenu {
                     LevelEditorMenu editorMenu = new LevelEditorMenu(file, level);
                     LittleH.pendingMenu = editorMenu;
                 } catch (IOException e) {
+                    e.printStackTrace();
                     LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted");
                 }
             });

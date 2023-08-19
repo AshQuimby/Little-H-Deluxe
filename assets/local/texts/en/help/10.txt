@@ -1,0 +1,6 @@
+Decoration
+%split%
+
+    Some tiles, namely the so-called "color cubes" (despite clearly being squares), exist solely for the purpose of decoration. Use them to give your levels more flair and charm. Or, you can be like some and just put a bunch of amogi everywhere...
+
+    Decoration can also be used to communicate something to the player without using text. Use decor to make puzzles, markers, or even "lore."

@@ -1,0 +1,12 @@
+Level Options
+%split%
+
+    In the level editor, you may notice a gear at the bottom right corner. This gear opens the level options. From left to right, the buttons allow you to:
+     -Change the level's background,
+     -Toggle background visibility in the editor,
+     -Change the level's time limit,
+     -Toggle the player's ability to double jump,
+     -Toggle the player's ability to wall slide/jump,
+     -Toggle the player's ability to crouch and slide,
+     -Save the level (can also be done with Ctrl+S). You can tell if a level is saved if there is a translucent floppy disc towards the top right corner of the window.
+     -Close the menu.

@@ -17,6 +17,9 @@ public class TypingQuery {
     private MenuButton rejectButton;
     public boolean complete;
     public boolean accepted;
+    private Pattern regex;
+    private int maxSize;
+
     public TypingQuery(String prompt, String startingString, Rectangle rectangle, boolean hasConfirmButtons) {
         this.rectangle = rectangle;
         this.prompt = prompt;
@@ -28,6 +31,7 @@ public class TypingQuery {
             rejectButton = new MenuButton("square_button", "Nope", rectangle.x + rectangle.width / 2 + 16, rectangle.y - 80, 128, 64,
                     () -> complete(false));
         }
+        maxSize = -1;
     }
     public TypingQuery(String prompt, String startingString, Rectangle rectangle) {
         this(prompt, startingString, rectangle, false);
@@ -35,6 +39,9 @@ public class TypingQuery {
     public void complete(boolean accepted) {
         this.accepted = accepted;
         complete = true;
+    }
+    public void setRegex(String regex) {
+        this.regex = Pattern.compile(regex);
     }
     public void updateQueryKey(int keycode, int max, boolean enterIsNewline) {
         // Move the header
@@ -49,10 +56,16 @@ public class TypingQuery {
             else
                 headerPosition = Math.min(length(), headerPosition + 1);
         } else if (keycode == Input.Keys.ENTER) {
-            if (query.length() < max && enterIsNewline) {
-                query.insert(headerPosition, '\n');
-                headerPosition++;
+            if (enterIsNewline) {
+                if (query.length() < max) {
+                    query.insert(headerPosition, '\n');
+                    headerPosition++;
+                }
+            } else {
+                complete(true);
             }
+        } else if (keycode == Input.Keys.ESCAPE) {
+            complete(false);
         }
     }
     public boolean isValid(char c) {
@@ -72,21 +85,25 @@ public class TypingQuery {
     public void updateQueryChar(char character, int max) {
         // Backspace
         if (character == 0x08) {
-            if (!query.isEmpty()) {
+            if (headerPosition > 0) {
                 query = query.deleteCharAt(headerPosition - 1);
                 headerPosition--;
             }
-        // Delete
+            // Delete
         } else if (character == 0x7F) {
             if (!query.isEmpty() && headerPosition < length()) {
                 headerPosition++;
                 query = query.deleteCharAt(headerPosition - 1);
                 headerPosition--;
             }
-        // ASCII alphanumerics and symbols
-        } else if (query.length() < max && isValid(character)) {
-            query.insert(headerPosition, character);
-            headerPosition++;
+            // ASCII alphanumerics and symbols
+        } else if ((query.length() < maxSize || maxSize == -1)) {
+            if (regex == null || regex.matcher(String.valueOf(character)).matches()) {
+                if (query.length() < max && isValid(character)) {
+                    query.insert(headerPosition, character);
+                    headerPosition++;
+                }
+            }
         }
     }
     public String getQuery() {
@@ -107,6 +124,14 @@ public class TypingQuery {
             rejectButton.mouseClicked();
         }
     }
+
+    public void setAbsoluteMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
     public void render(Graphics g) {
         g.drawPatch(Patch.get("menu"), rectangle, 8);
         Rectangle textRect = new Rectangle(rectangle);
@@ -114,7 +139,7 @@ public class TypingQuery {
         textRect.y += 16;
         textRect.width -= 32;
         textRect.height -= 32;
-        g.drawString(prompt + getDisplayQuery(), LittleH.font, rectangle, 8, LittleH.defaultFontScale * 0.825f, 0, 0);
+        g.drawString(prompt + getDisplayQuery(), LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.825f, 0, 0);
         if (acceptButton != null) {
             acceptButton.render(g);
             rejectButton.render(g);

@@ -1,0 +1,8 @@
+Enemies
+%split%
+
+    Some tiles look like other letters. These poor members of the alphabet have gone feral and want nothing more than to destroy you! Usually, a single touch from another letter will kill the Little h, so be smart about avoiding them.
+    The adversaries you can encounter are:
+     -e: Walks back and forth, and not much else.
+     -a: Chases the little H down. It's not very smart, though.
+     -f: Acts much like the e but airborne.

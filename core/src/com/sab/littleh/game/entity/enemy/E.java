@@ -1,20 +1,14 @@
 package com.sab.littleh.game.entity.enemy;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
-import com.sab.littleh.util.Animation;
-
-import java.util.HashSet;
 
 public class E extends Enemy {
-
    public E(int x, int y, Player player, Tile parent) {
       super(x, y, player, parent);
    }
-   
    @Override
    public void update(Level game) {
       if (dead) {
@@ -52,7 +46,6 @@ public class E extends Enemy {
       if (toRectangle().overlaps(game.player.toRectangle())) game.player.touchingEnemy(this);
       touchingGround = false;
    }
-   
    @Override
    public void onCollision(boolean horizontal, boolean vertical) {
       if (horizontal) {

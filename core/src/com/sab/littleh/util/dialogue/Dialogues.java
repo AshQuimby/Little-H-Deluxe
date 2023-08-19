@@ -1,11 +1,13 @@
 package com.sab.littleh.util.dialogue;
 
+import com.sab.littleh.util.Localization;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Dialogues {
-   public static String languageKey = "en/";
    private static Set<String> dialogueKeys = new HashSet<>();
    
    public static Dialogue getDialogue(String fileName) {
@@ -19,11 +21,11 @@ public class Dialogues {
       }
 
       Scanner scanner;
-      InputStream s = Dialogues.class.getResourceAsStream("/dialogues/" + languageKey + fileName);
+      InputStream s = Dialogues.class.getResourceAsStream("/local/dialogues/" + Localization.languageKey + fileName);
       try {
          scanner = new Scanner(s);
       } catch (Exception e) {
-         System.out.println("Dialogue \"/dialogues/" + languageKey + fileName + "\" not found");
+         System.out.println("Dialogue \"/local/dialogues/" + Localization.languageKey + fileName + "\" not found");
          e.printStackTrace();
          return null;
       }
@@ -50,20 +52,36 @@ public class Dialogues {
          dontRead = false;
          if (next.startsWith("@")) {
             String toAdd = next.substring(1);
-            if (!prevSpeaker.equals(toAdd)) next = "\\cN(" + (Integer.parseInt(toAdd) - 1) + ")";
-            else next = "";
-            next += scanner.next();
-            prevSpeaker = toAdd;
-            while (!next.startsWith("@")) {
+//            if (!prevSpeaker.equals(toAdd)) next = "\\cN(" + (Integer.parseInt(toAdd) - 1) + ")";
+//            else next = "";
+            next = "";
+            scanner.useDelimiter("");
+            scanner.next();
+//            prevSpeaker = toAdd;
+            int parens = 0;
+            while (!next.equals("@")) {
                if (!scanner.hasNext()) {
                   toAdd += next;
                   break;
                }
-               toAdd += next + " ";
+               if (next.equals("(")) parens++;
+               if (next.equals(")")) parens--;
+               if (parens == 0) {
+                  if (next.equals(",")) next += "\\wF(5)";
+                  else if (next.equals(".")) next += "\\wF(15)";
+                  else if (next.equals("!")) next += "\\wF(15)";
+                  else if (next.equals("?")) next += "\\wF(15)";
+                  else if (next.equals(":")) next += "\\wF(5)";
+                  else if (next.equals(";")) next += "\\wF(10)";
+               }
+               toAdd += next;
                next = scanner.next();
                dontRead = true;
             }
             text.add(toAdd);
+            scanner.reset();
+            if (scanner.hasNext())
+               next += scanner.next();
          } else {
             malformedDialogue(fileName, next);
          }

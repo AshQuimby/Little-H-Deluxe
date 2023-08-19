@@ -1,0 +1,12 @@
+Tiles
+%split%
+
+    There are many tiles to choose from when constructing a level, from slippery ice, to bouncy platforms, and malevolent keys. There are three main categories in this selection:
+     -Solid: tiles like grass and ice that the Little H can't pass through.
+     -Danger: tiles like malice and spikes that kill the Little H.
+     -Special: tiles like bounce platforms and keys that have a unique interaction with the Little H.
+     -Decorative: tiles like the color cube which are solely for decorative purposes.
+
+    Some tiles also have additional selectable properties that may do nothing more than change the appearance or hitbox of the tile, to completely changing the function of the tile.
+
+    Some tiles like text will pop up a dialogue window that will ask you for extra information. After typing, press "Okay" or enter to save it. Clicking on the tile again with the pencil will allow you to change it at any time.

@@ -51,19 +51,19 @@ public class WingedMode extends Powerup {
    public void jump(Level game) {
       if (player.crushed) return;
       if (player.leftGroundFor < 8) {
-         SoundEngine.playSound("wing_jump.mp3");
+         SoundEngine.playSound("wing_jump.ogg");
          player.velocityY = 12;
          player.leftGroundFor = 8;
          player.jumpStrength++;
          game.addParticle(new Particle(player.x - 24, player.y + 32, 0f, 0f, 96, 16, 12, 2, 1, 0f, 0f, 0, 2, "particles/jump.png", 9));
       } else if (player.jumpReleased && player.leftWallFor < 8) {
-         SoundEngine.playSound("double_jump.mp3");
+         SoundEngine.playSound("double_jump.ogg");
          player.velocityY = 16;
          player.leftWallFor = 8;
          player.x += -2 * player.wallDirection;
          player.velocityX = -24 * player.wallDirection;
       } else if (player.jumpReleased && player.doubleJump && player.velocityY < -2) {
-         SoundEngine.playSound("double_jump.mp3");
+         SoundEngine.playSound("double_jump.ogg");
          game.addParticle(new Particle(player.x, player.y + 16, 0f, 0f, 48, 32, 6, 4, 1, 0f, 0f, 0, 2, "particles/double_jump.png", 9));
          player.velocityY = 18;
          player.doubleJump = false;

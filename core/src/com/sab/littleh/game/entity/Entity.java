@@ -42,7 +42,7 @@ public class Entity {
     }
 
     public Tile getTile(float relX, float relY, List<List<Tile>> map) {
-        int absX = (int) Math.round((x) / 64 + relX);
+        int absX = (int) Math.round((x - 6) / 64 + relX);
         int absY = (int) Math.round((y) / 64 + relY);
         if (absX >= map.size() || absX <= 0 || absY >= map.get(0).size() || absY <= 0) return null;
         return map.get(absX).get(absY);

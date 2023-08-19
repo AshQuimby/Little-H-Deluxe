@@ -1,5 +1,6 @@
 package com.sab.littleh.mainmenu;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.Graphics;
@@ -32,9 +33,16 @@ public class TileButton extends MenuButton {
 
     @Override
     public void render(Graphics g) {
+        if (tile.hasTag("render_color") && tile.extra != null && !tile.extra.isBlank()) {
+            g.setColor(Color.valueOf("#" + tile.extra.toUpperCase().trim()));
+        }
         g.drawImage(tile.getImage(), x, y, 64, 64, tile.getDrawSection());
+        g.resetColor();
         if (drawGear && tile.hasTag("property_set")) {
             g.draw(Images.getImage("ui/properties_gear.png"), x, y, 64, 64);
+        }
+        if (tile.extra != null && !tile.extra.isBlank()) {
+            g.draw(Images.getImage("ui/copy_paper.png"), x, y, 64, 64);
         }
     }
 

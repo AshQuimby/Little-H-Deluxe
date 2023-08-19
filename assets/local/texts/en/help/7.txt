@@ -1,0 +1,6 @@
+Death
+%split%
+
+    Dying is not permanent, or at least it shouldn't be. We still don't know how the Big H got completely destroyed... but surely the same thing won't happen to you! Dangerous tiles like malice, spikes, or invisible skulls can end your run, as will falling too far into the void.
+
+    Additionally, pressing the K key will immediately trigger your kill switch, allowing you to easily reset to your last checkpoint, or letting you free yourself from being trapped in the level.

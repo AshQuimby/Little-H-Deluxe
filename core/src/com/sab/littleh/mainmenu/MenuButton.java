@@ -89,7 +89,7 @@ public class MenuButton extends Rectangle {
     public void mouseClicked() {
         if (!disabled && hovered && onPress != null) {
             onPress.run();
-            SoundEngine.playSound("blip.mp3");
+            SoundEngine.playSound("blip.ogg");
         }
     }
 
@@ -102,7 +102,7 @@ public class MenuButton extends Rectangle {
         g.drawPatch(getPatch(), this, 8);
         if (text != null && !text.isBlank()) {
             LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
-            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 16 - (pressed && hovered ? 8 : 0), LittleH.defaultFontScale, 0);
+            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? 8 : 0), LittleH.defaultFontScale, 0);
         }
     }
 

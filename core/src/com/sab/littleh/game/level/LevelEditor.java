@@ -1,10 +1,14 @@
 package com.sab.littleh.game.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.game.entity.enemy.A;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.DynamicCamera;
+import com.sab.littleh.util.Graphics;
+import com.sab.littleh.util.Images;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,10 +21,20 @@ public class LevelEditor {
     private Level level;
     public boolean saved;
     private Set<Point> fillTiles;
+    private Rectangle selection;
+    private boolean selectionAlive;
+    private TileSelection tileSelection;
+    private Vector2 selectionAnchor;
+    private boolean movingSelection;
+    private boolean nudgingSelection;
+    private List<UndoAction> undoQueue;
+    private int undoIndex;
+
     public LevelEditor(Level level) {
         this.level = level;
         setSaved(true);
         fillTiles = new HashSet<>();
+        undoQueue = new ArrayList<>();
     }
 
     public void setSaved(boolean value) {
@@ -31,7 +45,7 @@ public class LevelEditor {
         Gdx.graphics.setTitle(title);
     }
 
-    public Point addTile(Tile tileToCopy, int x, int y) {
+    public Point addTile(Tile tileToCopy, int x, int y, boolean addToUndoQueue) {
         Tile tile = tileToCopy;
         if (!tileToCopy.image.equals("delete"))
             tile = tileToCopy.copy();
@@ -48,6 +62,25 @@ public class LevelEditor {
         if (!tileToCopy.image.equals("delete"))
             level.addTile(tile);
 
+        if (amountNegativeResize.x > 0 || amountNegativeResize.y > 0) {
+            undoQueue.forEach(undoAction -> {
+                undoAction.resize(amountNegativeResize);
+            });
+        }
+
+        if (addToUndoQueue) {
+            Tile tileAt = level.tileMap.get(tile.x).get(tile.y);
+            if (tileAt == null) {
+                tileAt = new Tile("delete");
+                tileAt.x = tile.x;
+                tileAt.y = tile.y;
+            } else {
+                tileAt = tileAt.copy();
+            }
+            if (!Tile.tilesEqual(tileAt, tile))
+                addUndoAction(new UndoTile(tile.copy(), tileAt));
+        }
+
         if (tile.image.equals("delete")) {
             level.tileMap.get(tile.x).set(tile.y, null);
         } else {
@@ -63,6 +96,81 @@ public class LevelEditor {
         setSaved(false);
 
         return amountNegativeResize;
+    }
+
+    public void select(Point position) {
+        if (selectionActive()) {
+            updateSelection(position);
+        } else {
+            startSelection(position);
+        }
+    }
+
+    public void startSelection(Point point) {
+        endSelection();
+        selection = new Rectangle(point.x, point.y, 1, 1);
+        selectionAlive = true;
+    }
+
+    public void updateSelection(Point point) {
+        if (selection == null) {
+            startSelection(point);
+        } else {
+            Point range = new Point(point.x - selection.x - selection.width + 1, point.y - selection.y - selection.height + 1);
+            selection.width += range.x;
+            selection.height += range.y;
+        }
+    }
+
+    public void selectionReleased() {
+        if (selection != null) {
+            selection = selectionNormalized();
+            if (tileSelection != null)
+                tileSelection.setRect(selection);
+        }
+        selectionAlive = false;
+        selectionAnchor = null;
+        movingSelection = false;
+        nudgingSelection = false;
+    }
+
+    public boolean selectionActive() {
+        return selection != null && selectionAlive;
+    }
+
+    public void endSelection() {
+        selection = null;
+        tileSelection = null;
+    }
+
+    public void startMovingSelection(Vector2 relativeTo) {
+        nudgingSelection = true;
+        selectionAnchor = new Vector2();
+        selectionAnchor.x = selection.x * 64 - relativeTo.x;
+        selectionAnchor.y = selection.y * 64 - relativeTo.y;
+        if (tileSelection == null)
+            tileSelection = new TileSelection(selection, level, false);
+    }
+
+    public void updateSelectionPosition(Vector2 mousePosition) {
+        if (selection != null) {
+            if (selectionAnchor == null)
+                startMovingSelection(mousePosition);
+            selection.x = (int) (selectionAnchor.x + mousePosition.x) / 64;
+            selection.y = (int) (selectionAnchor.y + mousePosition.y) / 64;
+            if (tileSelection != null)
+                tileSelection.translate();
+        }
+    }
+
+    public void setSelectionPosition(Vector2 mousePosition) {
+        if (selection != null) {
+            movingSelection = true;
+            selection.x = (int) (mousePosition.x) / 64 - selection.width / 2;
+            selection.y = (int) (mousePosition.y) / 64 - selection.height / 2;
+            if (tileSelection != null)
+                tileSelection.translate();
+        }
     }
 
     public Point resizeAround(int x, int y) {
@@ -119,6 +227,14 @@ public class LevelEditor {
         }
 
         return new Point(widthToAdd, heightToAdd);
+    }
+
+    public boolean isNudging() {
+        return nudgingSelection;
+    }
+
+    public boolean isMoving() {
+        return movingSelection;
     }
 
     public Tile[][] getNeighbors(int tileX, int tileY) {
@@ -291,7 +407,7 @@ public class LevelEditor {
         while (delta.len() > 0) {
             Vector2 step = delta.cpy().limit(1);
 
-            Point resize = addTile(tile, (int) point.x, (int) point.y);
+            Point resize = addTile(tile, (int) point.x, (int) point.y, true);
 
             point.x += resize.x;
             point.y += resize.y;
@@ -299,7 +415,7 @@ public class LevelEditor {
             point.add(step);
             delta.sub(step);
         }
-        addTile(tile, (int) point.x, (int) point.y);
+        addTile(tile, (int) point.x, (int) point.y, true);
     }
 
     public void fill(Tile fillTile, int originX, int originY) {
@@ -328,38 +444,151 @@ public class LevelEditor {
             int x = current.x;
             int y = current.y;
 
-            if (x + 1 < level.getWidth() && !Tile.tilesEqual(level.getTileAt(x + 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x + 1, y), tileToFill) && !closed.contains(new Point(x + 1, y))) {
+            if (x + 1 < level.getWidth() && !Tile.tilesEqual(level.getTileAt(x + 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x + 1, y), tileToFill)
+                    && !closed.contains(new Point(x + 1, y)) && tileToFill.extrasEqual(level.getTileAt(x + 1, y))) {
                 open.add(new Point(x + 1, y));
                 closed.add(new Point(x + 1, y));
             }
-            if (x - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x - 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x - 1, y), tileToFill) && !closed.contains(new Point(x - 1, y))) {
+            if (x - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x - 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x - 1, y), tileToFill)
+                    && !closed.contains(new Point(x - 1, y)) && tileToFill.extrasEqual(level.getTileAt(x - 1, y))) {
                 open.add(new Point(x - 1, y));
                 closed.add(new Point(x - 1, y));
             }
-            if (y + 1 < level.getHeight() && !Tile.tilesEqual(level.getTileAt(x, y + 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y + 1), tileToFill) && !closed.contains(new Point(x, y + 1))) {
+            if (y + 1 < level.getHeight() && !Tile.tilesEqual(level.getTileAt(x, y + 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y + 1), tileToFill)
+                    && !closed.contains(new Point(x, y + 1)) && tileToFill.extrasEqual(level.getTileAt(x, y + 1))) {
                 open.add(new Point(x, y + 1));
                 closed.add(new Point(x, y + 1));
             }
-            if (y - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x, y - 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y - 1), tileToFill) && !closed.contains(new Point(x, y - 1))) {
+            if (y - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x, y - 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y - 1), tileToFill)
+                    && !closed.contains(new Point(x, y - 1)) && tileToFill.extrasEqual(level.getTileAt(x, y - 1))) {
                 open.add(new Point(x, y - 1));
                 closed.add(new Point(x, y - 1));
             }
         }
 
-//        // Add a "fill" action to the undo queue
-//        if (tileToFill == null) {
-//            // Save undo actions of null instead as tiles with the tag "delete"
-//            tileToFill = new Tile(originX, originY, "delete", 0);
-//            tileToFill.setTags(new String[]{ "delete" });
-//        }
+        // Add a "fill" action to the undo queue
+        if (tileToFill == null) {
+            // Save undo actions of null instead as tiles with the tag "delete"
+            tileToFill = new Tile("delete");
+        }
 //        fillTile = fillTile.copy();
 
         // Add/delete all tiles
         for (Point point : fillTiles) {
-            addTile(fillTile, point.x, point.y);
+            addTile(fillTile, point.x, point.y, false);
         }
+
+        addUndoAction(new UndoFill(fillTile.copy(), tileToFill.copy(), Set.copyOf(fillTiles)));
 
         // Empty the list for good measure
         fillTiles.clear();
+    }
+
+    public Rectangle selectionAsWorldCoords() {
+        Rectangle selection = selectionNormalized();
+        return new Rectangle(selection.x * 64, selection.y * 64, selection.width * 64, selection.height * 64);
+    }
+
+    public Rectangle selectionNormalized() {
+        Rectangle selection = new Rectangle(this.selection);
+
+        if (selection.width <= 0) {
+            selection.x += selection.width - 1;
+            selection.width = Math.abs(selection.width) + 2;
+        }
+
+        if (selection.height <= 0) {
+            selection.y += selection.height - 1;
+            selection.height = Math.abs(selection.height) + 2;
+        }
+
+        return selection;
+    }
+
+    public void renderSelection(Graphics g) {
+        if (tileSelection != null) {
+            tileSelection.render(g);
+        }
+
+        if (selection != null) {
+            Rectangle selection = selectionNormalized();
+            Rectangle rect = selectionAsWorldCoords();
+            int frameY = LittleH.getTick() / 12 % 4 * 8;
+            com.badlogic.gdx.math.Rectangle frame = new com.badlogic.gdx.math.Rectangle(0, frameY, 8, 8);
+            for (int i = 0; i < selection.width; i++) {
+                g.drawImage(Images.getImage("ui/selection.png"), rect.x + 64 * i, rect.y, 64, 64,
+                        frame, 180);
+                g.drawImage(Images.getImage("ui/selection.png"), rect.x + 64 * i, rect.y + rect.height - 64, 64, 64,
+                        frame);
+            }
+            for (int i = 0; i < selection.height; i++) {
+                g.drawImage(Images.getImage("ui/selection.png"), rect.x, rect.y + i * 64, 64, 64,
+                        frame, 90);
+                g.drawImage(Images.getImage("ui/selection.png"), rect.x + rect.width - 64, rect.y + i * 64, 64, 64,
+                        frame, 270);
+            }
+        }
+    }
+
+    public void deleteSelection() {
+        if (selection != null && !selectionAlive) {
+            UndoSelection undoSelection = new UndoSelection();
+            for (int i = 0; i < selection.width; i++) {
+                for (int j = 0; j < selection.height; j++) {
+                    Tile tileAt = level.getTileAt(selection.x + i, selection.y + j);
+                    if (tileAt != null) {
+                        undoSelection.add(tileAt.copy(), new Tile("delete"));
+                        addTile(new Tile("delete"), selection.x + i, selection.y + j, false);
+                    }
+                }
+            }
+            addUndoAction(undoSelection);
+            setSaved(false);
+        }
+    }
+
+    public void undo() {
+        if (undoIndex < undoQueue.size()) {
+            undoQueue.get(undoIndex).undo(this);
+            undoIndex++;
+        }
+    }
+
+    public void redo() {
+        if (undoIndex > 0) {
+            undoIndex--;
+            undoQueue.get(undoIndex).redo(this);
+        }
+    }
+
+    public void trimUndoQueue() {
+        for (int i = undoIndex - 1; i >= 0; i--) {
+            undoQueue.remove(i);
+        }
+        undoIndex = 0;
+    }
+
+    public void addUndoAction(UndoAction action) {
+        trimUndoQueue();
+        undoQueue.add(0, action);
+    }
+
+    public void pasteSelection() {
+        if (tileSelection != null) {
+            tileSelection.paste(this);
+        }
+        setSaved(false);
+    }
+
+    public void copySelection() {
+        tileSelection = new TileSelection(selection, level);
+    }
+
+    public boolean hasSelection() {
+        return selection != null;
+    }
+
+    public Level getLevel() {
+        return level;
     }
 }

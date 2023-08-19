@@ -27,7 +27,7 @@ public class DynamicCamera extends OrthographicCamera {
     }
 
     public void updateCamera() {
-        updateCamera(8);
+        updateCamera(12);
     }
 
     public void updateCamera(float easing) {

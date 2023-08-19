@@ -1,5 +1,6 @@
 package com.sab.littleh.util;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -40,12 +41,7 @@ public class Graphics extends SpriteBatch {
         if (text.contains("\n")) {
             String[] splitString = text.split("\n");
             Rectangle bounds = Fonts.getMultiStringBounds(splitString, font, x, y, size, anchor);
-            String reformatted = "";
-            for (int i = 0; i < splitString.length; i++) {
-                reformatted += splitString[i];
-                if (i < splitString.length - 1) reformatted += " \n ";
-            }
-            return drawString(reformatted, font, bounds, 4, size, anchor, 0);
+            return drawString(text, font, bounds, 4, size, anchor, 0);
         } else {
             Rectangle bounds = Fonts.getStringBounds(text, font, x, y, size, anchor);
             font.draw(this, text, bounds.x, bounds.y + bounds.height);
@@ -54,6 +50,15 @@ public class Graphics extends SpriteBatch {
     }
 
     public Rectangle drawString(String text, BitmapFont font, final Rectangle fitTo, float lineSpacing, float size, int horizontalAnchor, int verticalAnchor) {
+        if (text.contains("\n")) {
+            String[] splitString = text.split("\n");
+            StringBuilder textBuilder = new StringBuilder();
+            for (int i = 0; i < splitString.length; i++) {
+                textBuilder.append(splitString[i]);
+                if (i < splitString.length - 1) textBuilder.append(" \n ");
+            }
+            text = textBuilder.toString();
+        }
         Rectangle bounds = Fonts.getStringBounds(text, font, fitTo.x, fitTo.y, size, horizontalAnchor);
         bounds.height = Fonts.getStringBounds("|", font, 0, 0, size, 0).height;
         float lineHeight = bounds.height + lineSpacing;
@@ -64,25 +69,35 @@ public class Graphics extends SpriteBatch {
         StringBuilder lineBuilder = new StringBuilder();
         String[] words = text.split(" ");
 
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
+        for (String word : words) {
             String buffer = lineBuilder + word;
             float lineWidth = Fonts.getStringWidth(buffer, font, size);
             if (lineWidth > fitTo.width || word.equals("\n")) {
                 String line = lineBuilder.toString();
                 lines.add(line.stripTrailing());
-                lineBuilder = new StringBuilder();
                 height += lineHeight;
+                lineBuilder = new StringBuilder();
                 if (lineWidth > width)
                     width = lineWidth;
             }
             if (!word.equals("\n"))
-                lineBuilder.append(word + " ");
+                lineBuilder.append(word).append(" ");
         }
         String line = lineBuilder.toString();
         line = line.stripTrailing();
         if (!line.isBlank()) {
             lines.add(line);
+        }
+
+        for (int i = 0; i < lines.size(); i++) {
+            String string = lines.get(i);
+            if (string.isBlank()) {
+                lines.remove(i);
+                i--;
+                height -= lineHeight;
+            } else {
+                break;
+            }
         }
 
         bounds.y -= height;
@@ -97,7 +112,7 @@ public class Graphics extends SpriteBatch {
         float softHeight = lineHeight * lines.size() - lineSpacing;
 
         if (verticalAnchor == 1) verticalAnchorOffset = fitTo.height;
-        else if (verticalAnchor == 0) verticalAnchorOffset = softHeight + softHeight / 2 + bounds.height / 2 - fitTo.y + bounds.y;
+        else if (verticalAnchor == 0) verticalAnchorOffset = softHeight + softHeight / 2 + bounds.height / 2 - fitTo.y + bounds.y - lineHeight / 2 + lineSpacing / 2;
         else if (verticalAnchor == -1) verticalAnchorOffset = height;
 
         for (int i = 0; i < lines.size(); i++) {
@@ -106,6 +121,10 @@ public class Graphics extends SpriteBatch {
         }
 
         return fitTo;
+    }
+
+    public void resetColor() {
+        setColor(Color.WHITE);
     }
 
     public Vector2 getCameraPosition() {

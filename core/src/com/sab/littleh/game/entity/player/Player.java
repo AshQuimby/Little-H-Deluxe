@@ -3,6 +3,7 @@ package com.sab.littleh.game.entity.player;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.LittleH;
 import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
@@ -11,9 +12,11 @@ import com.sab.littleh.game.entity.player.powerups.Powerup;
 import com.sab.littleh.game.entity.player.powerups.WingedMode;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
+import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.dialogue.Dialogues;
+import com.sun.tools.javac.Main;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -58,6 +61,7 @@ public class Player extends Entity {
     public int savedKeyCount;
     public int[] totalCoinCounts;
     public int[] coinCounts;
+    public boolean[] shouldRenderCoinCounts;
     public Powerup savedPowerup;
     public java.util.List<Point> previousPositions;
     public java.util.List<Float> previousSpeeds;
@@ -83,6 +87,7 @@ public class Player extends Entity {
         previousSpeeds = new ArrayList<>();
         totalCoinCounts = new int[4];
         coinCounts = new int[4];
+        shouldRenderCoinCounts = new boolean[4];
         startTick = true;
         lastTouchedTiles = new HashSet<>();
         crushed = false;
@@ -129,6 +134,7 @@ public class Player extends Entity {
     public void setCoinCounts(Level game) {
         for (int i = 0; i < totalCoinCounts.length; i++) {
             totalCoinCounts[i] = game.getVolatileTileCount("coin", i);
+            shouldRenderCoinCounts[i] = game.getVolatileTileCount("coin_box", i * 2) > 0 || game.getVolatileTileCount("coin_box", i * 2 + 1) > 0;
         }
     }
 
@@ -177,7 +183,7 @@ public class Player extends Entity {
         frame = currentAnimation.stepLooping();
 
         if (currentAnimation == runAnimation) {
-            if (runAnimation.tick == 0 && runAnimation.frame % 2 == 0) SoundEngine.playSound("step.mp3");
+            if (runAnimation.tick == 0 && runAnimation.frame % 2 == 0) SoundEngine.playSound("step.ogg");
         }
 
         if (end) {
@@ -192,7 +198,7 @@ public class Player extends Entity {
                 velocityX = 0;
                 velocityY += 3f;
                 y += velocityY;
-            } else if (currentAnimation.getFrame() >= 17) {
+            } else if (warpingOut()) {
                 currentAnimation.setAnimationSpeed(2);
                 velocityX *= 0;
                 velocityY *= 0;
@@ -270,7 +276,7 @@ public class Player extends Entity {
                     for (int i = 0; i < 4; i++) {
                         game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -20), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 0f, i, 0, "particles/evil_key_box_rubble.png", 30));
                     }
-                    SoundEngine.playSound("hit.mp3");
+                    SoundEngine.playSound("hit.ogg");
                     game.inGameRemoveTile(tile);
                     return false;
                 }
@@ -279,7 +285,7 @@ public class Player extends Entity {
                 for (int i = 0; i < 4; i++) {
                     game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -8), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 1.2f, i, 0, "particles/key_box_rubble.png", 30));
                 }
-                SoundEngine.playSound("hit.mp3");
+                SoundEngine.playSound("hit.ogg");
                 game.inGameRemoveTile(tile);
                 return false;
             }
@@ -334,12 +340,12 @@ public class Player extends Entity {
                 if (tile.hasTag("death")) {
                     if (playerHitbox.overlaps(tileHitbox)) kill();
                 } else if (tile.hasTag("bounce")) {
-                    if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.mp3");
+                    if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
                     if (velocityY < -36) velocityY *= -1.5f;
                     else if (velocityY < 36) velocityY = 36;
                 }
                 if (tile.hasTag("checkpoint") && tile.tileType % 2 == 0) {
-                    SoundEngine.playSound("checkpoint.mp3");
+                    SoundEngine.playSound("checkpoint.ogg");
                     startPos.x = tile.x;
                     startPos.y = tile.y;
                     game.notify("notify_checkpoint", null);
@@ -365,21 +371,21 @@ public class Player extends Entity {
                             continue;
                         }
                         if (tile.hasTag("coin")) {
-                            SoundEngine.playSound("coin.mp3");
+                            SoundEngine.playSound("coin.ogg");
                             coinCounts[tile.tileType]++;
                             if (game.getVolatileTileCount("coin", tile.tileType) == 0) {
-                                SoundEngine.playSound("all_coins_collected.mp3");
+                                SoundEngine.playSound("all_coins_collected.ogg");
                                 game.notify("notify_all_coins", new int[]{ tile.tileType });
                             }
                         }
                         if (tile.hasTag("powerup")) {
-                            SoundEngine.playSound("powerup_get.mp3");
+                            SoundEngine.playSound("powerup_get.ogg");
                             if (tile.tileType == 0) powerup = new Powerup(this);
                             else if (tile.tileType == 1) powerup = new BallMode(this);
                             else if (tile.tileType == 2) powerup = new WingedMode(this);
                         }
                         if (tile.hasTag("key")) {
-                            SoundEngine.playSound("coin.mp3");
+                            SoundEngine.playSound("coin.ogg");
                             if (tile.hasTag("evil")) {
                                 evilKey = new EvilKey(tile.x, tile.y);
                                 hasEvilKey = true;
@@ -388,7 +394,7 @@ public class Player extends Entity {
                             keyCount++;
                         }
                         if (tile.hasTag("timer")) {
-                            SoundEngine.playSound("powerup_get.mp3");
+                            SoundEngine.playSound("powerup_get.ogg");
                             if (game.timeLimit > -1) {
                                 switch (tile.getPropertyIndex()) {
                                     case 0 :
@@ -421,7 +427,7 @@ public class Player extends Entity {
 
     public void kill() {
         if (!win && !dead) {
-            SoundEngine.playSound("death.mp3");
+            SoundEngine.playSound("death.ogg");
             dead = true;
             currentAnimation = deathAnimation;
         }
@@ -434,10 +440,15 @@ public class Player extends Entity {
 
     public void win() {
         win = true;
-        SoundEngine.playSound("win_level.mp3");
+        SoundEngine.playSound("win_level.ogg");
         velocityX *= 0.8f;
         velocityY *= 0.8f;
         currentAnimation = winAnimation;
+        winAnimation.setAnimationSpeed(8);
+    }
+
+    public boolean warpingOut() {
+        return currentAnimation == winAnimation && currentAnimation.getFrame() >= 17;
     }
 
     public void touchingTile(Tile tile) {
@@ -498,18 +509,22 @@ public class Player extends Entity {
 //        renderTrail(g, game);
         powerup.preDrawPlayer(game);
         drawPlayer(g, game);
-//        for (int i = 0; i < totalCoinCounts.length; i++) {
-//            int total = totalCoinCounts[i];
-//            if (total > 0) {
-//                TextUtils.drawText(g, TileEditor.program.getWidth() - 48, 48 + 48 * i + 12, 24, coinCounts[i] + "/" + totalCoinCounts[i], TileEditor.getSecondaryColor(), 1);
-//                Images.drawImage(g, Images.getImage("ui/coins.png"), new Rectangle(TileEditor.program.getWidth() - 40, 48 + 48 * i, 32, 40), new Rectangle(0, 5 * i, 4, 5));
-//            }
-//        }
+        LittleH.program.useStaticCamera();
+        for (int i = 0; i < totalCoinCounts.length; i++) {
+            int total = totalCoinCounts[i];
+            if (shouldRenderCoinCounts[i]) {
+                g.drawString(coinCounts[i] + "/" + total, LittleH.font, -MainMenu.relZeroX() - 48, -MainMenu.relZeroY() - 48 - 48 * i + 32 - 64, LittleH.defaultFontScale, 1);
+                g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-MainMenu.relZeroX() - 40, -MainMenu.relZeroY() - 48 - 48 * i - 64, 32, 40), new Rectangle(0, 5 * i, 4, 5));
+            }
+        }
+        LittleH.program.useDynamicCamera();
     }
 
     public void drawPlayer(Graphics g, Level game) {
         g.drawImage(Images.getImage(image + ".png"), new Rectangle(x - 8, y, 64, 64), new Rectangle((direction == 1 ? 0 : 8), 8 * frame, (direction == 1 ? 8 : -8), 8), -MathUtils.radiansToDegrees * rotation);
+        g.setColor(Images.getHColor());
         g.drawImage(Images.getImage(image + "_color.png"), new Rectangle(x - 8, y, 64, 64), new Rectangle((direction == 1 ? 0 : 8), 8 * frame, (direction == 1 ? 8 : -8), 8), -MathUtils.radiansToDegrees * rotation);
+        g.resetColor();
     }
 
     public void touchingEnemy(Enemy enemy) {

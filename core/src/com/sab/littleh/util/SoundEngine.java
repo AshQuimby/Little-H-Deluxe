@@ -18,6 +18,7 @@ public class SoundEngine {
     private static HashMap<String, Sound> soundCache = new HashMap<>();
     private static HashMap<String, Music> musicCache = new HashMap<>();
     public static Music currentMusic = null;
+    private static boolean musicQueued;
 
     public static void load() {
         resetCurrentMusicVolume();
@@ -36,8 +37,8 @@ public class SoundEngine {
     }
 
     public static void playSound(String filePath) {
-        String playFilePath = "assets/sounds/effects/" + filePath;
         if (getTotalSfxVolume() == 0f) return;
+        String playFilePath = "assets/sounds/effects/" + filePath;
         if (soundCache.containsKey(playFilePath)) {
             soundCache.get(playFilePath).play(getTotalSfxVolume());
         } else {
@@ -58,7 +59,18 @@ public class SoundEngine {
         } else {
             FileHandle handle = Gdx.files.internal(playFilePath);
             musicCache.put(playFilePath, Gdx.audio.newMusic(handle));
-            playMusic(filePath);
+            stopMusic();
+            currentMusic = musicCache.get(playFilePath);
+            musicQueued = true;
+        }
+    }
+
+    public static void update() {
+        if (musicQueued) {
+            currentMusic.play();
+            currentMusic.setVolume(getTotalMusicVolume());
+            currentMusic.setLooping(true);
+            musicQueued = false;
         }
     }
 

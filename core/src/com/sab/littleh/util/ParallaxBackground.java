@@ -106,7 +106,7 @@ public class ParallaxBackground {
                         g.draw(texture, -screenWidth / 2, -screenHeight / 2, screenWidth, screenHeight);
                     } else {
                         for (int j = -1; j <= 1; j++) {
-                            float drawX = -cameraX;
+                            float drawX = -cameraX / camera.zoom;
 
                             if (backgroundLayer.contains("ambient")) {
                                 if (backgroundLayer.contains("reverse")) {
@@ -116,7 +116,7 @@ public class ParallaxBackground {
                                 }
                             }
 
-                            drawTo = new Rectangle(drawX, cameraY, patchWidth, patchHeight);
+                            drawTo = new Rectangle(drawX, cameraY / camera.zoom, patchWidth, patchHeight);
                             drawTo.x /= parallaxScalar[i] * parallaxMultiplier;
                             drawTo.y -= camera.viewportHeight / 2;
                             drawTo.y /= parallaxScalar[i] * parallaxMultiplier;

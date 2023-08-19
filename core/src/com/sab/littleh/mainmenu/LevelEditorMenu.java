@@ -2,6 +2,7 @@ package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -17,6 +18,7 @@ import com.sab.littleh.util.sab_format.SabValue;
 
 import java.awt.*;
 import java.io.File;
+import java.util.Optional;
 
 public class LevelEditorMenu extends MainMenu {
     private static Tile[] tileSelection = {
@@ -47,6 +49,7 @@ public class LevelEditorMenu extends MainMenu {
             new Tile("tiles/evil_key_box"),
             new Tile("tiles/enemy"),
             new Tile("tiles/color_cube"),
+            new Tile("tiles/dynamic_color_cube"),
             new Tile("tiles/statues"),
             new Tile("tiles/text")
     };
@@ -169,15 +172,15 @@ public class LevelEditorMenu extends MainMenu {
                 8, 16, 256, 144, () -> setToolIndex(0));
 
         backgroundMenu = new Menu<>(new MenuButton[]{
-                imageButton.quickCreate("backgrounds/mountains/whole.png", "Mountains", () -> changeLevelBackground("mountains")),
-                imageButton.quickCreate("backgrounds/cold_mountains/whole.png", "Cold Mountains", () -> changeLevelBackground("cold_mountains")),
-                imageButton.quickCreate("backgrounds/tundra/whole.png", "Tundra", () -> changeLevelBackground("tundra")),
-                imageButton.quickCreate("backgrounds/cave/whole.png", "Cave", () -> changeLevelBackground("cave")),
-                imageButton.quickCreate("backgrounds/hyperspace/whole.png", "Hyperspace", () -> changeLevelBackground("hyperspace"))
+                imageButton.quickCreate("backgrounds/" + Level.backgrounds[0] + "/whole.png", "Mountains", () -> changeLevelBackground("mountains")),
+                imageButton.quickCreate("backgrounds/" + Level.backgrounds[1] + "/whole.png", "Cold Mountains", () -> changeLevelBackground("cold_mountains")),
+                imageButton.quickCreate("backgrounds/" + Level.backgrounds[2] + "/whole.png", "Tundra", () -> changeLevelBackground("tundra")),
+                imageButton.quickCreate("backgrounds/" + Level.backgrounds[3] + "/whole.png", "Cave", () -> changeLevelBackground("cave")),
+                imageButton.quickCreate("backgrounds/" + Level.backgrounds[4] + "/whole.png", "Hyperspace", () -> changeLevelBackground("hyperspace"))
         }, 256 + 16, 144 + 24, 16);
 
         setToolIndex(0);
-        SoundEngine.playMusic("building_song.wav");
+        SoundEngine.playMusic("menu/building_song.ogg");
     }
 
     @Override
@@ -197,6 +200,7 @@ public class LevelEditorMenu extends MainMenu {
             if (extraQuery.complete) {
                 if (extraQuery.accepted) {
                     modifiedExtraTile.extra = extraQuery.getQuery();
+                    editor.setSaved(false);
                 }
                 extraQuery = null;
             }
@@ -206,23 +210,25 @@ public class LevelEditorMenu extends MainMenu {
             return;
         }
 
-        if (!level.inGame() && !Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-            float scalar = 1;
-            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-                scalar = 4;
-            else if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT))
-                scalar = 0.25f;
-            if (ControlInputs.isJustPressed(Control.UP) || ControlInputs.getPressedFor(Control.UP) > 60) {
-                camera.targetPosition.y += 64 * scalar;
-            }
-            if (ControlInputs.isJustPressed(Control.DOWN) || ControlInputs.getPressedFor(Control.DOWN) > 60) {
-                camera.targetPosition.y -= 64 * scalar;
-            }
-            if (ControlInputs.isJustPressed(Control.LEFT) || ControlInputs.getPressedFor(Control.LEFT) > 60) {
-                camera.targetPosition.x -= 64 * scalar;
-            }
-            if (ControlInputs.isJustPressed(Control.RIGHT) || ControlInputs.getPressedFor(Control.RIGHT) > 60) {
-                camera.targetPosition.x += 64 * scalar;
+        if (!level.inGame()) {
+            if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    float scalar = 1;
+                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+                    scalar = 4;
+                else if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT))
+                    scalar = 0.25f;
+                if (ControlInputs.isJustPressed(Control.UP) || ControlInputs.getPressedFor(Control.UP) > 60) {
+                    camera.targetPosition.y += 64 * scalar;
+                }
+                if (ControlInputs.isJustPressed(Control.DOWN) || ControlInputs.getPressedFor(Control.DOWN) > 60) {
+                    camera.targetPosition.y -= 64 * scalar;
+                }
+                if (ControlInputs.isJustPressed(Control.LEFT) || ControlInputs.getPressedFor(Control.LEFT) > 60) {
+                    camera.targetPosition.x -= 64 * scalar;
+                }
+                if (ControlInputs.isJustPressed(Control.RIGHT) || ControlInputs.getPressedFor(Control.RIGHT) > 60) {
+                    camera.targetPosition.x += 64 * scalar;
+                }
             }
 
             if (!MouseUtil.isLeftMouseDown()) {
@@ -297,25 +303,28 @@ public class LevelEditorMenu extends MainMenu {
     public void useTool(boolean leftMouse) {
         if (leftMouse) {
             switch (toolButtons.itemIndex) {
+                // Pencil
                 case 0 -> {
                     Tile tileAt = level.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
                     Tile newTile = tileSelection[tileButtons.itemIndex - 1];
+                    if (Tile.imagesEqual(tileAt, newTile) && tileAt.hasTag("string_picker") && MouseUtil.leftMouseJustPressed())
+                        startExtraQuery(tileAt);
                     if (Tile.tilesEqual(tileAt, newTile)) {
                         if (tileAt.ignoreTiling && Tile.imagesEqual(tileAt, newTile))
                             tileAt.tileType = newTile.tileType;
                     } else {
-                        Point offset = editor.addTile(newTile, tiledMousePosition.x, tiledMousePosition.y);
+                        Point offset = editor.addTile(newTile, tiledMousePosition.x, tiledMousePosition.y, true);
                         Tile tile = level.getTileAt(tiledMousePosition.x + offset.x, tiledMousePosition.y + offset.y);
-                        if (tile.hasTag("string_picker")) {
+                        if (tile.hasTag("string_picker") && (tile.extra == null || tile.extra.isBlank())) {
                             startExtraQuery(tile);
                         }
                     }
-                    if (Tile.imagesEqual(tileAt, newTile) && tileAt.hasTag("string_picker"))
-                        startExtraQuery(tileAt);
                 }
+                // Eraser (just simulates a right click (erases)
                 case 1 -> {
                     useTool(false);
                 }
+                // Color picker
                 case 2 -> {
                     Point tiledPreviousMousePosition = new Point();
                     tiledPreviousMousePosition.x = (int) (previousMousePosition.x / 64);
@@ -323,24 +332,41 @@ public class LevelEditorMenu extends MainMenu {
                     editor.drawLine(tileSelection[tileButtons.itemIndex - 1], tiledMousePosition.x, tiledMousePosition.y,
                             tiledPreviousMousePosition.x, tiledPreviousMousePosition.y);
                 }
+                // Fill tool
                 case 3 -> {
-                    editor.fill(tileSelection[tileButtons.itemIndex - 1], tiledMousePosition.x, tiledMousePosition.y);
+                    if (MouseUtil.leftMouseJustPressed()) {
+                        Tile fillTile = tileSelection[tileButtons.itemIndex - 1];
+                        if (!Tile.tilesEqual(level.getTileAt(tiledMousePosition.x, tiledMousePosition.y), fillTile))
+                            editor.fill(fillTile, tiledMousePosition.x, tiledMousePosition.y);
+                    }
                 }
+                // Color picker
                 case 4 -> {
                     int tileCount = tileSelection.length;
                     Tile tileAt = level.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
-                    for (int i = 0; i < tileCount; i++) {
-                        if (tileSelection[i].image.equals(tileAt.image)) {
-                            tileButtons.itemIndex = i + 1;
-                            Tile buttonTile = ((TileButton) tileButtons.getSelectedItem()).getTile();
-                            if (buttonTile.ignoreTiling)
-                                buttonTile.setTileType(tileAt.tileType);
-                            buttonTile.extra = tileAt.extra;
+                    if (tileAt != null) {
+                        for (int i = 0; i < tileCount; i++) {
+                            if (tileSelection[i].image.equals(tileAt.image)) {
+                                tileButtons.itemIndex = i + 1;
+                                Tile buttonTile = ((TileButton) tileButtons.getSelectedItem()).getTile();
+                                if (buttonTile.ignoreTiling)
+                                    buttonTile.setTileType(tileAt.tileType);
+                                buttonTile.extra = tileAt.extra;
+                            }
                         }
                     }
                 }
+                // Selection tool
                 case 5 -> {
+                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || editor.isMoving()) {
+                        editor.setSelectionPosition(mouseWorldPosition);
+                    } else if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || editor.isNudging()) {
+                        editor.updateSelectionPosition(mouseWorldPosition);
+                    } else {
+                        editor.select(tiledMousePosition);
+                    }
                 }
+                //
                 case 6 -> {
                     level.startGame(new Point(tiledMousePosition));
                     canPlaceTiles = false;
@@ -359,7 +385,7 @@ public class LevelEditorMenu extends MainMenu {
                     editor.fill(new Tile("delete"), tiledMousePosition.x, tiledMousePosition.y);
                 }
                 default -> {
-                    editor.addTile(new Tile("delete"), tiledMousePosition.x, tiledMousePosition.y);
+                    editor.addTile(new Tile("delete"), tiledMousePosition.x, tiledMousePosition.y, true);
                 }
             }
         }
@@ -367,12 +393,22 @@ public class LevelEditorMenu extends MainMenu {
 
     private void startExtraQuery(Tile tileAt) {
         String prompt = "Set the arbitrary extra data for this tile \n ";
+        String regex = null;
+        int maxSize = -1;
         if (tileAt.hasTag("text")) {
             prompt = "Set the text for this tile: \n ";
         } else if (tileAt.hasTag("dialogue")) {
             prompt = "Set the path to the dialogue file \n ";
+        } else if (tileAt.hasTag("render_color")) {
+            prompt = "Set the hex code for this tile \n #";
+            regex = "([A-F]|[0-9]|[a-f])";
+            maxSize = 6;
         }
         extraQuery = new TypingQuery(prompt, tileAt.extra == null ? "" : tileAt.extra, new Rectangle(-384, -256, 384 * 2, 256 * 2), true);
+        if (regex != null)
+            extraQuery.setRegex(regex);
+        if (maxSize > 0)
+            extraQuery.setAbsoluteMaxSize(maxSize);
         modifiedExtraTile = tileAt;
     }
 
@@ -404,9 +440,37 @@ public class LevelEditorMenu extends MainMenu {
     }
 
     @Override
+    public void keyUp(int keycode) {
+        // Cursors for selection mode
+        if (keycode == Input.Keys.CONTROL_LEFT || keycode == Input.Keys.ALT_LEFT) {
+            if (toolButtons.itemIndex == 5) {
+                Cursors.switchCursor("cursor");
+            }
+        }
+    }
+
+    @Override
     public void keyDown(int keycode) {
+        // Cursors for selection mode
+        if (!level.inGame()) {
+            if (keycode == Input.Keys.CONTROL_LEFT && Cursors.cursorIsNot("drag_hand")) {
+                if (toolButtons.itemIndex == 5) {
+                    Cursors.switchCursor("move_arrow");
+                }
+            } else if (keycode == Input.Keys.ALT_LEFT && Cursors.cursorIsNot("move_arrow")) {
+                if (toolButtons.itemIndex == 5) {
+                    Cursors.switchCursor("drag_hand");
+                }
+            }
+        }
         if (extraQuery != null) {
-            extraQuery.updateQueryKey(keycode, 256, false);
+            if (keycode == Input.Keys.ENTER) {
+                extraQuery.complete(true);
+            } else if (keycode == Input.Keys.ESCAPE) {
+                extraQuery.complete(false);
+            } else {
+                extraQuery.updateQueryKey(keycode, 256, false);
+            }
             return;
         }
         if (timeQuery != null) {
@@ -428,6 +492,8 @@ public class LevelEditorMenu extends MainMenu {
                     setToolIndex(keyNum);
                 }
             }
+            if (keycode == Input.Keys.K)
+                level.suicide();
         }
         switch (keycode) {
             case Input.Keys.S :
@@ -436,8 +502,44 @@ public class LevelEditorMenu extends MainMenu {
                     editor.setSaved(true);
                 }
                 break;
+            case Input.Keys.C :
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    editor.copySelection();
+                }
+                break;
+            case Input.Keys.V :
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    editor.pasteSelection();
+                }
+                break;
+            case Input.Keys.X :
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    editor.copySelection();
+                    editor.deleteSelection();
+                }
+                break;
+            case Input.Keys.D :
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    editor.endSelection();
+                }
+                break;
+            case Input.Keys.Z :
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    editor.undo();
+                }
+                break;
+            case Input.Keys.Y :
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    editor.redo();
+                }
+                break;
+            case Input.Keys.BACKSPACE:
+                editor.deleteSelection();
+                break;
             case Input.Keys.ESCAPE :
-                if (!level.inGame()) {
+                if (editor.hasSelection()) {
+                    editor.endSelection();
+                } else if (!level.inGame() && level.escapePressed()) {
                     if (!editor.saved)
                         confirmExit();
                     else
@@ -445,14 +547,15 @@ public class LevelEditorMenu extends MainMenu {
                 } else {
                     level.endGame();
                     setToolIndex(toolButtons.itemIndex);
-                    SoundEngine.playMusic("building_song.wav");
+                    SoundEngine.playMusic("menu/building_song.ogg");
                 }
                 break;
             case Input.Keys.ENTER :
                 level.enterPressed();
                 if (level.hasDialogue())
                     return;
-                startTesting();
+                if (!level.inGame())
+                    startTesting();
                 break;
         }
     }
@@ -567,6 +670,7 @@ public class LevelEditorMenu extends MainMenu {
 
     @Override
     public void mouseUp(int button) {
+        editor.selectionReleased();
         if (extraQuery != null) {
             extraQuery.mouseClicked();
         } else {
@@ -592,7 +696,7 @@ public class LevelEditorMenu extends MainMenu {
     @Override
     public void close() {
         setToolIndex(5);
-        SoundEngine.playMusic("menu_song.wav");
+        SoundEngine.playMusic("menu/menu_theme.ogg");
     }
 
     @Override
@@ -616,8 +720,18 @@ public class LevelEditorMenu extends MainMenu {
 
         LittleH.program.useDynamicCamera();
 
-        if (canPlaceTiles && !level.inGame())
+        if (canPlaceTiles && !level.inGame() && Cursors.cursorIsNot("move_arrow", "drag_hand")) {
+            Tile tileAt = level.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
+            if (tileAt != null && tileAt.hasTag("string_picker")) {
+                if (tileAt.extra != null) {
+                    g.drawString(tileAt.extra, LittleH.font, tileAt.x * 64 + 32, tileAt.y * 64 + 96, LittleH.defaultFontScale * 0.85f, 0);
+                }
+            }
             g.draw(Images.getImage("tiles/selector.png"), tiledMousePosition.x * 64, tiledMousePosition.y * 64, 64, 64);
+        }
+
+        // Draw selection
+        editor.renderSelection(g);
 
         LittleH.program.useStaticCamera();
 
@@ -632,6 +746,11 @@ public class LevelEditorMenu extends MainMenu {
         Rectangle[] itemButtons;
 
         toolButtons.renderMenuRectangle(g, Patch.get("menu_flat"));
+
+        g.setColor(Images.quickAlpha(0.5f));
+        if (!editor.saved)
+            g.draw(Images.getImage("ui/buttons/icons/floppy_disc.png"), -relZeroX() - 128 - 24, -relZeroY() - 8 - 64, 64, 64);
+        g.resetColor();
 
         itemButtons = toolButtons.getItemButtons();
 

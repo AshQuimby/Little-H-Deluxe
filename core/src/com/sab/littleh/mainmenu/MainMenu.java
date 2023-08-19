@@ -1,6 +1,8 @@
 package com.sab.littleh.mainmenu;
 
 import com.sab.littleh.LittleH;
+import com.sab.littleh.settings.SettingButton;
+import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
 import com.sab.littleh.util.Patch;
@@ -42,7 +44,13 @@ public abstract class MainMenu {
 
     public void drawBackground(Graphics g) {
         g.drawPatch(Patch.get("menu_indented"), relZeroX(), relZeroY(), program.getWidth(), program.getHeight(), 8);
-        g.draw(Images.getImage("title.png"), -568 / 2, -424 / 2, 568, 424);
+        g.setColor(Images.getHColor());
+        g.draw(Images.getImage("title_color.png"), -568 / 2, -424 / 2, 568, 424);
+        g.resetColor();
+        if (Settings.localSettings.rainbowTitle.value)
+            g.draw(Images.getImage("title_rainbow.png"), -568 / 2, -424 / 2, 568, 424);
+        else
+            g.draw(Images.getImage("title.png"), -568 / 2, -424 / 2, 568, 424);
     }
 
     public void render(Graphics g) {

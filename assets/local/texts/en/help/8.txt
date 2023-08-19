@@ -1,0 +1,6 @@
+Checkpoints and Goal Crystals
+%split%
+
+    Believe it or not, mission control wants you to succeed. To aid you they have dropped H reconstruction stations across levels. Unfortunately, the preboarded got samples get destroyed while being deployed. In order to reactivate one, simply walk past it and you will now respawn there. Some checkpoints have a different appearance and red color. These checkpoints can reprocess genetic material, allowing you to trigger them multiple times.
+
+    These checkpoints will hopefully allow you to reach the Goal Crystal faster. Once you find one, pick it up and we'll warp you out. Keep in mind that there is no guarantee that only one Goal Crystal exists in each level; if there is a fork in the road, both paths may be equally correct.

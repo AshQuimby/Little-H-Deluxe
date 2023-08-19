@@ -13,7 +13,7 @@ public class SettingButton extends MenuButton {
     private static final int LIST = 1;
     private static final int PERCENT = 2;
     private static final int STRING = 3;
-    private Setting setting;
+    public Setting setting;
     private String bonusText;
     private int type;
     private boolean held;
@@ -91,17 +91,17 @@ public class SettingButton extends MenuButton {
         if (contains(MouseUtil.getMousePosition())) {
             if (type == BOOL) {
                 ((BoolSetting) setting).next();
-                SoundEngine.playSound("blip.mp3");
+                SoundEngine.playSound("blip.ogg");
             }
         }
         if (type == LIST) {
             ListSetting listSetting = (ListSetting) setting;
             if (new Rectangle(x - 64, y - 12, 36, 36).contains(MouseUtil.getMousePosition())) {
-                SoundEngine.playSound("blip.mp3");
+                SoundEngine.playSound("blip.ogg");
                 listSetting.previous();
             }
             if (new Rectangle(x + 64 - 36 + width, y - 12, 36, 36).contains(MouseUtil.getMousePosition())) {
-                SoundEngine.playSound("blip.mp3");
+                SoundEngine.playSound("blip.ogg");
                 listSetting.next();
             }
         }
@@ -128,19 +128,19 @@ public class SettingButton extends MenuButton {
                 g.drawPatch(Patch.get("menu_flat"), bounds, 8);
                 g.draw(Images.getImage("ui/buttons/slider_bar.png"), x + 12, y + 12, 128, 12);
                 g.draw(Images.getImage("ui/buttons/slider_notch.png"), x + percentageSetting.asRelativeFloat() * 128 - 18 + 12, y, 36, 36);
-                g.drawString(percentageSetting.display(), LittleH.font, getCenterX(), getCenterY() - 24, LittleH.defaultFontScale * 0.67f, 0);
+                g.drawString(percentageSetting.display(), LittleH.font, getCenterX(), getCenterY() - 32, LittleH.defaultFontScale * 0.67f, 0);
             }
             case LIST -> {
                 ListSetting listSetting = (ListSetting) setting;
                 Rectangle bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
                 g.drawPatch(Patch.get("menu_flat"), bounds, 8);
-                g.drawString(listSetting.display(), LittleH.font, getCenterX(), getCenterY() + 8, LittleH.defaultFontScale * 0.75f, 0);
-                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x - 64, y - 12, 36, 36, new Rectangle(0, 0, 6, 6));
-                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x + 64 - 36 + width, y - 12, 36, 36, new Rectangle(0, 0, 6, 6), 180);
+                g.drawString(listSetting.display(), LittleH.font, getCenterX(), getCenterY(), LittleH.defaultFontScale * 0.75f, 0);
+                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x - 64, y - 14, 36, 36, new Rectangle(0, 0, 6, 6));
+                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x + 64 - 36 + width, y - 14, 36, 36, new Rectangle(0, 0, 6, 6), 180);
             }
         }
-        g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 48, LittleH.defaultFontScale * 0.75f, 0);
+        g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 32, LittleH.defaultFontScale * 0.75f, 0);
         if (bonusText != null)
-            g.drawString(bonusText, LittleH.font, getCenterX(), y - 30, LittleH.defaultFontScale * 0.6f, 0);
+            g.drawString(bonusText, LittleH.font, getCenterX(), y - 48, LittleH.defaultFontScale * 0.6f, 0);
     }
 }

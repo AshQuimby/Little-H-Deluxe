@@ -8,8 +8,7 @@ import com.sab.littleh.LittleH;
 
 public class MouseUtil {
     private static Vector2 previousMousePosition;
-    private static boolean leftMouseDown;
-    private static boolean rightMouseDown;
+    private static boolean leftMouseJustDown;
     public static Vector2 getDynamicMousePosition() {
         Vector3 mousePos = LittleH.program.dynamicCamera.unproject(new Vector3(getRawX(), getRawY(), 0));
         return new Vector2(mousePos.x, mousePos.y);
@@ -23,6 +22,19 @@ public class MouseUtil {
     public static Vector2 getMousePosition() {
         Vector3 mousePos = LittleH.program.staticCamera.unproject(new Vector3(getRawX(), getRawY(), 0));
         return new Vector2(mousePos.x, mousePos.y);
+    }
+
+    public static boolean leftMouseJustPressed() {
+        return leftMouseJustDown;
+    }
+
+
+    public static void leftMouseDown() {
+        leftMouseJustDown = true;
+    }
+
+    public static void updateJustPressed() {
+        leftMouseJustDown = false;
     }
 
     public static float getMouseX() {

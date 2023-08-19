@@ -1,0 +1,6 @@
+Timer
+%split%
+
+    Some levels can only sustain you for a limited amount of time as indicated by the countdown in the top right corner. Remember, respawning at a checkpoint doesn't reset the timer and running out of time resets you to the beginning of the level; if you see the timer, you should probably act fast.
+
+    Some levels have magical stopwatches and clocks that extend the amount of time you can spend in the level before having to reset.

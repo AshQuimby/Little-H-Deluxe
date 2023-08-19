@@ -2,9 +2,11 @@ package com.sab.littleh.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.settings.Settings;
 
 import java.io.File;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 public class Images {
     public static boolean inArchive;
     public static HashMap<String, Texture> cache = new HashMap<>();
+    private static Color hColor = new Color(1f, 0f, 0f, 1f);
 
     public static void load() {
         inArchive = Images.class.getResourceAsStream("Images.class").toString().contains("jar");
@@ -36,6 +39,14 @@ public class Images {
         cache.clear();
     }
 
+    public static Color getHColor() {
+        return hColor;
+    }
+
+    public static void cacheHColor() {
+        hColor = new Color(1f, 1f, 1f, 1f).fromHsv(Settings.localSettings.hColor.asRelativeFloat() * 360f, 1f, 1f);
+    }
+
     public static void drawImage(Graphics g, Texture image, Rectangle drawTo, Rectangle drawFrom) {
          g.draw(image, drawTo.x, drawTo.y, drawTo.width, drawTo.height, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
         //         g.drawImage(image, drawTo.x, drawTo.y, drawTo.x + drawTo.width, drawTo.y + drawTo.height, drawFrom.x, drawFrom.y, drawFrom.x + drawFrom.width, drawFrom.y + drawFrom.height, TileEditor.window);
@@ -45,5 +56,13 @@ public class Images {
         Vector2 origin = new Vector2(drawTo.width / 2, drawTo.height / 2);
          g.draw(image, drawTo.x, drawTo.y, origin.x, origin.y, drawTo.width, drawTo.height, 1, 1, rotation, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
         //         g.drawImage(image, drawTo.x, drawTo.y, drawTo.x + drawTo.width, drawTo.y + drawTo.height, drawFrom.x, drawFrom.y, drawFrom.x + drawFrom.width, drawFrom.y + drawFrom.height, TileEditor.window);
+    }
+
+    public static Color quickAlpha(float a) {
+        return new Color(1f, 1f, 1f, a);
+    }
+
+    public static void clearCache() {
+        cache.clear();
     }
 }

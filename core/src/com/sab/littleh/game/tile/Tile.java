@@ -39,7 +39,8 @@ public class Tile {
         this.y = y;
         this.image = image;
         this.tags = tags;
-        this.extra = extra;
+        if (extra != null)
+            this.extra = extra.trim();
         this.tileType = (byte) tileType;
         this.ignoreTiling = ignoreTiling;
         this.cachedDrawRect = drawRect;
@@ -50,7 +51,8 @@ public class Tile {
         this.y = y;
         this.image = image;
         this.tags = getCachedTags(tags);
-        this.extra = extra;
+        if (extra != null)
+            this.extra = extra.trim();
         setTileType(tileType);
     }
 
@@ -67,7 +69,8 @@ public class Tile {
             this.tags.add(string);
         }
         this.tags = getCachedTags(this.tags);
-        this.extra = extra;
+        if (extra != null)
+            this.extra = extra.trim();
         setTileType(tileType);
     }
 
@@ -123,6 +126,10 @@ public class Tile {
 
     public boolean tileEquals(Tile other) {
         return other != null && image.equals(other.image) && (tileType == other.tileType || !ignoreTiling);
+    }
+
+    public boolean extrasEqual(Tile other) {
+        return extra == null && (other != null && other.extra == null) || extra != null && (other != null && extra.equals(other.extra));
     }
 
     public static boolean tilesEqual(Tile tile, Tile other) {
@@ -396,8 +403,9 @@ public class Tile {
         if (hasTag("notified_reset_type")) {
             setTileType(0);
         }
-        if (hasTag("notified_increment_type")) {
-            setTileType(tileType + 1);
+        if (hasTag("notified_alternate_type")) {
+            if (data[0] == tileType / 2)
+                setTileType(tileType % 2 == 0 ? tileType + 1 : tileType - 1);
         }
     }
 

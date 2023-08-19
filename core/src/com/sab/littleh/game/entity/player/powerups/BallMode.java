@@ -84,7 +84,7 @@ public class BallMode extends Powerup {
    public void onCollision(boolean horizontal, boolean vertical) {
       if (horizontal) {
          player.velocityX *= -1f;
-         if (Math.abs(player.velocityX) > 8f) SoundEngine.playSound("ball_bounce.mp3");
+         if (Math.abs(player.velocityX) > 8f) SoundEngine.playSound("ball_bounce.ogg");
          // Minimum BOUNCING BALL SPEED
          player.velocityX = Math.max(15, Math.abs(player.velocityX)) * Math.signum(player.velocityX);
       }
@@ -95,7 +95,7 @@ public class BallMode extends Powerup {
             player.velocityY *= -1f;
             // Minimum BOUNCING BALL SPEED
             player.velocityY = Math.max(15, Math.abs(player.velocityY)) * Math.signum(player.velocityY);
-            if (Math.abs(player.velocityY) > 8f) SoundEngine.playSound("ball_bounce.mp3");
+            if (Math.abs(player.velocityY) > 8f) SoundEngine.playSound("ball_bounce.ogg");
          }
       }
    }

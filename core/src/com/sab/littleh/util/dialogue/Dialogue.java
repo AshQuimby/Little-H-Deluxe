@@ -1,5 +1,6 @@
 package com.sab.littleh.util.dialogue;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.mainmenu.MainMenu;
@@ -7,6 +8,7 @@ import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
 import com.sab.littleh.util.Patch;
 import com.sab.littleh.util.SoundEngine;
+import com.sun.tools.javac.Main;
 
 import java.awt.Font;
 
@@ -19,9 +21,10 @@ public class Dialogue {
    private String lastBlock;
    private int atBlock;
    private int waitFor;
+   private int blipTimer;
    private boolean finished;
-   private int blockSpeed;
-   private int blockSpeedCounter;
+   private float blockSpeed;
+   private float characterFillup;
 
    public Dialogue(String[] text, String[] characterNames, String[] fileNames) {
       this.text = text;
@@ -32,6 +35,8 @@ public class Dialogue {
       waitFor = 0;
       finished = false;
       lastBlock = "";
+      blockSpeed = 1f;
+      blipTimer = 0;
    }
    
    public String getPortrait() {
@@ -58,6 +63,7 @@ public class Dialogue {
       blockSpeed = 1;
       atBlock++;
       atPosition = 0;
+      blipTimer = 0;
    }
    
    public boolean finishedBlock() {
@@ -73,42 +79,47 @@ public class Dialogue {
    }
 
    public String next(boolean playBlip) {
-      if (--blockSpeedCounter == -1) blockSpeedCounter = blockSpeed;
-      if (waitFor > 0 || finishedBlock()) {
-         waitFor--;
-         return lastBlock;
-      }
-
-      atPosition++;
-
-      if (playBlip && atPosition % (Math.max(4 - blockSpeed / 2, 2)) == 0)
-         SoundEngine.playSound("blip.mp3");
-
-      String next = text[atBlock].substring(Math.max(atPosition, 1), atPosition + 1);
-
-      // Dialogue commands
-      if (next.equals("\\")) {
-         String command = getNext() + getNext();
-         int parens = 0;
-         if (getNext().equals("(")) parens++;
-         else malformedCommand(command, "No parentheses");
-         String parameter = "";
-         while (parens > 0) {
-            String shortNext = null;
-            try {
-               shortNext = getNext();
-            } catch (Exception e) {
-               malformedCommand(command, "Parentheses never closed");
-            }
-            if (shortNext.equals("(")) parens++;
-            else if (shortNext.equals(")")) parens--;
-            else parameter += shortNext;
+      characterFillup += blockSpeed;
+      while (characterFillup >= 1f) {
+         characterFillup--;
+         if (waitFor > 0 || finishedBlock()) {
+            waitFor -= blockSpeed;
+            return lastBlock;
          }
-         runCommand(command, parameter);
-      } else {
-         lastBlock += next;
+
+         atPosition++;
+
+         String next = text[atBlock].substring(Math.max(atPosition, 1), atPosition + 1);
+
+         if (playBlip && !next.equals("\\") && !next.isBlank()) {
+            if (blipTimer % 4 == 0)
+               SoundEngine.playSound("blip.ogg");
+            blipTimer++;
+         }
+
+         // Dialogue commands
+         if (next.equals("\\")) {
+            String command = getNext() + getNext();
+            int parens = 0;
+            if (getNext().equals("(")) parens++;
+            else malformedCommand(command, "No parentheses");
+            String parameter = "";
+            while (parens > 0) {
+               String shortNext = null;
+               try {
+                  shortNext = getNext();
+               } catch (Exception e) {
+                  malformedCommand(command, "Parentheses never closed");
+               }
+               if (shortNext.equals("(")) parens++;
+               else if (shortNext.equals(")")) parens--;
+               else parameter += shortNext;
+            }
+            runCommand(command, parameter);
+         } else {
+            lastBlock += next;
+         }
       }
-      if (blockSpeedCounter > 1) return next();
       return lastBlock;
    }
 
@@ -119,7 +130,6 @@ public class Dialogue {
    }
 
    private void runCommand(String command, String parameter) {
-      System.out.println("Running command: " + command + " with parameter: " + parameter);
       switch (command) {
          // playSound (path)
          case "pS" -> {
@@ -129,9 +139,9 @@ public class Dialogue {
          case "wF" -> {
             waitFor = Integer.parseInt(parameter);
          }
-         // goFast (letter/tick)
+         // goFast (letters/tick)
          case "gF" -> {
-            blockSpeed = Integer.parseInt(parameter);
+            blockSpeed = Float.parseFloat(parameter);
          }
          // characterName (id)
          case "cN" -> {
@@ -147,13 +157,21 @@ public class Dialogue {
       g.drawPatch(Patch.get("menu"), new Rectangle(MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192), 8);
 
       if (getPortrait().endsWith("player")) {
-         g.draw(Images.getImage(getPortrait() + ".png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
+         g.setColor(Images.getHColor());
          g.draw(Images.getImage(getPortrait() + "_color.png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
+         g.resetColor();
+         g.draw(Images.getImage(getPortrait() + ".png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
       } else {
          g.draw(Images.getImage(getPortrait()), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
       }
+      g.setColor(new Color(0, 0, 0, 0.5f));
+      g.draw(Images.getImage("pixel.png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 48);
+      g.resetColor();
 
       g.drawPatch(Patch.get("menu_hollow"), new Rectangle(MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192), 8);
+
+      g.drawString(getName(), LittleH.font, MainMenu.relZeroX() + 192 / 2, MainMenu.relZeroY() + 40 + 4, LittleH.defaultFontScale * 0.9f, 0);
+
       Rectangle textArea = new Rectangle(MainMenu.relZeroX() + 192, MainMenu.relZeroY(), LittleH.program.getWidth() - 192, 192);
       g.drawPatch(Patch.get("menu_globbed"), textArea, 8);
       textArea.y -= 16;

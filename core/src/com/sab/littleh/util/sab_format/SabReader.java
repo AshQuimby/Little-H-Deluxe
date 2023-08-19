@@ -133,7 +133,7 @@ public class SabReader {
         Pattern delimiter = scanner.delimiter();
         scanner.useDelimiter("");
         while (scanner.hasNext("@")) {
-            scanner.nextLine();
+            System.out.println(scanner.nextLine());
         }
         scanner.useDelimiter(delimiter);
         return scanner;

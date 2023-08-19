@@ -13,12 +13,12 @@ import java.io.File;
 public class GameMenu extends MainMenu {
     private static DynamicCamera camera = LittleH.program.dynamicCamera;
     private File file;
-    private Level level;
+    protected Level level;
     public boolean failedPlaying = false;
 
     public GameMenu(File file, Level level) {
-        this.file = file;
         this.level = level;
+        this.file = file;
         Gdx.graphics.setTitle(LittleH.TITLE + " | Playing level: " + level.mapData.getValue("name"));
         Point startPos = level.getStartPos();
         if (startPos == null) {
@@ -36,9 +36,12 @@ public class GameMenu extends MainMenu {
     @Override
     public void keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
-            LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
+            if (level.escapePressed())
+                LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
         } else if (keycode == Input.Keys.ENTER) {
             level.enterPressed();
+        } else if (keycode == Input.Keys.K) {
+            level.suicide();
         }
     }
 
@@ -52,7 +55,8 @@ public class GameMenu extends MainMenu {
 
     @Override
     public void close() {
-        SoundEngine.playMusic("menu_song.wav");
+        Cursors.switchCursor("cursor");
+        SoundEngine.playMusic("menu/menu_theme.ogg");
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.sab.littleh.game.level;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.tile.Tile;
+import com.sab.littleh.mainmenu.GameMenu;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
@@ -16,13 +18,18 @@ import com.sab.littleh.util.dialogue.Dialogues;
 import com.sab.littleh.util.sab_format.SabData;
 import com.sab.littleh.util.sab_format.SabValue;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Level {
+    public static final String[] backgrounds = {
+            "mountains",
+            "cold_mountains",
+            "cave",
+            "tundra",
+            "hyperspace"
+    };
     public final SabData mapData;
     public List<Tile> allTiles;
     public List<Tile> volatileTiles;
@@ -42,7 +49,7 @@ public class Level {
     private Point startPos;
     private Popup popup;
     private ParallaxBackground parallaxBackground;
-    private long startTime;
+    private long currentTime;
     private long checkedTime;
     private Dialogue currentDialogue;
 
@@ -60,7 +67,7 @@ public class Level {
         if (mapData.hasValue("movement_options")) {
             String value = mapData.getRawValue("movement_options");
             mapData.remove("movement_options");
-            String[] values = value.replace(",", "").split(" ");
+            String[] values = value.replace(",", "").replace("[", "").replace("]", "").split(" ");
             String[] options = {
                     "double_jumping",
                     "wall_sliding",
@@ -77,16 +84,17 @@ public class Level {
     }
 
     public void startGame(Point startPos) {
+        levelEnded = true;
         Dialogues.resetDialogues();
         player = new Player(new Point(startPos.x, startPos.y));
         LittleH.program.dynamicCamera.setPosition(player.getCenter());
         desyncTiles();
-        SoundEngine.playMusic(mapData.getRawValue("background") + "_song.wav");
+        SoundEngine.playMusic("areas/" + mapData.getRawValue("background") + "_song.ogg");
         gameTick = 0;
         timeLimit = mapData.getValue("time_limit").asInt();
         this.startPos = startPos;
-        startTime = System.currentTimeMillis();
-        checkedTime = startTime;
+        currentTime = 0;
+        checkedTime = currentTime;
         Cursors.switchCursor("none");
     }
 
@@ -144,6 +152,14 @@ public class Level {
         }
     }
 
+    public boolean escapePressed() {
+        if (currentDialogue != null) {
+            currentDialogue = null;
+            return false;
+        }
+        return true;
+    }
+
     public void update() {
         if (inGame()) {
             gameTick++;
@@ -152,6 +168,14 @@ public class Level {
                 if (!currentDialogue.finishedBlock()) {
                     currentDialogue.next();
                 }
+                ControlInputs.releaseControl(Control.UP);
+                ControlInputs.releaseControl(Control.DOWN);
+                ControlInputs.releaseControl(Control.LEFT);
+                ControlInputs.releaseControl(Control.RIGHT);
+                ControlInputs.releaseControl(Control.JUMP);
+                player.update(this);
+                particles.forEach(Particle::update);
+                particles.removeIf(particle -> !particle.alive);
                 return;
             }
 
@@ -162,10 +186,13 @@ public class Level {
                     timeLimit = mapData.getValue("time_limit").asInt();
                 }
             }
+
+            currentTime += 16 + (gameTick % 3 == 0 ? 0 : 1);
         }
 
         if (player != null) {
-            LittleH.program.dynamicCamera.targetPosition = new Vector2(player.getCenterX(), player.y + player.height / 2);
+            if (!player.warpingOut())
+                LittleH.program.dynamicCamera.targetPosition = new Vector2(player.getCenterX(), player.y + player.height / 2);
             float cameraScalar = Math.min(1920f / LittleH.program.getWidth(), 1080f / LittleH.program.getHeight());
             LittleH.program.dynamicCamera.targetZoom = cameraScalar / Settings.localSettings.zoomScalar.asFloat();
             player.update(this);
@@ -221,6 +248,11 @@ public class Level {
         return tileMap.size();
     }
 
+    public void suicide() {
+        if (player != null)
+            player.kill();
+    }
+
     public int getHeight() {
         return tileMap.get(0).size();
     }
@@ -231,8 +263,11 @@ public class Level {
     }
 
     public void endGame() {
+        currentDialogue = null;
         player = null;
         levelEnded = true;
+        enemies.clear();
+        particles.clear();
         syncTiles();
     }
 
@@ -315,7 +350,7 @@ public class Level {
         int endX = startX + screenTileWidth;
         int endY = startY + screenTileHeight;
 
-        List<Tile> textRenders = new ArrayList<>();
+        List<Tile> postRenders = new ArrayList<>();
 
         for (int i = startX; i < endX; i++) {
             if (i < 0 || i >= getWidth()) continue;
@@ -325,19 +360,34 @@ public class Level {
                 if (tile != null) {
                     if (!(tile.hasTag("invisible") && player != null))
                         tile.render(false, g);
-                    if (player != null && tile.hasTag("text"))
-                        textRenders.add(tile);
+                    if (tile.hasTag("post_render"))
+                        postRenders.add(tile);
                 }
             }
         }
 
-        for (Tile text : textRenders) {
-            if (text.extra == null) text.extra = "";
-            float size = 1f;
-            if (text.tileType == 0) size = 1.5f;
-            else if (text.tileType == 2) size = 0.75f;
+        for (Tile tile : postRenders) {
+            if (tile.hasTag("text")) {
+                if (player != null) {
+                    if (tile.extra == null) tile.extra = "";
+                    float size = 1f;
+                    if (tile.tileType == 0) size = 1.5f;
+                    else if (tile.tileType == 2) size = 0.75f;
 
-            g.drawString(text.extra, LittleH.font, text.x * 64 + 32, text.y * 64 + 48, size * LittleH.defaultFontScale, 0);
+                    g.drawString(tile.extra, LittleH.font, tile.x * 64 + 32, tile.y * 64 + 48, size * LittleH.defaultFontScale, 0);
+                }
+            }
+            if (tile.hasTag("render_color")) {
+                if (tile.extra == null || tile.extra.length() < 6) {
+                } else {
+                    g.setColor(Color.valueOf("#" + tile.extra.toUpperCase().trim()));
+                }
+                tile.render(false, g);
+            }
+            if (tile.hasTag("sinusoid")) {
+                g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 16, 64, 64, tile.getDrawSection());
+            }
+            g.resetColor();
         }
 
         if (player != null)
@@ -395,13 +445,13 @@ public class Level {
     }
 
     public String getSplit() {
-        long time = System.currentTimeMillis() - checkedTime;
-        checkedTime = System.currentTimeMillis();
+        long time = currentTime - checkedTime;
+        checkedTime = currentTime;
         return String.format("%s:%s:%s", time / 60000, time / 1000 % 60, time % 1000);
     }
 
     public String getTime() {
-        long time = System.currentTimeMillis() - startTime;
+        long time = currentTime;
         return String.format("%s:%s:%s", time / 60000, time / 1000 % 60, time % 1000);
     }
 

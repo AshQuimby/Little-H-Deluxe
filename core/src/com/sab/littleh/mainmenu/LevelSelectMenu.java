@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.util.Cursors;
-import com.sab.littleh.util.Graphics;
-import com.sab.littleh.util.Menu;
-import com.sab.littleh.util.Patch;
+import com.sab.littleh.util.*;
 import com.sab.littleh.util.sab_format.SabParsingException;
 import com.sab.littleh.util.sab_format.SabReader;
 
@@ -16,6 +13,8 @@ import java.io.File;
 public class LevelSelectMenu extends MainMenu {
     private Menu<ImageButton> optionButtons;
     private Menu<LevelButton> mapButtons;
+    private TypingQuery createLevelQuery;
+
     @Override
     public void start() {
         Gdx.graphics.setTitle(LittleH.TITLE + " | Browsing Levels");
@@ -32,7 +31,7 @@ public class LevelSelectMenu extends MainMenu {
         }
 
         ImageButton optionButton = new ImageButton("square_button", "ui/buttons/icons/create.png", 0, 0, 80, 88, 8, 16, 64, 64, () -> {
-            // Trollge :)
+            createLevelQuery = new TypingQuery("Choose a name for your level: \n ", "My Level", new Rectangle(-384, -128, 384 * 2, 128 * 2));
         });
         optionButton.setHoverText("Create new level");
 
@@ -42,7 +41,7 @@ public class LevelSelectMenu extends MainMenu {
                     LittleH.program.switchMenu(new SettingsMenu());
                 }),
                 optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
-
+                    LittleH.program.switchMenu(new HelpMenu());
                 })
         }, 80, 80, 16);
 
@@ -51,31 +50,51 @@ public class LevelSelectMenu extends MainMenu {
 
     @Override
     public void update() {
+        if (createLevelQuery != null) {
+            createLevelQuery.update();
+            if (createLevelQuery.complete) {
+                if (createLevelQuery.accepted) {
+                    program.switchMenu(new CreateLevelMenu(createLevelQuery.getQuery()));
+                } else {
+                    createLevelQuery = null;
+                }
+            }
+            return;
+        }
         mapButtons.setMenuRectangle(relZeroX() + 32, program.getHeight() / 2 - 128, program.getHeight() - 128 - 32, false);
         optionButtons.setMenuRectangle(relZeroX() + 16, -relZeroY() - 16, 0, false);
 
-        mapButtons.forEach(levelButton -> {
-            levelButton.update();
-        });
+        mapButtons.forEach(MenuButton::update);
 
-        optionButtons.forEach(mapButton -> {
-            mapButton.update();
-        });
+        optionButtons.forEach(MenuButton::update);
     }
 
     @Override
     public void mouseUp(int button) {
-        mapButtons.forEach(levelButton -> {
-            levelButton.mouseClicked();
-        });
+        if (createLevelQuery != null) {
+            createLevelQuery.mouseClicked();
+            return;
+        }
 
-        optionButtons.forEach(mapButton -> {
-            mapButton.mouseClicked();
-        });
+        mapButtons.forEach(MenuButton::mouseClicked);
+
+        optionButtons.forEach(MenuButton::mouseClicked);
     }
 
     @Override
     public void close() {
+    }
+
+    @Override
+    public void keyDown(int keycode) {
+        if (createLevelQuery != null)
+            createLevelQuery.updateQueryKey(keycode, 20, false);
+    }
+
+    @Override
+    public void keyTyped(char character) {
+        if (createLevelQuery != null)
+            createLevelQuery.updateQueryChar(character, 20);
     }
 
     @Override
@@ -98,6 +117,10 @@ public class LevelSelectMenu extends MainMenu {
             ImageButton button = optionButtons.getItem(i);
             button.setPosition(itemButtons[i].getPosition(new Vector2()));
             button.render(g);
+        }
+
+        if (createLevelQuery != null) {
+            createLevelQuery.render(g);
         }
     }
 }

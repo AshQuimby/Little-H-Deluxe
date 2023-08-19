@@ -32,6 +32,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,6 +61,11 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Settings.localSettings.load();
     }
 
+    public static void updateFont() {
+        font = Fonts.getFont(Settings.localSettings.font.asRawValue());
+        defaultFontScale = Settings.localSettings.font.getFontSize();
+    }
+
     @Override
     public void create() {
         g = new Graphics();
@@ -79,25 +85,37 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Patch.cachePatch("menu_globbed", new Patch("ui/menu/menu_globbed.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_light_globbed", new Patch("ui/menu/menu_light_globbed.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_flat", new Patch("ui/menu/menu_flat.png", 7, 7, 3, 3));
+        Patch.cachePatch("menu_flat_dark", new Patch("ui/menu/menu_flat_dark.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_rounded", new Patch("ui/menu/menu_rounded.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_indented", new Patch("ui/menu/menu_indented.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_light", new Patch("ui/buttons/square_button_hovered.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_hollow", new Patch("ui/menu/menu_hollow.png", 7, 7, 3, 3));
         Fonts.loadFont("sab_font.ttf", 100);
-        font = Fonts.getFont("sab_font");
+        Fonts.loadFont("minecraft.ttf", 100);
+        Fonts.loadFont("shitfont23.ttf", 240);
+        Fonts.loadFont("arial.ttf", 100);
+        Fonts.loadFont("comic_snas.ttf", 100);
+        updateFont();
         switchMenu(new LevelSelectMenu());
         Gdx.input.setInputProcessor(this);
         if (!mapsFolder.exists()) {
-            mapsFolder.mkdir();
+            mapsFolder.mkdirs();
         }
         Cursors.switchCursor("cursor");
         dontRender = false;
-        SoundEngine.playMusic("menu_song.wav");
+        SoundEngine.playMusic("menu/menu_theme.ogg");
+        SoundEngine.update();
         Controllers.addListener(program);
-        resetWindow();
+        Images.cacheHColor();
+        System.out.println(new Font(Font.SERIF, Font.PLAIN, 1).getFontName());
     }
 
     public void update() {
+        SoundEngine.update();
+        Images.cacheHColor();
+        if (tick == 0) {
+            resetWindow();
+        }
         mainMenu.update();
 
         staticCamera.viewportWidth = getWidth();
@@ -110,6 +128,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             switchMenu(pendingMenu);
             pendingMenu = null;
         }
+        MouseUtil.updateJustPressed();
     }
 
     public void setHoverInfo(String info) {
@@ -147,6 +166,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         return files.toArray(new File[files.size()]);
     }
 
+    public static InputStream getInternalLevel(String path) {
+        return LittleH.class.getResourceAsStream("/maps/" + path);
+    }
 
     public void switchMenu(MainMenu newMenu) {
         if (newMenu == null) return;
@@ -176,26 +198,21 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         if (hoverInfo != null) {
             Rectangle hoverInfoRect = Fonts.getStringBounds(hoverInfo, font, MouseUtil.getMouseX() + 32, MouseUtil.getMouseY(), defaultFontScale * 0.75f, -1);
             if (hoverInfoRect.x + hoverInfoRect.width > getWidth() / 2) hoverInfoRect.x -= hoverInfoRect.width + 32;
-            if (hoverInfoRect.y - hoverInfoRect.height * 3 < -getHeight() / 2) hoverInfoRect.y += hoverInfoRect.height * 5;
+            if (hoverInfoRect.y - hoverInfoRect.height * 3 < -getHeight() / 2)
+                hoverInfoRect.y += hoverInfoRect.height * 5;
             hoverInfoRect.y -= 16 + 48;
             hoverInfoRect.width += 16;
             hoverInfoRect.height += 24;
             g.drawPatch(Patch.get("menu_globbed"), hoverInfoRect, 8);
-            g.drawString(hoverInfo, font, hoverInfoRect.x + 8, hoverInfoRect.y + hoverInfoRect.height - 8, defaultFontScale * 0.75f, -1);
+            g.drawString(hoverInfo, font, hoverInfoRect.x + 8, hoverInfoRect.y + hoverInfoRect.height / 2 + 4, defaultFontScale * 0.75f, -1);
         }
 
         g.end();
-
         hoverInfo = null;
-
         shapeRenderer.begin();
-
         shapeRenderer.end();
-
         MouseUtil.update();
-
         ControlInputs.update();
-
         tick++;
     }
 
@@ -215,6 +232,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
                 Gdx.graphics.setWindowedMode(1280, 720);
             else
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        else if (keycode == Input.Keys.F3)
+            Images.clearCache();
         ControlInputs.press(keycode);
         mainMenu.keyDown(keycode);
         return true;
@@ -236,6 +255,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         mainMenu.mouseDown(button);
+        MouseUtil.leftMouseDown();
         return true;
     }
 

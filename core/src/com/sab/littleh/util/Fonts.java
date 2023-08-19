@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.game.entity.enemy.F;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +62,7 @@ public class Fonts {
         fontMeasurement.setText(font, text);
         Rectangle bounds = new Rectangle(x, y, fontMeasurement.width, fontMeasurement.height);
         bounds.setCenter(new Vector2(x, y + bounds.height / 2));
-        bounds.y -= bounds.height;
+        bounds.y -= bounds.height / 2;
         if (anchor == 1) {
             bounds.x -= bounds.width / 2;
         } else if (anchor == -1) {

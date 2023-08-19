@@ -16,6 +16,7 @@ public class Settings {
     public final BoolSetting debugMode = new BoolSetting("debug_mode", "Developer Mode", false);
     public final BoolSetting backgroundVisibility = new BoolSetting("background_visibility", "Default Background Visibility", true);
     public final StringSetting authorName = new StringSetting("author_name", "Change Author Name", getRandomName());
+    public final PercentageSetting hColor = new PercentageSetting("h_color", "Player Color", 0, 0, 360, " hue");
 
     // Video
     public final ListSetting fullscreen = new ListSetting("fullscreen", "Default Display Mode", 1, new String[] {
@@ -28,7 +29,27 @@ public class Settings {
             "Fullscreen"
     });
     public final BoolSetting screenShake = new BoolSetting("screen_shake", "Screen Shake", true);
+    public final BoolSetting rainbowTitle = new BoolSetting("rainbow_title", "Rainbow Title", false);
     public final PercentageSetting zoomScalar = new PercentageSetting("zoom_scalar", "In-Game Zoom Multiplier", 100, 50, 200);
+    public final FontSetting font = new FontSetting("font", "Default Font", 0, new String[] {
+            "minecraft",
+            "sab_font",
+            "shitfont23",
+            "arial",
+            "comic_snas"
+    }, new String[] {
+            "Minecraft",
+            "SAB Font",
+            "shitfont23",
+            "Arial",
+            "Comic Sans"
+    }, new float[] {
+            0.3f,
+            0.2f,
+            0.2f,
+            0.36f,
+            0.3f
+    });
 
     // Audio
     public final BoolSetting muteGame = new BoolSetting("mute_game", "Mute Game", false) {
@@ -44,9 +65,9 @@ public class Settings {
 
     public final Setting<?>[] settings = new Setting[] {
             // Gameplay
-            debugMode, backgroundVisibility, authorName,
+            debugMode, backgroundVisibility, authorName, hColor, rainbowTitle,
             // Video
-            fullscreen, screenShake, zoomScalar,
+            fullscreen, screenShake, zoomScalar, font,
             // Audio
             muteGame, masterVolume, musicVolume, sfxVolume
     };

@@ -1,5 +1,6 @@
 package com.sab.littleh.mainmenu;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -74,19 +75,38 @@ public class SettingsMenu extends MainMenu {
         audioSettings.add(new SettingButton(Settings.localSettings.masterVolume, -152 / 2, -64));
         audioSettings.add(new SettingButton(Settings.localSettings.sfxVolume, -152 / 2 - 256, -64));
         audioSettings.add(new SettingButton(Settings.localSettings.musicVolume, -152 / 2 + 256, -64));
+        audioSettings.add(new MenuButton("square_button", "Test SFX", -272 / 2, -96 * 2, 272, 64, this::playTestSound));
 
-        gameSettings.add(new SettingButton(Settings.localSettings.debugMode, -72 / 2, 128));
-        gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2, 32));
-        gameSettings.add(new MenuButton("square_button", "Change Name", -272 / 2, -96, 272, 64, this::askForRename));
+        gameSettings.add(new SettingButton(Settings.localSettings.debugMode, -72 / 2 - 96 * 2 - 32, 96));
+        gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 96));
+        gameSettings.add(new SettingButton(Settings.localSettings.hColor, -152 / 2 - 40, -16));
+        gameSettings.add(new VisualButton("menu_flat", new Rectangle(-152 / 2 + 128 + 32, -32, 64, 64)) {
+            @Override
+            public void render(Graphics g) {
+                super.render(g);
+                g.setColor(Images.getHColor());
+                g.draw(Images.getImage("pixel.png"), x + 16, y + 16, 32, 32);
+                g.resetColor();
+            }
+        });
+        gameSettings.add(new MenuButton("square_button", "Change Name", -272 / 2, -128, 272, 64, this::askForRename));
 
-        videoSettings.add(new SettingButton(Settings.localSettings.fullscreen, -256 - 96, 128,
-                "Windowed Fullscreen currently does\nnot work libGDX hates me :)\n(F11 can be pressed at any time)"));
-        videoSettings.add(new SettingButton(Settings.localSettings.screenShake, 72 + 96, 112));
-        videoSettings.add(new SettingButton(Settings.localSettings.zoomScalar, -152 / 2, -64,
-                "Altering this could be considered cheating\nor make some levels more challenging"));
+
+        videoSettings.add(new SettingButton(Settings.localSettings.font, -280 / 2 + 256, -64));
+        videoSettings.add(new SettingButton(Settings.localSettings.fullscreen, -280 / 2 - 256, -64,
+                "Windowed Fullscreen currently does \n not work libGDX hates me :) \n (F11 can be pressed at any time)"));
+        videoSettings.add(new SettingButton(Settings.localSettings.screenShake, 72 + 96, 128 - 18));
+        // Hidden offscreen by default >:3
+        videoSettings.add(new SettingButton(Settings.localSettings.rainbowTitle, 824, -384));
+        videoSettings.add(new SettingButton(Settings.localSettings.zoomScalar, -152 / 2 - 160, 128 - 16,
+                "Altering this could be considered cheating \n or make some levels more challenging"));
 
         currentMenu = gameSettings;
         menuButtons.get(0).setDisabled(true);
+    }
+
+    private void playTestSound() {
+        SoundEngine.playSound("coin.ogg");
     }
 
     @Override

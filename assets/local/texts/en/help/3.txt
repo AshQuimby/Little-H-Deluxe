@@ -1,0 +1,6 @@
+Playtesting
+%split%
+
+    While editing you can press the Enter key to playtest the level, starting you at a start position and allowing you to move and jump as though you were playing the level.
+
+    Pressing the Escape key will place you back in the editor as will finishing the level. Pressing the escape key while in the editor will return you to the main menu.

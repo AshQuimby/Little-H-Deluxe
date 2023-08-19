@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("The Little H Deluxe");
-		config.setWindowedMode(1280, 720);
+		config.setWindowedMode(1600, 900);
 		config.setWindowIcon("images/icon.png");
 		new Lwjgl3Application(new LittleH(), config);
 	}
