@@ -9,11 +9,11 @@ import java.util.HashMap;
 public class Cursors {
     private static String currentCursorKey;
     private static final String[] cursors = {
-            "none",
             "color_picker",
             "cursor",
             "eraser",
             "h",
+            "none",
             "magnifier",
             "paint_can",
             "pen",

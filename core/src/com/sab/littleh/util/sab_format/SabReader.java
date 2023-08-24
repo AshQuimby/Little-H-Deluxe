@@ -133,7 +133,7 @@ public class SabReader {
         Pattern delimiter = scanner.delimiter();
         scanner.useDelimiter("");
         while (scanner.hasNext("@")) {
-            System.out.println(scanner.nextLine());
+            scanner.nextLine();
         }
         scanner.useDelimiter(delimiter);
         return scanner;
@@ -180,11 +180,6 @@ public class SabReader {
         char c = scanner.next().charAt(0);
         tokens.add(new SabToken(SabTokenType.OpenParen, null));
         while (true) {
-            if (Character.isWhitespace(c)) {
-                c = scanner.next().charAt(0);
-                continue;
-            }
-
             if (c == '[') {
                 if (readingValue) {
                     throw new SabParsingException("Unexpected token: " + c);
@@ -192,7 +187,7 @@ public class SabReader {
                 else parseArray(scanner, tokens);
             } else if (c == ']') {
                 if (!buffer.toString().isBlank())
-                tokens.add(new SabToken(SabTokenType.Val, buffer.toString().strip()));
+                    tokens.add(new SabToken(SabTokenType.Val, buffer.toString().strip()));
                 break;
             } else if (c == ',') {
                 if (!buffer.isEmpty()) {

@@ -1,6 +1,8 @@
 package com.sab.littleh.util;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -121,6 +123,10 @@ public class Graphics extends SpriteBatch {
         }
 
         return fitTo;
+    }
+
+    public void drawMesh(Mesh mesh) {
+        mesh.render(null, GL20.GL_RENDERER);
     }
 
     public void resetColor() {

@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.sab_format.SabParsingException;
 import com.sab.littleh.util.sab_format.SabReader;
 
 import java.io.File;
+import java.util.Set;
 
 public class LevelSelectMenu extends MainMenu {
     private Menu<ImageButton> optionButtons;
@@ -35,15 +37,36 @@ public class LevelSelectMenu extends MainMenu {
         });
         optionButton.setHoverText("Create new level");
 
-        optionButtons = new Menu<>(new ImageButton[] {
-                optionButton,
-                optionButton.quickCreate("ui/buttons/icons/settings_gear.png", "Settings", () -> {
-                    LittleH.program.switchMenu(new SettingsMenu());
-                }),
-                optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
-                    LittleH.program.switchMenu(new HelpMenu());
-                })
-        }, 80, 80, 16);
+        if (Settings.localSettings.debugMode.value) {
+            optionButtons = new Menu<>(new ImageButton[]{
+                    optionButton,
+                    optionButton.quickCreate("ui/buttons/icons/settings_gear.png", "Settings", () -> {
+                        LittleH.program.switchMenu(new SettingsMenu());
+                    }),
+                    optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
+                        LittleH.program.switchMenu(new HelpMenu());
+                    }),
+                    optionButton.quickCreate("ui/buttons/icons/jukebox_note.png", "Jukebox", () -> {
+                        LittleH.program.switchMenu(new JukeboxMenu());
+                    }),
+                    optionButton.quickCreate("ui/buttons/icons/loading.png", "View fake loading screen", () -> {
+                        LittleH.program.switchMenu(new FakeLoadingMenu());
+                    })
+            }, 80, 80, 16);
+        } else {
+            optionButtons = new Menu<>(new ImageButton[]{
+                    optionButton,
+                    optionButton.quickCreate("ui/buttons/icons/settings_gear.png", "Settings", () -> {
+                        LittleH.program.switchMenu(new SettingsMenu());
+                    }),
+                    optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
+                        LittleH.program.switchMenu(new HelpMenu());
+                    }),
+                    optionButton.quickCreate("ui/buttons/icons/jukebox_note.png", "Jukebox", () -> {
+                        LittleH.program.switchMenu(new JukeboxMenu());
+                    })
+            }, 80, 80, 16);
+        }
 
         this.mapButtons = new Menu<>(levelButtons, 256, 64, 16);
     }

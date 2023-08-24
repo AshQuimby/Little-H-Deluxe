@@ -97,10 +97,10 @@ public class WingedMode extends Powerup {
    }
 
    @Override
-   public void preDrawPlayer(Level game) {
+   public void preDrawPlayer(Graphics g, Level game) {
       if (gliding)
          player.rotation = -flyingRotation + MathUtils.PI / 2;
       else
-         super.preDrawPlayer(game);
+         super.preDrawPlayer(g, game);
    }
 }

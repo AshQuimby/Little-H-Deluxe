@@ -107,7 +107,7 @@ public class SabValue {
         StringBuilder buffer = new StringBuilder();
         List<String> elements = new ArrayList<>();
         int parens = 0;
-        for (int i = 1; i < chars.length - 1; i++) {
+        for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if (c == '[') parens++;
             else if (c == ']') parens--;

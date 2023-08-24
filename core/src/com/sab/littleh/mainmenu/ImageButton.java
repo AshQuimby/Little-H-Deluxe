@@ -32,6 +32,6 @@ public class ImageButton extends MenuButton {
     public void render(Graphics g) {
         if (patchString != null)
             g.drawPatch(getPatch(), this, 8);
-        g.draw(Images.getImage(text), x + imageOffsetX, y + imageOffsetY - (pressed ? 8 : 0), imageWidth, imageHeight);
+        g.draw(Images.getImage(text), x + imageOffsetX, y + imageOffsetY - (pressed && hovered ? 8 : 0), imageWidth, imageHeight);
     }
 }

@@ -36,7 +36,7 @@ public class Fonts {
         return false;
     }
 
-    public static boolean loadFont(String path, int size, Color borderColor, int borderWidth) {
+    public static boolean loadFont(String path, int size, Color borderColor, float borderWidth) {
         path = "assets/fonts/" + path;
         if (!cache.containsKey(path)) {
             FileHandle f = Gdx.files.internal(path);
@@ -44,9 +44,9 @@ public class Fonts {
                 FreeTypeFontGenerator font = new FreeTypeFontGenerator(f);
                 FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
                 parameter.size = size;
-                parameter.color = borderColor;
+                parameter.borderColor = borderColor;
                 parameter.borderWidth = borderWidth;
-                cache.put(f.name().substring(0, f.name().length() - 4), font.generateFont(parameter));
+                cache.put(f.name().substring(0, f.name().length() - 4) + "_bordered", font.generateFont(parameter));
                 return true;
             }
         }

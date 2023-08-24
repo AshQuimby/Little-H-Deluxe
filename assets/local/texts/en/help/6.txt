@@ -7,5 +7,5 @@ Power Fruits
      -H-Plant: This "h" shaped plant turns you back to your normal form if you’ve eaten something else.
      -Big Orange: This big, round orange activates BALL MODE. Ball mode makes the Little h extra bouncy and crouching is replaced with the SUPER-BALL-SLAM in mid-air!
      -Cloudpepper: This light-as-a-feather fruit makes you grow wings! Your jump is improved, and you can double jump as much as you want (as long as they are enabled). Even if air jumps aren't enabled, holding down the jump button lets you glide through the air.
-     -Trangerine/Strawberry: Like your double jump? You'll like this midair dash even more. Plus, instead of sliding down walls, you can climb up them before jumping off. It also makes the Little h realize something...
-     -Kaizoberry: Is the fast-paced platforming of the Little h not enough for you? Try out the new Kaizoberry. It adds all sorts of advanced movement techs for you to discover.
+     -Strawberry: Like your double jump? You'll like this midair dash even more. Plus, instead of sliding down walls, you can climb up them before jumping off. It also makes the Little h realize something...
+     -Gravberry: What would happen if instead of jumping you swapped gravity? Wait no longer to find out because that's exactly what this power fruit does! Instead of crouching or jumping you swap gravity. Don't fall too close to the sun, though.

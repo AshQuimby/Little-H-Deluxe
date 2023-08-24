@@ -170,11 +170,11 @@ public class Dialogue {
 
       g.drawPatch(Patch.get("menu_hollow"), new Rectangle(MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192), 8);
 
-      g.drawString(getName(), LittleH.font, MainMenu.relZeroX() + 192 / 2, MainMenu.relZeroY() + 40 + 4, LittleH.defaultFontScale * 0.9f, 0);
+      g.drawString(getName(), LittleH.font, MainMenu.relZeroX() + 192 / 2, MainMenu.relZeroY() + 32, LittleH.defaultFontScale * 0.9f, 0);
 
       Rectangle textArea = new Rectangle(MainMenu.relZeroX() + 192, MainMenu.relZeroY(), LittleH.program.getWidth() - 192, 192);
       g.drawPatch(Patch.get("menu_globbed"), textArea, 8);
-      textArea.y -= 16;
+      textArea.y -= 32;
       textArea.x += 16;
       textArea.width -= 32;
       if (lastBlock != null)

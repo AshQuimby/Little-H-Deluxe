@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,6 +46,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     private int tick;
     public static final File mapsFolder = new File("../maps/");
     public static BitmapFont font;
+    public static BitmapFont borderedFont;
     public static float defaultFontScale = 0.2f;
     public static final int resolutionX = 1024;
     public static final int resolutionY = 576;
@@ -63,6 +65,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     public static void updateFont() {
         font = Fonts.getFont(Settings.localSettings.font.asRawValue());
+        font.setColor(Color.WHITE);
+        borderedFont = Fonts.getFont(Settings.localSettings.font.asRawValue() + "_bordered");
+        borderedFont.setColor(Color.WHITE);
         defaultFontScale = Settings.localSettings.font.getFontSize();
     }
 
@@ -91,10 +96,15 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Patch.cachePatch("menu_light", new Patch("ui/buttons/square_button_hovered.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_hollow", new Patch("ui/menu/menu_hollow.png", 7, 7, 3, 3));
         Fonts.loadFont("sab_font.ttf", 100);
+        Fonts.loadFont("sab_font.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
         Fonts.loadFont("minecraft.ttf", 100);
+        Fonts.loadFont("minecraft.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
         Fonts.loadFont("shitfont23.ttf", 240);
+        Fonts.loadFont("shitfont23.ttf", 240, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
         Fonts.loadFont("arial.ttf", 100);
+        Fonts.loadFont("arial.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
         Fonts.loadFont("comic_snas.ttf", 100);
+        Fonts.loadFont("comic_snas.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
         updateFont();
         switchMenu(new LevelSelectMenu());
         Gdx.input.setInputProcessor(this);
@@ -107,7 +117,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SoundEngine.update();
         Controllers.addListener(program);
         Images.cacheHColor();
-        System.out.println(new Font(Font.SERIF, Font.PLAIN, 1).getFontName());
     }
 
     public void update() {
@@ -229,7 +238,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.F11)
             if (Gdx.graphics.isFullscreen())
-                Gdx.graphics.setWindowedMode(1280, 720);
+                Gdx.graphics.setWindowedMode(1600, 900);
             else
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         else if (keycode == Input.Keys.F3)
@@ -371,7 +380,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public void resetWindow() {
         switch (Settings.localSettings.fullscreen.value) {
             case 0 -> {
-                Gdx.graphics.setWindowedMode(1280, 720);
+                Gdx.graphics.setWindowedMode(1600, 900);
             }
             case 1 -> {
             }

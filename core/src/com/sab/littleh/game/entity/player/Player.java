@@ -1,5 +1,9 @@
 package com.sab.littleh.game.entity.player;
 
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -7,16 +11,13 @@ import com.sab.littleh.LittleH;
 import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
-import com.sab.littleh.game.entity.player.powerups.BallMode;
-import com.sab.littleh.game.entity.player.powerups.Powerup;
-import com.sab.littleh.game.entity.player.powerups.WingedMode;
+import com.sab.littleh.game.entity.player.powerups.*;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.dialogue.Dialogues;
-import com.sun.tools.javac.Main;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ public class Player extends Entity {
     public boolean end;
     public boolean startTick;
     public Point startPos;
-
     public boolean jumpReleased;
     public int leftGroundFor;
     public int leftWallFor;
@@ -49,7 +49,6 @@ public class Player extends Entity {
     public float coolRoll;
     public float maxGroundSpeed;
     public Animation currentAnimation;
-
     public boolean crouched;
     public boolean crushed;
     public int wallDirection;
@@ -120,6 +119,7 @@ public class Player extends Entity {
         dead = false;
         currentAnimation = idleAnimation;
         deathAnimation.reset();
+        deathAnimation.setAnimationSpeed(4);
         winAnimation.reset();
         winAnimation.setAnimationSpeed(8);
         slippery = false;
@@ -373,7 +373,7 @@ public class Player extends Entity {
                         if (tile.hasTag("coin")) {
                             SoundEngine.playSound("coin.ogg");
                             coinCounts[tile.tileType]++;
-                            if (game.getVolatileTileCount("coin", tile.tileType) == 0) {
+                            if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
                                 SoundEngine.playSound("all_coins_collected.ogg");
                                 game.notify("notify_all_coins", new int[]{ tile.tileType });
                             }
@@ -383,6 +383,8 @@ public class Player extends Entity {
                             if (tile.tileType == 0) powerup = new Powerup(this);
                             else if (tile.tileType == 1) powerup = new BallMode(this);
                             else if (tile.tileType == 2) powerup = new WingedMode(this);
+                            else if (tile.tileType == 3) powerup = new CelesteMode(this);
+                            else if (tile.tileType == 4) powerup = new GravityMode(this);
                         }
                         if (tile.hasTag("key")) {
                             SoundEngine.playSound("coin.ogg");
@@ -427,9 +429,11 @@ public class Player extends Entity {
 
     public void kill() {
         if (!win && !dead) {
+            LittleH.program.dynamicCamera.addScreenShake(10);
             SoundEngine.playSound("death.ogg");
             dead = true;
             currentAnimation = deathAnimation;
+            deathAnimation.setAnimationSpeed(4);
         }
     }
 
@@ -460,10 +464,7 @@ public class Player extends Entity {
         return new Point (0, 0);
     }
 
-
-// TODO: Put the trail back
-  /*
-    public void renderTrail(Graphics g, Level game) {
+    public void drawTrail(Graphics g) {
         boolean speedy = false;
         float speed = 0;
         for (float f : previousSpeeds) {
@@ -492,9 +493,21 @@ public class Player extends Entity {
                 trail[0][i] = (int) (trail[0][i] + 6 * (5 - i) * Math.cos(angles[i] + Math.PI / 2 * 3));
                 trail[1][i] = (int) (trail[1][i] + 6 * (5 - i) * Math.sin(angles[i] + Math.PI / 2 * 3));
             }
+
+            float[] vertices = new float[27];
+
+            for (int i = 0; i < 9; i++) {
+                vertices[i * 2] = trail[0][i];
+                vertices[i * 2 + 1] = trail[1][i];
+                vertices[i * 2 + 2] = 0;
+            }
+
+            Mesh mesh = new Mesh(true, 9, 0,
+                    new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+            mesh.setVertices(vertices);
+            g.drawMesh(mesh);
         }
     }
-*/
 
     public void render(Graphics g, Level game) {
         for (int i = keyCount; i > 0; i--) {
@@ -507,13 +520,13 @@ public class Player extends Entity {
             evilKey.render(g, this, game);
         }
 //        renderTrail(g, game);
-        powerup.preDrawPlayer(game);
+        powerup.preDrawPlayer(g, game);
         drawPlayer(g, game);
         LittleH.program.useStaticCamera();
         for (int i = 0; i < totalCoinCounts.length; i++) {
             int total = totalCoinCounts[i];
             if (shouldRenderCoinCounts[i]) {
-                g.drawString(coinCounts[i] + "/" + total, LittleH.font, -MainMenu.relZeroX() - 48, -MainMenu.relZeroY() - 48 - 48 * i + 32 - 64, LittleH.defaultFontScale, 1);
+                g.drawString(coinCounts[i] + "/" + total, LittleH.borderedFont, -MainMenu.relZeroX() - 48, -MainMenu.relZeroY() - 48 - 48 * i + 32 - 70, LittleH.defaultFontScale, 1);
                 g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-MainMenu.relZeroX() - 40, -MainMenu.relZeroY() - 48 - 48 * i - 64, 32, 40), new Rectangle(0, 5 * i, 4, 5));
             }
         }
@@ -521,10 +534,7 @@ public class Player extends Entity {
     }
 
     public void drawPlayer(Graphics g, Level game) {
-        g.drawImage(Images.getImage(image + ".png"), new Rectangle(x - 8, y, 64, 64), new Rectangle((direction == 1 ? 0 : 8), 8 * frame, (direction == 1 ? 8 : -8), 8), -MathUtils.radiansToDegrees * rotation);
-        g.setColor(Images.getHColor());
-        g.drawImage(Images.getImage(image + "_color.png"), new Rectangle(x - 8, y, 64, 64), new Rectangle((direction == 1 ? 0 : 8), 8 * frame, (direction == 1 ? 8 : -8), 8), -MathUtils.radiansToDegrees * rotation);
-        g.resetColor();
+        powerup.drawPlayer(g, game);
     }
 
     public void touchingEnemy(Enemy enemy) {

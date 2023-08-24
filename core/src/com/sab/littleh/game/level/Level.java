@@ -26,6 +26,7 @@ public class Level {
     public static final String[] backgrounds = {
             "mountains",
             "cold_mountains",
+            "desert",
             "cave",
             "tundra",
             "hyperspace"
@@ -362,6 +363,8 @@ public class Level {
                         tile.render(false, g);
                     if (tile.hasTag("post_render"))
                         postRenders.add(tile);
+                    else if (tile.hasTag("post_render_in_game") && player != null)
+                        postRenders.add(tile);
                 }
             }
         }
@@ -370,11 +373,11 @@ public class Level {
             if (tile.hasTag("text")) {
                 if (player != null) {
                     if (tile.extra == null) tile.extra = "";
-                    float size = 1f;
-                    if (tile.tileType == 0) size = 1.5f;
-                    else if (tile.tileType == 2) size = 0.75f;
+                    float size = 0.8f;
+                    if (tile.tileType == 0) size = 1f;
+                    else if (tile.tileType == 2) size = 0.65f;
 
-                    g.drawString(tile.extra, LittleH.font, tile.x * 64 + 32, tile.y * 64 + 48, size * LittleH.defaultFontScale, 0);
+                    g.drawString(tile.extra, LittleH.borderedFont, tile.x * 64 + 32, tile.y * 64 + 32, size * LittleH.defaultFontScale, 0);
                 }
             }
             if (tile.hasTag("render_color")) {
@@ -413,9 +416,9 @@ public class Level {
     public void renderHUD(Graphics g) {
         if (timeLimit > -1) {
             g.draw(Images.getImage("ui/buttons/icons/clock.png"), -MainMenu.relZeroX() - 72, -MainMenu.relZeroY() - 72, 64, 64);
-            g.drawString("" + timeLimit, LittleH.font, -MainMenu.relZeroX() - 80, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, 1);
+            g.drawString("" + timeLimit, LittleH.borderedFont, -MainMenu.relZeroX() - 80, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, 1);
         }
-        g.drawString(getTime(), LittleH.font, MainMenu.relZeroX() + 16, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, -1);
+        g.drawString(getTime(), LittleH.borderedFont, MainMenu.relZeroX() + 16, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, -1);
     }
 
     public void reset() {
@@ -477,10 +480,10 @@ public class Level {
         }
 
         private void render(Graphics g) {
-            LittleH.font.setColor(new Color(1, 1, 1, Math.min(1, timeLeft / 60f)));
-            g.drawString(text, LittleH.font, 0, 64, LittleH.defaultFontScale, 0);
+            LittleH.borderedFont.setColor(new Color(1, 1, 1, Math.min(1, timeLeft / 60f)));
+            g.drawString(text, LittleH.borderedFont, 0, 64, LittleH.defaultFontScale, 0);
             timeLeft--;
-            LittleH.font.setColor(Color.WHITE);
+            LittleH.borderedFont.setColor(Color.WHITE);
         }
     }
 }

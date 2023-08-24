@@ -19,6 +19,8 @@ public class SoundEngine {
     private static HashMap<String, Music> musicCache = new HashMap<>();
     public static Music currentMusic = null;
     private static boolean musicQueued;
+    private static boolean jukebox;
+    private static boolean looping;
 
     public static void load() {
         resetCurrentMusicVolume();
@@ -37,40 +39,82 @@ public class SoundEngine {
     }
 
     public static void playSound(String filePath) {
-        if (getTotalSfxVolume() == 0f) return;
-        String playFilePath = "assets/sounds/effects/" + filePath;
-        if (soundCache.containsKey(playFilePath)) {
-            soundCache.get(playFilePath).play(getTotalSfxVolume());
-        } else {
-            FileHandle handle = Gdx.files.internal(playFilePath);
-            soundCache.put(playFilePath, Gdx.audio.newSound(handle));
-            playSound(filePath);
+        try {
+            if (getTotalSfxVolume() == 0f) return;
+            String playFilePath = "assets/sounds/effects/" + filePath;
+            if (soundCache.containsKey(playFilePath)) {
+                soundCache.get(playFilePath).play(getTotalSfxVolume());
+            } else {
+                FileHandle handle = Gdx.files.internal(playFilePath);
+                soundCache.put(playFilePath, Gdx.audio.newSound(handle));
+                playSound(filePath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public static void playMusic(String filePath) {
-        String playFilePath = "assets/sounds/music/" + filePath;
-        if (musicCache.containsKey(playFilePath)) {
-            stopMusic();
-            currentMusic = musicCache.get(playFilePath);
-            currentMusic.play();
-            currentMusic.setVolume(getTotalMusicVolume());
-            currentMusic.setLooping(true);
-        } else {
-            FileHandle handle = Gdx.files.internal(playFilePath);
-            musicCache.put(playFilePath, Gdx.audio.newMusic(handle));
-            stopMusic();
-            currentMusic = musicCache.get(playFilePath);
-            musicQueued = true;
+        looping = true;
+        try {
+            String playFilePath = "assets/sounds/music/" + filePath;
+            if (musicCache.containsKey(playFilePath)) {
+                stopMusic();
+                currentMusic = musicCache.get(playFilePath);
+                currentMusic.play();
+                currentMusic.setVolume(getTotalMusicVolume());
+                currentMusic.setLooping(true);
+            } else {
+                FileHandle handle = Gdx.files.internal(playFilePath);
+                musicCache.put(playFilePath, Gdx.audio.newMusic(handle));
+                stopMusic();
+                currentMusic = musicCache.get(playFilePath);
+                musicQueued = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        jukebox = false;
     }
+
+    public static void playJukeboxMusic(String filePath, boolean loops) {
+        looping = loops;
+        String playFilePath = "assets/sounds/music/" + filePath;
+        if (SoundEngine.jukebox && currentMusic == musicCache.get(playFilePath)) {
+            currentMusic.play();
+        } else try {
+            if (musicCache.containsKey(playFilePath)) {
+                stopMusic();
+                currentMusic = musicCache.get(playFilePath);
+                currentMusic.play();
+                currentMusic.setVolume(getTotalMusicVolume());
+                currentMusic.setLooping(looping);
+            } else {
+                FileHandle handle = Gdx.files.internal(playFilePath);
+                musicCache.put(playFilePath, Gdx.audio.newMusic(handle));
+                stopMusic();
+                currentMusic = musicCache.get(playFilePath);
+                musicQueued = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jukebox = true;
+    }
+
 
     public static void update() {
         if (musicQueued) {
             currentMusic.play();
             currentMusic.setVolume(getTotalMusicVolume());
-            currentMusic.setLooping(true);
+            currentMusic.setLooping(looping);
             musicQueued = false;
+        }
+    }
+
+    public static void pauseMusic() {
+        if (currentMusic != null) {
+            currentMusic.pause();
         }
     }
 
@@ -84,8 +128,16 @@ public class SoundEngine {
         return currentMusic != null && currentMusic.isPlaying();
     }
 
+    public static boolean isJukeboxPlaying() {
+        return jukebox && isMusicPlaying();
+    }
+
     public static void resetCurrentMusicVolume() {
         if (isMusicPlaying())
             currentMusic.setVolume(getTotalMusicVolume());
+    }
+
+    public static void setLooping(boolean looping) {
+        currentMusic.setLooping(looping);
     }
 }

@@ -7,7 +7,7 @@ public class Control {
     public static final Control DOWN = new Control(Keys.DOWN, Keys.S);
     public static final Control LEFT = new Control(Keys.LEFT, Keys.A);
     public static final Control RIGHT = new Control(Keys.RIGHT, Keys.D);
-    public static final Control JUMP = new Control(Keys.UP, Keys.W, Keys.SPACE);
+    public static final Control JUMP = new Control(Keys.SPACE);
     public static final Control[] controls = {
             UP,
             DOWN,

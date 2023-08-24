@@ -18,6 +18,11 @@ public class SettingButton extends MenuButton {
     private int type;
     private boolean held;
 
+    public SettingButton(Setting setting, int x, int y, int width) {
+        this(setting, x, y);
+        this.width = width;
+    }
+
     public SettingButton(Setting setting, int x, int y, String bonusText) {
         super(null, setting.name, x, y, 0, 0);
         this.setting = setting;
@@ -67,7 +72,7 @@ public class SettingButton extends MenuButton {
                 if (held) {
                     PercentageSetting percentageSetting = (PercentageSetting) setting;
                     float original = percentageSetting.value;
-                    float percent = (MouseUtil.getMouseX() - x - 12) / 128;
+                    float percent = (MouseUtil.getMouseX() - x - 12) / (width - 24);
                     percent = Math.min(1f, Math.max(0f, percent));
                     percentageSetting.value = (int) (percentageSetting.getMinValue() + percent * (percentageSetting.getMaxValue() - percentageSetting.getMinValue()));
                     float dV = original - percentageSetting.value;
@@ -126,8 +131,8 @@ public class SettingButton extends MenuButton {
                 PercentageSetting percentageSetting = (PercentageSetting) setting;
                 Rectangle bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
                 g.drawPatch(Patch.get("menu_flat"), bounds, 8);
-                g.draw(Images.getImage("ui/buttons/slider_bar.png"), x + 12, y + 12, 128, 12);
-                g.draw(Images.getImage("ui/buttons/slider_notch.png"), x + percentageSetting.asRelativeFloat() * 128 - 18 + 12, y, 36, 36);
+                g.draw(Images.getImage("ui/buttons/slider_bar.png"), x + 12, y + 12, (width - 24), 12);
+                g.draw(Images.getImage("ui/buttons/slider_notch.png"), x + percentageSetting.asRelativeFloat() * (width - 24) - 18 + 12, y, 36, 36);
                 g.drawString(percentageSetting.display(), LittleH.font, getCenterX(), getCenterY() - 32, LittleH.defaultFontScale * 0.67f, 0);
             }
             case LIST -> {

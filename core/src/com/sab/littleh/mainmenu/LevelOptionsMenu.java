@@ -210,10 +210,10 @@ public class LevelOptionsMenu extends MainMenu {
 
         g.drawString(text, LittleH.font, titleBox, 4, size, 0, 0);
 
-        Rectangle infoBox = new Rectangle(-384 / 2, -64, 384, 64);
+        Rectangle infoBox = new Rectangle(-420 / 2, -64, 420, 64);
         g.drawPatch(Patch.get("menu_globbed"), infoBox, 8);
 
-        g.drawString("Author: " + mapData.getValue("author"), LittleH.font, 0, -24, LittleH.defaultFontScale * 0.75f, 0);
+        g.drawString("Author: " + mapData.getValue("author"), LittleH.font, 0, -32, LittleH.defaultFontScale * 0.75f, 0);
 
         Rectangle[] itemButtons;
 

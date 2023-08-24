@@ -105,6 +105,10 @@ public class Tile {
         return tileAt != null && newTile != null && tileAt.image.equals(newTile.image);
     }
 
+    public static boolean extrasEqual(Tile tile, Tile other) {
+        return tile == null && other == null || tile != null && tile.extrasEqual(other);
+    }
+
     public void setTags() {
         String identifier = image;
         if (!image.startsWith("."))

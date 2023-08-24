@@ -50,6 +50,8 @@ public class ParallaxBackground {
     protected int width;
     protected int height;
     private Map<String, Texture> layers;
+    private DynamicCamera personalCamera;
+    private DynamicCamera personalStaticCamera;
 
     public ParallaxBackground(String background, InputStream metaFile) {
         SabData data;
@@ -83,9 +85,18 @@ public class ParallaxBackground {
         return new Dimension(width, height);
     }
 
+    public void setPersonalCamera(DynamicCamera camera, DynamicCamera staticCamera) {
+        this.personalCamera = camera;
+        this.personalStaticCamera = staticCamera;
+    }
+
     public void render(Graphics g) {
         LittleH.program.useStaticCamera();
         DynamicCamera camera = LittleH.program.dynamicCamera;
+        if (personalCamera != null) {
+            camera = personalCamera;
+            g.setProjectionMatrix(personalStaticCamera.combined);
+        }
         int screenWidth = LittleH.program.getWidth();
         int screenHeight = LittleH.program.getHeight();
         float backgroundScalar = Math.max((float) screenWidth / width, (float) screenHeight / height);
@@ -136,6 +147,7 @@ public class ParallaxBackground {
                 }
             }
         }
+        LittleH.program.useStaticCamera();
     }
 
     private static boolean isLayerRecognized(String layer) {

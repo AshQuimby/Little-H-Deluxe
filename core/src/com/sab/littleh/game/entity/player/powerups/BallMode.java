@@ -110,7 +110,7 @@ public class BallMode extends Powerup {
    }
 
    @Override
-   public void preDrawPlayer(Level game) {
+   public void preDrawPlayer(Graphics g, Level game) {
       player.rotation = ballRotation;
    }
 }

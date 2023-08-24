@@ -445,22 +445,22 @@ public class LevelEditor {
             int y = current.y;
 
             if (x + 1 < level.getWidth() && !Tile.tilesEqual(level.getTileAt(x + 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x + 1, y), tileToFill)
-                    && !closed.contains(new Point(x + 1, y)) && tileToFill.extrasEqual(level.getTileAt(x + 1, y))) {
+                    && !closed.contains(new Point(x + 1, y)) && Tile.extrasEqual(tileToFill, level.getTileAt(x + 1, y))) {
                 open.add(new Point(x + 1, y));
                 closed.add(new Point(x + 1, y));
             }
             if (x - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x - 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x - 1, y), tileToFill)
-                    && !closed.contains(new Point(x - 1, y)) && tileToFill.extrasEqual(level.getTileAt(x - 1, y))) {
+                    && !closed.contains(new Point(x - 1, y)) && Tile.extrasEqual(tileToFill, level.getTileAt(x - 1, y))) {
                 open.add(new Point(x - 1, y));
                 closed.add(new Point(x - 1, y));
             }
             if (y + 1 < level.getHeight() && !Tile.tilesEqual(level.getTileAt(x, y + 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y + 1), tileToFill)
-                    && !closed.contains(new Point(x, y + 1)) && tileToFill.extrasEqual(level.getTileAt(x, y + 1))) {
+                    && !closed.contains(new Point(x, y + 1)) && Tile.extrasEqual(tileToFill, level.getTileAt(x, y + 1))) {
                 open.add(new Point(x, y + 1));
                 closed.add(new Point(x, y + 1));
             }
             if (y - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x, y - 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y - 1), tileToFill)
-                    && !closed.contains(new Point(x, y - 1)) && tileToFill.extrasEqual(level.getTileAt(x, y - 1))) {
+                    && !closed.contains(new Point(x, y - 1)) && Tile.extrasEqual(tileToFill, level.getTileAt(x, y - 1))) {
                 open.add(new Point(x, y - 1));
                 closed.add(new Point(x, y - 1));
             }
@@ -590,5 +590,9 @@ public class LevelEditor {
 
     public Level getLevel() {
         return level;
+    }
+
+    public boolean hasTileSelection() {
+        return tileSelection != null;
     }
 }
