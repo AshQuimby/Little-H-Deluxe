@@ -1,5 +1,6 @@
 package com.sab.littleh.settings;
 
+import com.badlogic.gdx.math.RandomXS128;
 import com.sab.littleh.util.SoundEngine;
 import com.sab.littleh.util.sab_format.*;
 
@@ -16,7 +17,7 @@ public class Settings {
     public final BoolSetting debugMode = new BoolSetting("debug_mode", "Developer Mode", false);
     public final BoolSetting backgroundVisibility = new BoolSetting("background_visibility", "Default Background Visibility", true);
     public final StringSetting authorName = new StringSetting("author_name", "Change Author Name", getRandomName());
-    public final PercentageSetting hColor = new PercentageSetting("h_color", "Player Color", 0, 0, 360, " hue");
+    public final PercentageSetting hColor = new PercentageSetting("h_color", "Player Color", 0, -1, 360, " hue");
 
     // Video
     public final ListSetting fullscreen = new ListSetting("fullscreen", "Default Display Mode", 1, new String[] {
@@ -73,7 +74,7 @@ public class Settings {
     };
 
     public static String getRandomName() {
-        Random random = new Random();
+        Random random = new RandomXS128();
         String[] prefixes = new String[]{ "The Big", "The Little", "The Medium", "The Colossal", "The Microscopic", "The Minuscule" };
         String[] bases = new String[]{ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         String[] suffixes = new String[]{ "Fan", "Enjoyer", "Appreciator", "Stan", "Hater", "Critic", "Scorner", "Murderer", "Elater", "Skeptic", "Actualizer" };

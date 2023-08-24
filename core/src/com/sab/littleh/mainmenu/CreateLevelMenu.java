@@ -39,6 +39,7 @@ public class CreateLevelMenu extends MainMenu {
         buttons.add(new SettingButton(new ListSetting("background", "Background", 0, Level.backgrounds, new String[] {
                 "Woodlands",
                 "Summit",
+                "Desert",
                 "Cave",
                 "Tundra",
                 "Hyperspace"
@@ -96,6 +97,6 @@ public class CreateLevelMenu extends MainMenu {
         g.drawPatch(Patch.get("menu"), backgroundPosition.x - 8, backgroundPosition.y - 16, 256 + 16, 144 + 24, 8);
         g.draw(Images.getImage("backgrounds/" + backgroundButton.setting.asRawValue() + "/whole.png"), backgroundPosition.x, backgroundPosition.y, 256, 144);
 
-        g.drawString("File name: \n " + getFileName(), LittleH.font, -1024 / 2 + 228, 208, LittleH.defaultFontScale * 0.7f, 0);
+        g.drawString("File name: \n " + getFileName(), LittleH.font, -1024 / 2 + 228, 200, LittleH.defaultFontScale * 0.7f, 0);
     }
 }

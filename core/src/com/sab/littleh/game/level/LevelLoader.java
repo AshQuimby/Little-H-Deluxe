@@ -29,7 +29,8 @@ public class LevelLoader {
             "name",
             "background",
             "time_limit",
-            "version"
+            "version",
+            "is_deluxe"
     };
     private static String[] defaultValues = new String[] {
             "true",
@@ -39,7 +40,8 @@ public class LevelLoader {
             "My Level",
             "mountains",
             "-1",
-            "0.1"
+            "0.1",
+            "true"
     };
 
     static {

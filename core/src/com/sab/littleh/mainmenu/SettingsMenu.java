@@ -1,5 +1,7 @@
 package com.sab.littleh.mainmenu;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -79,8 +81,8 @@ public class SettingsMenu extends MainMenu {
 
         gameSettings.add(new SettingButton(Settings.localSettings.debugMode, -72 / 2 - 96 * 2 - 32, 96));
         gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 96));
-        gameSettings.add(new SettingButton(Settings.localSettings.hColor, -152 / 2 - 40, -16));
-        gameSettings.add(new VisualButton("menu_flat", new Rectangle(-152 / 2 + 128 + 32, -32, 64, 64)) {
+        gameSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -16, 361));
+        gameSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -32, 64, 64)) {
             @Override
             public void render(Graphics g) {
                 super.render(g);
