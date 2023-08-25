@@ -17,7 +17,7 @@ public class Fonts {
     private static final GlyphLayout fontMeasurement = new GlyphLayout();
 
     public static boolean loadFont(String path, int size) {
-        path = "assets/fonts/" + path;
+        path = "fonts/" + path;
         if (!cache.containsKey(path)) {
             FileHandle f = Gdx.files.internal(path);
             if (f != null) {
@@ -32,7 +32,7 @@ public class Fonts {
     }
 
     public static boolean loadFont(String path, int size, Color borderColor, float borderWidth) {
-        path = "assets/fonts/" + path;
+        path = "fonts/" + path;
         if (!cache.containsKey(path)) {
             FileHandle f = Gdx.files.internal(path);
             if (f != null) {

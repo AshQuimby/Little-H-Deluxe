@@ -23,7 +23,7 @@ public class Images {
     }
 
     public static Texture getImage(String key) {
-        key = "assets/images/" + key;
+        key = "images/" + key;
         if (cache.containsKey(key)) {
             return cache.get(key);
         }

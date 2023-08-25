@@ -25,7 +25,7 @@ public class Cursors {
 
     public static void loadCursors() {
         for (String key : cursors) {
-            String filePath = "assets/images/ui/cursor/" + key + ".png";
+            String filePath = "images/ui/cursor/" + key + ".png";
             cache.put(key, Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal(filePath)), 0, 0));
         }
     }

@@ -41,7 +41,7 @@ public class SoundEngine {
     public static void playSound(String filePath) {
         try {
             if (getTotalSfxVolume() == 0f) return;
-            String playFilePath = "assets/sounds/effects/" + filePath;
+            String playFilePath = "sounds/effects/" + filePath;
             if (soundCache.containsKey(playFilePath)) {
                 soundCache.get(playFilePath).play(getTotalSfxVolume());
             } else {
@@ -57,7 +57,7 @@ public class SoundEngine {
     public static void playMusic(String filePath) {
         looping = true;
         try {
-            String playFilePath = "assets/sounds/music/" + filePath;
+            String playFilePath = "sounds/music/" + filePath;
             if (musicCache.containsKey(playFilePath)) {
                 stopMusic();
                 currentMusic = musicCache.get(playFilePath);
@@ -79,7 +79,7 @@ public class SoundEngine {
 
     public static void playJukeboxMusic(String filePath, boolean loops) {
         looping = loops;
-        String playFilePath = "assets/sounds/music/" + filePath;
+        String playFilePath = "sounds/music/" + filePath;
         if (SoundEngine.jukebox && currentMusic == musicCache.get(playFilePath)) {
             currentMusic.play();
         } else try {
