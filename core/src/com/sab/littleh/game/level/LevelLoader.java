@@ -371,12 +371,14 @@ public class LevelLoader {
                     writer.write(tile.extra + " ");
                 writer.write("\n");
             }
-            writer.write("@background_tiles\n");
-            for (Tile tile : level.backgroundTiles) {
-                writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
-                if (tile.extra != null)
-                    writer.write(tile.extra + " ");
-                writer.write("\n");
+            if (level.allTiles.size() > 0) {
+                writer.write("@background_tiles\n");
+                for (Tile tile : level.backgroundTiles) {
+                    writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
+                    if (tile.extra != null)
+                        writer.write(tile.extra + " ");
+                    writer.write("\n");
+                }
             }
             writer.close();
         } catch (IOException e) {
@@ -415,6 +417,7 @@ public class LevelLoader {
         Level level = new Level(mapData);
 
         level.addTiles(new ArrayList<>(), 16, 16);
+        level.addBackground(new ArrayList<>());
 
         LevelLoader.saveLevel(levelFile, level);
 
