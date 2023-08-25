@@ -557,17 +557,17 @@ public class LevelEditorMenu extends MainMenu {
                 if (keyNum < toolButtons.items.length) {
                     setToolIndex(keyNum);
                 }
-            } else if (keycode == Input.Keys.E) {
-                setToolIndex(0);
             } else if (keycode == Input.Keys.R) {
+                setToolIndex(0);
+            } else if (keycode == Input.Keys.E) {
                 setToolIndex(1);
-            } else if (keycode == Input.Keys.T) {
+            } else if (keycode == Input.Keys.G) {
                 setToolIndex(2);
             } else if (keycode == Input.Keys.F) {
                 setToolIndex(3);
-            } else if (keycode == Input.Keys.G) {
+            } else if (keycode == Input.Keys.T) {
                 setToolIndex(4);
-            } else if (keycode == Input.Keys.V) {
+            } else if (keycode == Input.Keys.C) {
                 setToolIndex(5);
             }
         } else {

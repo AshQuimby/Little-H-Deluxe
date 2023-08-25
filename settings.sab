@@ -3,13 +3,13 @@
 @debug_mode true
 @grid_enabled false
 @h_color 341
-@master_volume 100
+@master_volume 34
 @screen_shake true
 @high_contrast_selection true
 @background_visibility true
-@music_volume 0
+@music_volume 2
 @fullscreen windowed_fullscreen
 @zoom_scalar 100
 @mute_game false
-@sfx_volume 49
+@sfx_volume 25
 @font minecraft

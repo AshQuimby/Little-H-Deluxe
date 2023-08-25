@@ -47,6 +47,8 @@ public class Enemy extends Entity {
             return new EnemyA(x, y, player, parent);
          case 2 :
             return new EnemyF(x, y, player, parent);
+         case 3 :
+            return new EnemyC(x, y, player, parent);
       }
       return null;
    }

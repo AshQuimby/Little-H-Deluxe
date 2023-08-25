@@ -31,18 +31,20 @@ public class EnemyE extends Enemy {
       }
       if (touchingGround) {
          Tile tileAhead = getTile(direction, 0, game.tileMap);
-         if (tileAhead != null && (tileAhead.hasTag("death") || tileAhead.isSolid())) {
+         if (tileAhead != null && (tileAhead.hasTag("death") || (tileAhead.isSolid() && !tileAhead.hasTag("one_way")))) {
             direction *= -1;
          } else {
             tileAhead = getTile(direction, -1, game.tileMap);
-            if (tileAhead == null || !tileAhead.isSolid()) {
+            if (tileAhead == null || (!tileAhead.isSolid() && !tileAhead.hasTag("enemy_walkable"))) {
                direction *= -1;
             }
          }
       }
       velocityY -= 1f;
-      velocityX += 0.7f * direction;
-      velocityX *= 0.9f;
+      if (touchingGround) {
+         velocityX += 0.7f * direction;
+         velocityX *= 0.9f;
+      }
       velocityY *= 0.98f;
       if (toRectangle().overlaps(game.player.toRectangle())) game.player.touchingEnemy(this);
       touchingGround = false;
@@ -54,7 +56,7 @@ public class EnemyE extends Enemy {
 
    @Override
    public void onCollision(boolean horizontal, boolean vertical) {
-      if (horizontal) {
+      if (horizontal && touchingGround) {
          velocityX *= -1;
          direction *= -1;
       }

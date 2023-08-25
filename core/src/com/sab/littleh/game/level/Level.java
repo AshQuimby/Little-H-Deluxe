@@ -522,6 +522,8 @@ public class Level {
 
         if (inGame())
             player.render(g, this);
+        particles.forEach(particle -> particle.render(g));
+        enemies.forEach(enemy -> enemy.render(g, this));
 
         if (!inGame()) {
             if (backgroundPriority) {
@@ -596,9 +598,6 @@ public class Level {
 
             }
         }
-
-        particles.forEach(particle -> particle.render(g));
-        enemies.forEach(enemy -> enemy.render(g, this));
 
         LittleH.program.useStaticCamera();
 
@@ -721,7 +720,7 @@ public class Level {
     public void renderHUD(Graphics g) {
         if (timeLimit > -1) {
             g.draw(Images.getImage("ui/buttons/icons/clock.png"), -MainMenu.relZeroX() - 72, -MainMenu.relZeroY() - 72, 64, 64);
-            g.drawString("" + timeLimit, LittleH.borderedFont, -MainMenu.relZeroX() - 80, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, 1);
+            g.drawString("" + timeLimit, LittleH.borderedFont, -MainMenu.relZeroX() - 80, -MainMenu.relZeroY() - 28 - 14, LittleH.defaultFontScale, 1);
         }
         g.drawString(getTime(), LittleH.borderedFont, MainMenu.relZeroX() + 16, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, -1);
     }

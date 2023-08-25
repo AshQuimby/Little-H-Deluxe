@@ -56,7 +56,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public DynamicCamera dynamicCamera;
     private MainMenu mainMenu;
     private String hoverInfo;
-    private boolean dontRender;
+    private boolean dontRender, hardPause;
 
     static {
         Settings.localSettings.load();
@@ -195,6 +195,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void render() {
+        if (hardPause)
+            return;
         update();
 
         if (dontRender) {
@@ -243,7 +245,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.F11) {
+        if (keycode == Input.Keys.F1) {
+            hardPause = !hardPause;
+        } else if (keycode == Input.Keys.F11) {
             if (Gdx.graphics.isFullscreen())
                 Gdx.graphics.setWindowedMode(1600, 900);
             else

@@ -10,10 +10,7 @@ import com.sab.littleh.util.Images;
 
 import java.awt.Point;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 public class Entity {
     public float x;
@@ -27,16 +24,22 @@ public class Entity {
     public int frame;
     public boolean slippery;
     public boolean touchingGround;
+    public boolean touchingWater;
     public String image;
 
     public Set<Tile> lastTouchedTiles;
 
     public void update(Level game) {
-        collide(game);
+        touchingWater = false;
         lastTouchedTiles = new HashSet<>();
+        collide(game);
+        if (touchingWater) {
+            velocityX *= 0.98f;
+            velocityY *= 0.98f;
+        }
     }
 
-    // Return false to prevent the player from having their velocity set to 0
+    // Return false to prevent the entity from having their velocity set to 0
     public boolean onCollide(Level game, Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
         return true;
     }
@@ -157,6 +160,9 @@ public class Entity {
                 touchingTile(tile);
                 if (tile.hasTag("one_way")) {
                     lastTouchedTiles.add(tile);
+                }
+                if (tile.hasTag("water")) {
+                    touchingWater = true;
                 }
             }
         }

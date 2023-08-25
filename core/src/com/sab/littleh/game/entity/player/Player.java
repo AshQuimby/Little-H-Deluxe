@@ -265,11 +265,10 @@ public class Player extends Entity {
         // Don't start the timer until the player moves (to avoid unfair lag spikes on level load)
         if (!speedrunning) {
             if (previousPositions.size() > 0 && !previousPositions.get(0).equals(new Point((int) x, (int) y))) {
-                System.out.println(previousPositions.get(0));
-                System.out.println(new Point((int) x, (int) y));
                 speedrunning = true;
             }
-            ticksAlive = 1;
+            if (ticksAlive > 2)
+                ticksAlive = 2;
         }
     }
 
@@ -556,11 +555,13 @@ public class Player extends Entity {
     }
 
     public void renderHUD(Graphics g, Level game) {
+        int drawnCoins = 0;
         for (int i = 0; i < totalCoinCounts.length; i++) {
             int total = totalCoinCounts[i];
             if (shouldRenderCoinCounts[i]) {
-                g.drawString(coinCounts[i] + "/" + total, LittleH.borderedFont, -MainMenu.relZeroX() - 48, -MainMenu.relZeroY() - 48 - 48 * i + 32 - 70, LittleH.defaultFontScale, 1);
-                g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-MainMenu.relZeroX() - 40, -MainMenu.relZeroY() - 48 - 48 * i - 64, 32, 40), new Rectangle(0, 5 * i, 4, 5));
+                g.drawString(coinCounts[i] + "/" + total, LittleH.borderedFont, -MainMenu.relZeroX() - 48, -MainMenu.relZeroY() - 48 - 48 * drawnCoins + 32 - 70 - 18, LittleH.defaultFontScale, 1);
+                g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-MainMenu.relZeroX() - 40, -MainMenu.relZeroY() - 48 - 48 * drawnCoins - 64 - 12, 32, 40), new Rectangle(0, 5 * i, 4, 5));
+                drawnCoins++;
             }
         }
     }
