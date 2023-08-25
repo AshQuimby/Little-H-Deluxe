@@ -13,8 +13,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.sab.littleh.game.level.Level;
 import com.sab.littleh.mainmenu.LevelErrorMenu;
 import com.sab.littleh.mainmenu.LevelSelectMenu;
 import com.sab.littleh.mainmenu.LoadingMenu;
@@ -73,6 +75,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void create() {
+        Level.waterShader = new ShaderProgram("shaders/default.vsh", "shaders/water.fsh");
         g = new Graphics();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
@@ -232,6 +235,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public void dispose() {
         g.dispose();
+        Level.waterShader.dispose();
     }
 
     @Override

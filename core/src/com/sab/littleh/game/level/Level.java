@@ -3,6 +3,7 @@ package com.sab.littleh.game.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
+    public static ShaderProgram waterShader;
     public static final String[] backgrounds = {
             "mountains",
             "cold_mountains",
@@ -599,8 +601,11 @@ public class Level {
     public void drawPostRenders(Graphics g, List<Tile> postRenders) {
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
-                // TODO: This is where water rendering happens, check with tile.hasTag("water")
-                tile.render(false, g);
+                if (tile.hasTag("water")) {
+                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                } else {
+                    tile.render(false, g);
+                }
             }
             if (tile.hasTag("text")) {
                 if (player != null) {

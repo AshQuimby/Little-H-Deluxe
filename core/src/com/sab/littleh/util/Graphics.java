@@ -2,6 +2,7 @@ package com.sab.littleh.util;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -13,6 +14,7 @@ public class Graphics extends SpriteBatch {
     private final PolygonSpriteBatch polyBatch = new PolygonSpriteBatch();
     private Color tint = Color.WHITE;
     private Color trueColor = Color.WHITE;
+
     public void drawPatch(Patch patch, float x, float y, float width, float height, int patchScale) {
         patch.render(this, patchScale, x, y, width, height);
     }
@@ -22,6 +24,12 @@ public class Graphics extends SpriteBatch {
 
     public void drawImage(Texture image, float x, float y, float width, float height, Rectangle drawFrom) {
         draw(image, x, y, width, height, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
+    }
+
+    public void drawImageWithShader(ShaderProgram shader, Texture image, float x, float y, float width, float height, Rectangle drawFrom) {
+        setShader(shader);
+        draw(image, x, y, width, height, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
+        setShader(null);
     }
 
     public void drawImage(Texture image, float x, float y, float width, float height, Rectangle drawFrom, float rotation) {
