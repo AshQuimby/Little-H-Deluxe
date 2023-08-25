@@ -29,3 +29,7 @@ I wonder what happens if you dash into the ground after eating a strawberry...
 Running into a bounce platform while gliding as winged h boosts you forwards.
 %split%
 You can only swap gravity while touching the ground, think carefully about when you swap.
+%split%
+You open the fridge
+You see all the bodies there
+The Among Us Man

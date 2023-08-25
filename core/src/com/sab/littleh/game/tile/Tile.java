@@ -153,7 +153,7 @@ public class Tile {
     }
 
     public boolean isSolid() {
-        if (hasTag("coin_box")) return tileType % 2 == 0;
+        if (hasTag("coin_box") || hasTag("enemy_box")) return tileType % 2 == 0;
         return hasTag("solid");
     }
 
@@ -249,8 +249,6 @@ public class Tile {
             updateDrawSection();
         }
     }
-
-    // TODO: For implementation with Level
 
     /*
     public void notify(Level game, String broadcastTag, int[] data) {
@@ -408,7 +406,7 @@ public class Tile {
             setTileType(0);
         }
         if (hasTag("notified_alternate_type")) {
-            if (data[0] == tileType / 2)
+            if (!hasTag("coin_box") || hasTag("coin_box") && data[0] == tileType / 2)
                 setTileType(tileType % 2 == 0 ? tileType + 1 : tileType - 1);
         }
     }
@@ -424,7 +422,7 @@ public class Tile {
             } else {
                 Vector2 tileCenter = new Vector2(x * 64 + 32, y * 64 + 32);
                 float playerDist = level.player.getCenter().dst2(tileCenter);
-                if (playerDist > 1024 * 1024) {
+                if (playerDist > 1112 * 1112) {
                     level.addEnemy(Enemy.createEnemy(x, y, level.player, this, tileType));
                 }
             }

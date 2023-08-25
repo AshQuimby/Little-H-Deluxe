@@ -1,5 +1,6 @@
 package com.sab.littleh.game.entity.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -49,11 +50,14 @@ public class Player extends Entity {
     public float coolRoll;
     public float maxGroundSpeed;
     public Animation currentAnimation;
+    public boolean swimming;
+    public boolean ignoreWater;
     public boolean crouched;
     public boolean crushed;
     public int wallDirection;
     public int keyCount;
     public int ticksAlive;
+    public float trailSpeed;
     public boolean hasEvilKey;
     public boolean savedEvilKey;
     public EvilKey evilKey;
@@ -251,6 +255,7 @@ public class Player extends Entity {
         touchingGround = false;
         touchingWall = false;
         slippery = false;
+        swimming = false;
         collide(game);
     }
 
@@ -343,6 +348,11 @@ public class Player extends Entity {
                     if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
                     if (velocityY < -36) velocityY *= -1.5f;
                     else if (velocityY < 36) velocityY = 36;
+                }
+                if (tile.hasTag("water")) {
+                    if (!ignoreWater) {
+                        swimming = true;
+                    }
                 }
                 if (tile.hasTag("checkpoint") && tile.tileType % 2 == 0) {
                     SoundEngine.playSound("checkpoint.ogg");
@@ -467,10 +477,16 @@ public class Player extends Entity {
     public void drawTrail(Graphics g) {
         boolean speedy = false;
         float speed = 0;
-        for (float f : previousSpeeds) {
-            if (f > 24) {
-                if (f > speed) speed = f;
-                speedy = true;
+        if (trailSpeed > 0) {
+            speed = trailSpeed;
+            trailSpeed = 0;
+            speedy = true;
+        } else {
+            for (float f : previousSpeeds) {
+                if (f > 24) {
+                    if (f > speed) speed = f;
+                    speedy = true;
+                }
             }
         }
         if (speedy) {
@@ -494,18 +510,16 @@ public class Player extends Entity {
                 trail[1][i] = (int) (trail[1][i] + 6 * (5 - i) * Math.sin(angles[i] + Math.PI / 2 * 3));
             }
 
-            float[] vertices = new float[27];
+            float[] vertices = new float[18];
 
             for (int i = 0; i < 9; i++) {
                 vertices[i * 2] = trail[0][i];
                 vertices[i * 2 + 1] = trail[1][i];
-                vertices[i * 2 + 2] = 0;
             }
 
-            Mesh mesh = new Mesh(true, 9, 0,
-                    new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-            mesh.setVertices(vertices);
-            g.drawMesh(mesh);
+            g.setColor(new Color(1, 1, 1, Math.min(1, Math.max(0, (int) speed - 24) * 2 / 255f)));
+            g.drawMesh(vertices);
+            g.resetColor();
         }
     }
 
@@ -519,7 +533,7 @@ public class Player extends Entity {
         if (evilKey != null) {
             evilKey.render(g, this, game);
         }
-//        renderTrail(g, game);
+        drawTrail(g);
         powerup.preDrawPlayer(g, game);
         drawPlayer(g, game);
         LittleH.program.useStaticCamera();

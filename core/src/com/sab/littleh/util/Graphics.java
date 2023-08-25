@@ -1,11 +1,7 @@
 package com.sab.littleh.util;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -14,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Graphics extends SpriteBatch {
+    private final PolygonSpriteBatch polyBatch = new PolygonSpriteBatch();
+    private Color tint = Color.WHITE;
+    private Color trueColor = Color.WHITE;
     public void drawPatch(Patch patch, float x, float y, float width, float height, int patchScale) {
         patch.render(this, patchScale, x, y, width, height);
     }
@@ -125,15 +124,64 @@ public class Graphics extends SpriteBatch {
         return fitTo;
     }
 
-    public void drawMesh(Mesh mesh) {
-        mesh.render(null, GL20.GL_RENDERER);
+    public void drawMesh(float[] vertices) {
+        end();
+        PolygonSprite poly;
+        polyBatch.begin();
+        polyBatch.setProjectionMatrix(getProjectionMatrix());
+        Texture textureSolid;
+
+        // Creating the color filling (but textures would work the same way)
+        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pix.setColor(getColor());
+        pix.fill();
+        textureSolid = new Texture(pix);
+        PolygonRegion polyReg = new PolygonRegion(new TextureRegion(textureSolid),
+                vertices,
+                new short[] {
+                3, 4, 5,
+                0, 1, 8,
+                1, 2, 7,
+                2, 3, 6,
+                7, 8, 1,
+                6, 7, 2,
+                5, 6, 3
+        });
+        poly = new PolygonSprite(polyReg);
+        poly.setOrigin(0, 0);
+        poly.draw(polyBatch);
+        polyBatch.end();
+        begin();
+    }
+
+    @Override
+    public void setColor(Color color) {
+        color = color.cpy();
+        trueColor = color.cpy();
+        color.mul(tint);
+        super.setColor(color);
     }
 
     public void resetColor() {
-        setColor(Color.WHITE);
+        trueColor = Color.WHITE;
+        setColor(trueColor);
+    }
+
+    public void resetTint() {
+        tint = Color.WHITE;
+        setColor(trueColor);
     }
 
     public Vector2 getCameraPosition() {
         return LittleH.program.dynamicCamera.getPosition();
+    }
+
+    public void setTint(Color tint) {
+        this.tint = tint;
+        setColor(trueColor);
+    }
+
+    public Color getTint() {
+        return tint;
     }
 }

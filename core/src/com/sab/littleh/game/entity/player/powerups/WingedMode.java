@@ -32,6 +32,13 @@ public class WingedMode extends Powerup {
 
    @Override
    public void updateVelocity() {
+      if (player.swimming) {
+         gliding = false;
+         player.velocityX *= 0.92f;
+         player.velocityY *= 0.92f;
+         player.velocityY -= 0.4f;
+         return;
+      }
       if (!gliding) {
          if (!(player.slippery && player.crouched)) player.velocityX *= 0.9f;
          else player.velocityX *= 0.95f;
@@ -49,6 +56,14 @@ public class WingedMode extends Powerup {
 
    @Override
    public void jump(Level game) {
+      // Winged H can't swim
+      if (player.swimming) {
+         if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+            player.velocityY = 1;
+            SoundEngine.playSound("swim.ogg");
+         }
+         return;
+      }
       if (player.crushed) return;
       if (player.leftGroundFor < 8) {
          SoundEngine.playSound("wing_jump.ogg");

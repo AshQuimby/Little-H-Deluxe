@@ -91,7 +91,7 @@ public class Dialogue {
 
          String next = text[atBlock].substring(Math.max(atPosition, 1), atPosition + 1);
 
-         if (playBlip && !next.equals("\\") && !next.isBlank()) {
+         if (playBlip && !next.equals("\\") && !next.isBlank() && Character.isAlphabetic(next.charAt(0))) {
             if (blipTimer % 4 == 0)
                SoundEngine.playSound("blip.ogg");
             blipTimer++;

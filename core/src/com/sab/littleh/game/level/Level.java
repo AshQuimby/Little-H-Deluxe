@@ -1,7 +1,10 @@
 package com.sab.littleh.game.level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.entity.Particle;
@@ -9,6 +12,7 @@ import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.mainmenu.GameMenu;
+import com.sab.littleh.mainmenu.LevelEditorMenu;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
@@ -32,12 +36,14 @@ public class Level {
             "hyperspace"
     };
     public final SabData mapData;
+    public List<Tile> backgroundTiles;
     public List<Tile> allTiles;
     public List<Tile> volatileTiles;
     public List<Tile> notifiableTiles;
     public List<Tile> checkpointState;
     public List<Tile> updatableTiles;
     public List<List<Tile>> tileMap;
+    public List<List<Tile>> backgroundMap;
     public Player player;
     public int timeLimit;
     public int gameTick;
@@ -55,6 +61,7 @@ public class Level {
     private Dialogue currentDialogue;
 
     public Level(SabData mapData) {
+        backgroundTiles = new ArrayList<>();
         allTiles = new ArrayList<>();
         volatileTiles = new ArrayList<>();
         checkpointState = new ArrayList<>();
@@ -107,6 +114,14 @@ public class Level {
         }
     }
 
+    public void removeBackgroundTile(int x, int y) {
+        Tile toRemove = getBackgroundTileAt(x, y);
+        if (toRemove != null) {
+            while (backgroundTiles.contains(toRemove))
+                backgroundTiles.remove(toRemove);
+        }
+    }
+
     public void changeBackground(String background) {
         mapData.insertValue("background", background);
         this.background = background;
@@ -121,23 +136,43 @@ public class Level {
         allTiles.add(tile);
     }
 
+    public void addBackgroundTile(Tile tile) {
+        backgroundTiles.add(tile);
+    }
+
     public void addTileToMap(Tile tile) {
         tileMap.get(tile.x).set(tile.y, tile);
     }
 
+    public void addTileToBackground(Tile tile) {
+        backgroundMap.get(tile.x).set(tile.y, tile);
+    }
+
     public void addTiles(List<Tile> tiles, int levelWidth, int levelHeight) {
-        tileMap = new ArrayList<>(levelHeight);
+        tileMap = new ArrayList<>(levelWidth);
         for (int i = 0; i < levelWidth; i++) {
-            tileMap.add(i, new ArrayList<>());
+            tileMap.add(i, new ArrayList<>(levelHeight));
             for (int j = 0; j < levelHeight; j++) {
                 tileMap.get(i).add(null);
             }
         }
         allTiles.addAll(tiles);
         for (Tile tile : allTiles) {
-            if (testTile == null)
-                testTile = tile;
             tileMap.get(tile.x).set(tile.y, tile);
+        }
+    }
+
+    public void addBackground(List<Tile> tiles) {
+        backgroundMap = new ArrayList<>(getWidth());
+        for (int i = 0; i < getWidth(); i++) {
+            backgroundMap.add(i, new ArrayList<>(getHeight()));
+            for (int j = 0; j < getHeight(); j++) {
+                backgroundMap.get(i).add(null);
+            }
+        }
+        backgroundTiles.addAll(tiles);
+        for (Tile tile : backgroundTiles) {
+            backgroundMap.get(tile.x).set(tile.y, tile);
         }
     }
 
@@ -194,7 +229,21 @@ public class Level {
         if (player != null) {
             if (!player.warpingOut())
                 LittleH.program.dynamicCamera.targetPosition = new Vector2(player.getCenterX(), player.y + player.height / 2);
-            float cameraScalar = Math.min(1920f / LittleH.program.getWidth(), 1080f / LittleH.program.getHeight());
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && mapData.getValue("look_around").asBool()) {
+                if (Cursors.cursorIsNot("magnifier")) {
+                    Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
+                    Cursors.switchCursor("magnifier");
+                }
+                LittleH.program.dynamicCamera.setPosition(player.getCenter());
+                LittleH.program.dynamicCamera.update();
+                LittleH.program.dynamicCamera.setPosition(MouseUtil.getDynamicMousePosition());
+            } else {
+                if (Cursors.cursorIsNot("none")) {
+                    Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
+                    Cursors.switchCursor("none");
+                }
+            }
+            float cameraScalar = Math.min(2400f / LittleH.program.getWidth(), 1350f / LittleH.program.getHeight());
             LittleH.program.dynamicCamera.targetZoom = cameraScalar / Settings.localSettings.zoomScalar.asFloat();
             player.update(this);
         }
@@ -206,7 +255,12 @@ public class Level {
         for (Enemy enemy : enemies) {
             enemy.update(this);
         }
-        enemies.removeIf(enemy -> enemy.remove || enemy.despawn);
+        enemies.removeIf(enemy -> {
+            if (enemy.remove) {
+                enemy.getParent().removeTag("enemy");
+            }
+            return enemy.remove || enemy.despawn;
+        });
 
         for (Tile tile : updatableTiles) {
             Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
@@ -270,6 +324,9 @@ public class Level {
         enemies.clear();
         particles.clear();
         syncTiles();
+        if (LittleH.program.getMenu() instanceof LevelEditorMenu) {
+            ((LevelEditorMenu) LittleH.program.getMenu()).resetToolCursor();
+        }
     }
 
     public void resetToCheckpointState() {
@@ -341,6 +398,10 @@ public class Level {
     }
 
     public void render(Graphics g) {
+        render(g, false);
+    }
+
+    public void render(Graphics g, boolean backgroundPriority) {
         Vector2 renderAround = g.getCameraPosition();
         int centerX = (int) (renderAround.x / 64);
         int centerY = (int) (renderAround.y / 64);
@@ -353,29 +414,146 @@ public class Level {
 
         List<Tile> postRenders = new ArrayList<>();
 
+        g.resetTint();
+        g.resetColor();
+
+        if (!inGame()) {
+            if (backgroundPriority) {
+                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+            } else {
+                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+            }
+        } else {
+            g.setTint(new Color(0.5f, 0.5f, 0.5f, 1f));
+        }
+
+        // Draw in the back
         for (int i = startX; i < endX; i++) {
             if (i < 0 || i >= getWidth()) continue;
             for (int j = startY; j < endY; j++) {
                 if (j < 0 || j >= getHeight()) continue;
-                Tile tile = getTileAt(i, j);
-                if (tile != null) {
-                    if (!(tile.hasTag("invisible") && player != null))
-                        tile.render(false, g);
-                    if (tile.hasTag("post_render"))
-                        postRenders.add(tile);
-                    else if (tile.hasTag("post_render_in_game") && player != null)
-                        postRenders.add(tile);
+                if (!inGame()) {
+                    Tile tile;
+                    if (backgroundPriority) {
+                        // Draw foreground behind
+                        tile = getTileAt(i, j);
+                    } else {
+                        // Draw background
+                        tile = getBackgroundTileAt(i, j);
+                    }
+                    if (tile != null) {
+                        tile.render(inGame(), g);
+                        if (tile.hasTag("post_render"))
+                            postRenders.add(tile);
+                    }
+                } else {
+                    // Draw background
+                    // Tint multiplies with graphics color to make a darker background
+                    Tile tile = getBackgroundTileAt(i, j);
+                    if (tile != null) {
+                        tile.render(inGame(), g);
+                        if (tile.hasTag("post_render"))
+                            postRenders.add(tile);
+                        else if (tile.hasTag("post_render_in_game") && player != null)
+                            postRenders.add(tile);
+                    }
                 }
             }
         }
 
+        drawPostRenders(g, postRenders);
+
+        postRenders.clear();
+
+        g.resetTint();
+        g.resetColor();
+
+        if (!inGame()) {
+            if (backgroundPriority) {
+                g.setTint(new Color(1f, 1f, 1f, 0.5f));
+            } else {
+                g.resetTint();
+            }
+        } else {
+            g.resetTint();
+        }
+
+        // Draw in the front
+        for (int i = startX; i < endX; i++) {
+            if (i < 0 || i >= getWidth()) continue;
+            for (int j = startY; j < endY; j++) {
+                if (j < 0 || j >= getHeight()) continue;
+                if (!inGame()) {
+                    // Draw background in front
+                    if (backgroundPriority) {
+                        Tile tile = getBackgroundTileAt(i, j);
+                        if (tile != null) {
+                            tile.render(inGame(), g);
+                            if (tile.hasTag("post_render"))
+                                postRenders.add(tile);
+                        }
+                        continue;
+                    }
+                    // Draw foreground
+                    Tile tile = getTileAt(i, j);
+                    if (tile != null) {
+                        tile.render(inGame(), g);
+                        if (tile.hasTag("post_render"))
+                            postRenders.add(tile);
+                    }
+                } else {
+                    // Draw foreground
+                    Tile tile = getTileAt(i, j);
+                    if (tile != null) {
+                        tile.render(inGame(), g);
+                        if (tile.hasTag("post_render"))
+                            postRenders.add(tile);
+                        else if (tile.hasTag("post_render_in_game") && player != null)
+                            postRenders.add(tile);
+                    }
+                }
+            }
+        }
+
+        if (inGame())
+            player.render(g, this);
+
+        drawPostRenders(g, postRenders);
+
+        g.resetTint();
+
+        particles.forEach(particle -> particle.render(g));
+        enemies.forEach(enemy -> enemy.render(g, this));
+
+        LittleH.program.useStaticCamera();
+
+        if (backgroundPriority) {
+            g.drawString("EDITING BACKGROUND", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
+        }
+
+        if (popup != null) {
+            popup.render(g);
+            if (popup.timeLeft < 0) {
+                popup = null;
+            }
+        }
+
+        if (currentDialogue != null) {
+            currentDialogue.render(g);
+        }
+    }
+
+    public void drawPostRenders(Graphics g, List<Tile> postRenders) {
         for (Tile tile : postRenders) {
+            if (tile.hasTag("render_normal")) {
+                tile.render(false, g);
+            }
             if (tile.hasTag("text")) {
                 if (player != null) {
                     if (tile.extra == null) tile.extra = "";
                     float size = 0.8f;
                     if (tile.tileType == 0) size = 1f;
-                    else if (tile.tileType == 2) size = 0.65f;
+                    else if (tile.tileType == 2) size = 0.7f;
 
                     g.drawString(tile.extra, LittleH.borderedFont, tile.x * 64 + 32, tile.y * 64 + 32, size * LittleH.defaultFontScale, 0);
                 }
@@ -391,25 +569,6 @@ public class Level {
                 g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 16, 64, 64, tile.getDrawSection());
             }
             g.resetColor();
-        }
-
-        if (player != null)
-            player.render(g, this);
-
-        particles.forEach(particle -> particle.render(g));
-        enemies.forEach(enemy -> enemy.render(g, this));
-
-        LittleH.program.useStaticCamera();
-
-        if (popup != null) {
-            popup.render(g);
-            if (popup.timeLeft < 0) {
-                popup = null;
-            }
-        }
-
-        if (currentDialogue != null) {
-            currentDialogue.render(g);
         }
     }
 
@@ -468,6 +627,11 @@ public class Level {
 
     public boolean hasDialogue() {
         return currentDialogue != null;
+    }
+
+    public Tile getBackgroundTileAt(int x, int y) {
+        if (x >= 0 && y >= 0 && x < getWidth() && y < getHeight()) return backgroundMap.get(x).get(y);
+        return null;
     }
 
     private class Popup {

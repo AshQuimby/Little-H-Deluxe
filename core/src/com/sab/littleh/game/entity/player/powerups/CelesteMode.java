@@ -51,7 +51,7 @@ public class CelesteMode extends Powerup {
         } else if (player.doubleJump && game.mapData.getValue("double_jumping").asBool() && ControlInputs.isJustPressed(Control.JUMP)) {
             SoundEngine.playSound("dash.ogg");
             player.doubleJump = false;
-            dash = new Vector2(24, 0);
+            dash = new Vector2(28, 0);
             float rotation = getDashRotation();
             dash.rotateDeg(rotation);
             dashTime = 15;
@@ -167,11 +167,15 @@ public class CelesteMode extends Powerup {
         }
 
         if (dashTime > 0) {
+            player.trailSpeed = 64;
+            if (dashTime % 3 == 0) {
+                game.addParticle(new Particle(player.x, player.y, 0, 0, 64, 64, 8, 8, player.direction, 0, 0, 0, 0, "player/h_trail.png", 20, 0.05f));
+            }
             noGravity = true;
             player.velocityX = dash.x;
             player.velocityY = dash.y;
 
-            Vector2 mathDash = new Vector2(20, 0);
+            Vector2 mathDash = new Vector2(22, 0);
             float rotation = getDashRotation();
             mathDash.rotateDeg(rotation);
             dash = mathDash.add(dash.scl(19)).scl(0.05f);
@@ -194,24 +198,6 @@ public class CelesteMode extends Powerup {
                 player.velocityX += 1.2f;
             }
         }
-    }
-
-    @Override
-    public void preDrawPlayer(Graphics g, Level game) {
-        if (dashTime > 0) {
-            if (player.previousPositions.size() >= 10) {
-                for (int i = 0; i < 5; i++) {
-                    Point pos = player.previousPositions.get(i * 2);
-                    g.setColor(new Color(1, 1, 1, Math.min(1f / i, 1)));
-                    if (player.direction == 1)
-                        g.draw(Images.getImage("player/h_trail.png"), pos.x - 8, pos.y, 64, 64);
-                    else
-                        g.draw(Images.getImage("player/h_trail.png"), pos.x - 8 + 64, pos.y, -64, 64);
-                }
-                g.resetColor();
-            }
-        }
-        super.preDrawPlayer(g, game);
     }
 
     // TODO: Make celeste h draw hair

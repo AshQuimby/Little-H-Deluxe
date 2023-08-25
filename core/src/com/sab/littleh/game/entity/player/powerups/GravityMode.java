@@ -70,6 +70,12 @@ public class GravityMode extends Powerup {
 
     @Override
     public void updateVelocity() {
+        if (player.swimming) {
+            player.velocityX *= 0.94f;
+            player.velocityY *= 0.94f;
+            player.velocityY += 0.3f * (flippedGravity ? 1 : -1);
+            return;
+        }
         if (player.touchingGround) {
             player.maxGroundSpeed = Math.abs(player.velocityX);
         }

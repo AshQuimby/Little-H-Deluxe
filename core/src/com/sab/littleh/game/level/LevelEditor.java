@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.game.entity.enemy.A;
 import com.sab.littleh.game.tile.Tile;
+import com.sab.littleh.mainmenu.LevelEditorMenu;
 import com.sab.littleh.util.DynamicCamera;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
@@ -17,18 +17,18 @@ import java.util.List;
 import java.util.Set;
 
 public class LevelEditor {
-    private static DynamicCamera camera = LittleH.program.dynamicCamera;
-    private Level level;
+    protected static DynamicCamera camera = LittleH.program.dynamicCamera;
+    protected Level level;
     public boolean saved;
-    private Set<Point> fillTiles;
-    private Rectangle selection;
-    private boolean selectionAlive;
-    private TileSelection tileSelection;
-    private Vector2 selectionAnchor;
-    private boolean movingSelection;
-    private boolean nudgingSelection;
-    private List<UndoAction> undoQueue;
-    private int undoIndex;
+    protected Set<Point> fillTiles;
+    protected Rectangle selection;
+    protected boolean selectionAlive;
+    protected TileSelection tileSelection;
+    protected Vector2 selectionAnchor;
+    protected boolean movingSelection;
+    protected boolean nudgingSelection;
+    protected List<UndoAction> undoQueue;
+    protected int undoIndex;
 
     public LevelEditor(Level level) {
         this.level = level;
@@ -149,7 +149,7 @@ public class LevelEditor {
         selectionAnchor.x = selection.x * 64 - relativeTo.x;
         selectionAnchor.y = selection.y * 64 - relativeTo.y;
         if (tileSelection == null)
-            tileSelection = new TileSelection(selection, level, false);
+            tileSelection = new TileSelection(selection, level, false, false);
     }
 
     public void updateSelectionPosition(Vector2 mousePosition) {
@@ -184,6 +184,10 @@ public class LevelEditor {
                 for (int j = 0; j < level.getHeight(); j++)
                     tiles.add(null);
                 level.tileMap.add(0, tiles);
+                tiles = new ArrayList<>(level.getHeight());
+                for (int j = 0; j < level.getHeight(); j++)
+                    tiles.add(null);
+                level.backgroundMap.add(0, tiles);
                 camera.targetPosition.x += 64;
                 camera.position.x += 64;
             }
@@ -194,6 +198,10 @@ public class LevelEditor {
                 for (int j = 0; j < level.getHeight(); j++)
                     tiles.add(null);
                 level.tileMap.add(tiles);
+                tiles = new ArrayList<>(level.getHeight());
+                for (int j = 0; j < level.getHeight(); j++)
+                    tiles.add(null);
+                level.backgroundMap.add(tiles);
             }
         }
 
@@ -210,9 +218,19 @@ public class LevelEditor {
                 }
                 cameraShifted = true;
             }
+            for (List<Tile> tiles : level.backgroundMap) {
+                for (int i = 0; i < heightToAdd; i++) {
+                    tiles.add(0, null);
+                }
+            }
         } else if (y >= level.getHeight()) {
             int expandY = y - level.getHeight() + 1;
             for (List<Tile> tiles : level.tileMap) {
+                for (int i = 0; i < expandY; i++) {
+                    tiles.add(null);
+                }
+            }
+            for (List<Tile> tiles : level.backgroundMap) {
                 for (int i = 0; i < expandY; i++) {
                     tiles.add(null);
                 }
@@ -224,6 +242,14 @@ public class LevelEditor {
                 tile.x += widthToAdd;
                 tile.y += heightToAdd;
             }
+            for (Tile tile : level.backgroundTiles) {
+                tile.x += widthToAdd;
+                tile.y += heightToAdd;
+            }
+        }
+
+        if (LittleH.program.getMenu() instanceof LevelEditorMenu) {
+            ((LevelEditorMenu) LittleH.program.getMenu()).negativeResize(widthToAdd, heightToAdd);
         }
 
         return new Point(widthToAdd, heightToAdd);
@@ -594,5 +620,9 @@ public class LevelEditor {
 
     public boolean hasTileSelection() {
         return tileSelection != null;
+    }
+
+    public Tile getTileAt(int x, int y) {
+        return level.getTileAt(x, y);
     }
 }

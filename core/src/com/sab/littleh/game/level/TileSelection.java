@@ -15,7 +15,7 @@ public class TileSelection {
     private Rectangle rectangle;
     float x;
     float y;
-    public TileSelection(Rectangle rectangle, Level level, boolean copyTiles) {
+    public TileSelection(Rectangle rectangle, Level level, boolean copyTiles, boolean background) {
         this.rectangle = rectangle;
         x = rectangle.x * 64;
         y = rectangle.y * 64;
@@ -24,7 +24,7 @@ public class TileSelection {
         if (copyTiles) {
             for (int i = 0; i < rectangle.width; i++) {
                 for (int j = 0; j < rectangle.height; j++) {
-                    Tile tileAt = level.getTileAt(rectangle.x + i, rectangle.y + j);
+                    Tile tileAt = background ? level.getBackgroundTileAt(i, j) : level.getTileAt(i, j);
                     if (tileAt != null) {
                         tiles.add(tileAt.copy());
                         tilePositions.add(new Point(tileAt.x - rectangle.x, tileAt.y - rectangle.y));
@@ -34,7 +34,7 @@ public class TileSelection {
         }
     }
     public TileSelection(Rectangle rectangle, Level level) {
-        this(rectangle, level, true);
+        this(rectangle, level, true, false);
     }
 
     public void translate() {

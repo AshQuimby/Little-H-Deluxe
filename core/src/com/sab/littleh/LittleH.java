@@ -96,15 +96,15 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Patch.cachePatch("menu_light", new Patch("ui/buttons/square_button_hovered.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_hollow", new Patch("ui/menu/menu_hollow.png", 7, 7, 3, 3));
         Fonts.loadFont("sab_font.ttf", 100);
-        Fonts.loadFont("sab_font.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
+        Fonts.loadFont("sab_font.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         Fonts.loadFont("minecraft.ttf", 100);
-        Fonts.loadFont("minecraft.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
+        Fonts.loadFont("minecraft.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         Fonts.loadFont("shitfont23.ttf", 240);
-        Fonts.loadFont("shitfont23.ttf", 240, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
+        Fonts.loadFont("shitfont23.ttf", 240, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         Fonts.loadFont("arial.ttf", 100);
-        Fonts.loadFont("arial.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
+        Fonts.loadFont("arial.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         Fonts.loadFont("comic_snas.ttf", 100);
-        Fonts.loadFont("comic_snas.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 8);
+        Fonts.loadFont("comic_snas.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         updateFont();
         switchMenu(new LevelSelectMenu());
         Gdx.input.setInputProcessor(this);
@@ -388,5 +388,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             }
         }
+    }
+
+    public MainMenu getMenu() {
+        return mainMenu;
     }
 }

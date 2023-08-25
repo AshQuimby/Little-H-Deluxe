@@ -22,18 +22,40 @@ public class BallMode extends Powerup {
    private float ballRotation;
    private boolean stopBounce;
    private boolean superSlam;
+   private int bounceSoundCool;
 
    public BallMode(Player player) {
       super(player);
    }
 
+   @Override
    public void init(Player player) {
       superSlam = false;
       player.image = "player/ball_h";
+      bounceSoundCool = 0;
+   }
+
+   @Override
+   public void jump(Level game) {
+      if (player.swimming) {
+         if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+            player.velocityY = -12;
+            SoundEngine.playSound("swim.ogg");
+         }
+         return;
+      }
+      super.jump(game);
    }
 
    @Override
    public void updateVelocity() {
+      // Ball floats
+      if (player.swimming) {
+         player.velocityX *= 0.98f;
+         player.velocityY *= 0.98f;
+         player.velocityY += 0.5f;
+         return;
+      }
       if (!(player.slippery && player.crouched)) player.velocityX *= 0.975f;
       else player.velocityX *= 0.985f;
       player.velocityY *= 0.985f;
@@ -42,6 +64,8 @@ public class BallMode extends Powerup {
    
    @Override
    public void update(Level game) {
+      if (bounceSoundCool > 0)
+         bounceSoundCool--;
       if (player.win) {
          if (player.currentAnimation.getFrame() > 19) {
             ballRotation *= 0.5f;
@@ -84,7 +108,10 @@ public class BallMode extends Powerup {
    public void onCollision(boolean horizontal, boolean vertical) {
       if (horizontal) {
          player.velocityX *= -1f;
-         if (Math.abs(player.velocityX) > 8f) SoundEngine.playSound("ball_bounce.ogg");
+         if (bounceSoundCool <= 0) {
+            SoundEngine.playSound("ball_bounce.ogg");
+            bounceSoundCool = 5;
+         }
          // Minimum BOUNCING BALL SPEED
          player.velocityX = Math.max(15, Math.abs(player.velocityX)) * Math.signum(player.velocityX);
       }
@@ -95,7 +122,10 @@ public class BallMode extends Powerup {
             player.velocityY *= -1f;
             // Minimum BOUNCING BALL SPEED
             player.velocityY = Math.max(15, Math.abs(player.velocityY)) * Math.signum(player.velocityY);
-            if (Math.abs(player.velocityY) > 8f) SoundEngine.playSound("ball_bounce.ogg");
+            if (bounceSoundCool <= 0) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               bounceSoundCool = 5;
+            }
          }
       }
    }

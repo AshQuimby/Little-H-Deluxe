@@ -22,6 +22,13 @@ public class Powerup {
     }
 
     public void jump(Level game) {
+        if (player.swimming) {
+            if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+                player.velocityY = 14;
+                SoundEngine.playSound("swim.ogg");
+            }
+            return;
+        }
         if (player.crushed) return;
         if (player.leftGroundFor < 6) {
             SoundEngine.playSound("jump.ogg");
@@ -57,29 +64,29 @@ public class Powerup {
 //            if (game.mapSettings[Level.ALLOW_AIR_JUMP]) doubleJump = true;
             player.doubleJump = true;
             if (ControlInputs.isPressed(Control.LEFT) ^ ControlInputs.isPressed(Control.RIGHT)) {
-                player.currentAnimation = player.runAnimation;
+                player.currentAnimation = Player.runAnimation;
             } else {
                 if (!player.slippery && !player.crouched) player.velocityX *= 0.5f;
-                player.currentAnimation = player.idleAnimation;
+                player.currentAnimation = Player.idleAnimation;
             }
             if (player.crouched) {
                 if (Math.abs(player.velocityX) > 2f) {
-                    player.currentAnimation = player.slideAnimation;
+                    player.currentAnimation = Player.slideAnimation;
                 } else {
-                    player.currentAnimation = player.crouchAnimation;
+                    player.currentAnimation = Player.crouchAnimation;
                 }
             }
         } else {
             player.leftGroundFor++;
             if (player.velocityY < 0) {
-                player.currentAnimation = player.fallAnimation;
+                player.currentAnimation = Player.fallAnimation;
             } else {
-                player.currentAnimation = player.jumpAnimation;
+                player.currentAnimation = Player.jumpAnimation;
             }
             if (player.touchingWall) {
                 if (player.velocityY < 0) {
                     if (!player.slippery) player.velocityY *= 0.85f;
-                    player.currentAnimation = player.wallSlideAnimation;
+                    player.currentAnimation = Player.wallSlideAnimation;
                 }
                 player.doubleJump = true;
                 player.leftWallFor = 0;
@@ -102,12 +109,12 @@ public class Powerup {
         if (!player.crouched) {
             if (ControlInputs.isPressed(Control.LEFT)) {
                 if (!player.touchingWall) player.direction = -1;
-                player.velocityX -= 1.2f;
+                player.velocityX -= 1.2f * (player.swimming ? 0.5f : 1);
             }
 
             if (ControlInputs.isPressed(Control.RIGHT)) {
                 if (!player.touchingWall) player.direction = 1;
-                player.velocityX += 1.2f;
+                player.velocityX += 1.2f * (player.swimming ? 0.5f : 1);
             }
         }
     }
@@ -130,6 +137,12 @@ public class Powerup {
     }
 
     public void updateVelocity() {
+        if (player.swimming) {
+            player.velocityX *= 0.94f;
+            player.velocityY *= 0.94f;
+            player.velocityY -= 0.3f;
+            return;
+        }
         if (player.touchingGround) {
             player.maxGroundSpeed = Math.abs(player.velocityX);
         }
