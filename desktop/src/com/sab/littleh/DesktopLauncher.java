@@ -18,6 +18,6 @@ public class DesktopLauncher {
 				if (((LittleH) getApplicationListener()).attemptClose())
 					super.exit();
 			}
-		};;
+		};
 	}
 }

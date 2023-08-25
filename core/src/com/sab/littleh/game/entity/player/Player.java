@@ -1,11 +1,6 @@
 package com.sab.littleh.game.entity.player;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -68,6 +63,7 @@ public class Player extends Entity {
     public Powerup savedPowerup;
     public java.util.List<Point> previousPositions;
     public java.util.List<Float> previousSpeeds;
+    public boolean canCrouch;
     private Powerup powerup;
     private boolean speedrunning;
 
@@ -244,12 +240,12 @@ public class Player extends Entity {
 
         // Crouching
 //        if (game.mapSettings[Level.ALLOW_CROUCH]) {
-        if (true) {
+        if (canCrouch && game.mapData.getValue("crouching").asBool()) {
             if (ControlInputs.isJustPressed(Control.LEFT) ^ ControlInputs.isJustPressed(Control.RIGHT) || !ControlInputs.isPressed(Control.DOWN) || !touchingGround) {
                 height = 48;
                 crouched = false;
             }
-            if (ControlInputs.isJustPressed(Control.DOWN) && touchingGround && game.mapData.getValue("crouching").asBool()) {
+            if (ControlInputs.isJustPressed(Control.DOWN) && touchingGround) {
                 touchingWall = false;
                 velocityX *= 1.5f;
                 height = 24;
@@ -263,6 +259,7 @@ public class Player extends Entity {
         touchingWall = false;
         slippery = false;
         swimming = false;
+        canCrouch = true;
         collide(game);
 
         // Don't start the timer until the player moves (to avoid unfair lag spikes on level load)

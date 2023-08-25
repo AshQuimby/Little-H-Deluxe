@@ -47,7 +47,7 @@
 @2 I'm done, I'm leaving the vc.
 @6 *discord disconnect from voice channel sound effect*
 @8 Failed to load asset "peepee.dlg" Your mom called.
-@1 That's NOT funny.
+@1 That's NOT funny.\eB(false)
 @1 I don't even think my mom would know what "called" means.
 @9 \cN(8)Intruder alert: Red [[[IMPOSTOR]]] AMONG US.
 @6 *discord join voice channel sound effect*
@@ -58,11 +58,12 @@
 @5 EEEEEEEEEEEEEEEEEEEEEEE
 @2 I'm dead
 @1 okay
-@1 *bites lip*
+@1 *bites lip*\pM(menu/building_song.ogg)
 @1 *lip starts to bleed*
 @2 STOP! please...
 @1 *dies of blood loss*
 @9 It was me, the sussy baka impostor :susgrin:
 @6 *skype call tune*
 @1 *leaves*
-@7 Jesus is watching you, child...
+@7 Jesus is watching you, child...\kP(true)
+@1 I'm dead!

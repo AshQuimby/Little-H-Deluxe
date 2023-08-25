@@ -2,10 +2,12 @@ package com.sab.littleh.game.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.mainmenu.LevelEditorMenu;
+import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.DynamicCamera;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
@@ -536,21 +538,23 @@ public class LevelEditor {
             tileSelection.render(g);
         }
 
+        Texture selectionImage = Images.getImage(!Settings.localSettings.selectionContrast.value ? "ui/selection.png" : "ui/selection_high_con.png");
+
         if (selection != null) {
             Rectangle selection = selectionNormalized();
             Rectangle rect = selectionAsWorldCoords();
             int frameY = LittleH.getTick() / 12 % 4 * 8;
             com.badlogic.gdx.math.Rectangle frame = new com.badlogic.gdx.math.Rectangle(0, frameY, 8, 8);
             for (int i = 0; i < selection.width; i++) {
-                g.drawImage(Images.getImage("ui/selection.png"), rect.x + 64 * i, rect.y, 64, 64,
+                g.drawImage(selectionImage, rect.x + 64 * i, rect.y, 64, 64,
                         frame, 180);
-                g.drawImage(Images.getImage("ui/selection.png"), rect.x + 64 * i, rect.y + rect.height - 64, 64, 64,
+                g.drawImage(selectionImage, rect.x + 64 * i, rect.y + rect.height - 64, 64, 64,
                         frame);
             }
             for (int i = 0; i < selection.height; i++) {
-                g.drawImage(Images.getImage("ui/selection.png"), rect.x, rect.y + i * 64, 64, 64,
+                g.drawImage(selectionImage, rect.x, rect.y + i * 64, 64, 64,
                         frame, 90);
-                g.drawImage(Images.getImage("ui/selection.png"), rect.x + rect.width - 64, rect.y + i * 64, 64, 64,
+                g.drawImage(selectionImage, rect.x + rect.width - 64, rect.y + i * 64, 64, 64,
                         frame, 270);
             }
         }

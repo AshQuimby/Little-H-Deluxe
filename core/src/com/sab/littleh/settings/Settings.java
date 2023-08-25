@@ -1,6 +1,7 @@
 package com.sab.littleh.settings;
 
 import com.badlogic.gdx.math.RandomXS128;
+import com.sab.littleh.util.Images;
 import com.sab.littleh.util.SoundEngine;
 import com.sab.littleh.util.sab_format.*;
 
@@ -31,6 +32,8 @@ public class Settings {
     });
     public final BoolSetting screenShake = new BoolSetting("screen_shake", "Screen Shake", true);
     public final BoolSetting rainbowTitle = new BoolSetting("rainbow_title", "Rainbow Title", false);
+    public final BoolSetting grid = new BoolSetting("grid_enabled", "Grid Enabled", true);
+    public final BoolSetting selectionContrast = new BoolSetting("high_contrast_selection", "High Contrast Selection", false);
     public final PercentageSetting zoomScalar = new PercentageSetting("zoom_scalar", "In-Game Zoom Multiplier", 100, 50, 200);
     public final FontSetting font = new FontSetting("font", "Default Font", 0, new String[] {
             "minecraft",
@@ -68,7 +71,7 @@ public class Settings {
             // Gameplay
             debugMode, backgroundVisibility, authorName, hColor, rainbowTitle,
             // Video
-            fullscreen, screenShake, zoomScalar, font,
+            fullscreen, grid, screenShake, zoomScalar, font, selectionContrast,
             // Audio
             muteGame, masterVolume, musicVolume, sfxVolume
     };
@@ -89,14 +92,14 @@ public class Settings {
 
     public void save() {
         try {
-            SabWriter.write(new File("../settings.sab"), toSabData());
+            SabWriter.write(new File((Images.inArchive ? "settings.sab" : "../settings.sab")), toSabData());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void load() {
-        File settingsFile = new File("../settings.sab");
+        File settingsFile = new File((Images.inArchive ? "settings.sab" : "../settings.sab"));
         if (!settingsFile.exists()) {
             try {
                 settingsFile.createNewFile();

@@ -28,6 +28,7 @@ import com.sun.tools.javac.Main;
 import org.w3c.dom.Text;
 
 import javax.swing.*;
+import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -43,14 +44,13 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static final String TITLE = "The Little H Deluxe";
     public static MainMenu pendingMenu;
     private int tick;
-    public static final File mapsFolder = new File("../maps/");
+    public static final File mapsFolder = new File(Images.inArchive ? "maps/" : "../maps/");
     public static BitmapFont font;
     public static BitmapFont borderedFont;
     public static float defaultFontScale = 0.2f;
     public static final int resolutionX = 1024;
     public static final int resolutionY = 576;
     public static LittleH program;
-    private ShapeRenderer shapeRenderer;
     private Graphics g;
     public OrthographicCamera staticCamera;
     public DynamicCamera dynamicCamera;
@@ -84,11 +84,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         }
 
         g = new Graphics();
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setAutoShapeType(true);
         staticCamera = new OrthographicCamera(resolutionX, resolutionY);
         dynamicCamera = new DynamicCamera(resolutionX, resolutionY);
-        Images.load();
         SoundEngine.load();
         Cursors.loadCursors();
         program = this;
@@ -127,6 +124,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SoundEngine.update();
         Controllers.addListener(program);
         Images.cacheHColor();
+        System.out.println(mapsFolder.getPath());
     }
 
     public void update() {
@@ -164,12 +162,10 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     public void useStaticCamera() {
         g.setProjectionMatrix(staticCamera.combined);
-        shapeRenderer.setProjectionMatrix(staticCamera.combined);
     }
 
     public void useDynamicCamera() {
         g.setProjectionMatrix(dynamicCamera.combined);
-        shapeRenderer.setProjectionMatrix(dynamicCamera.combined);
     }
 
     public static File[] findMaps() {
@@ -228,8 +224,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
         g.end();
         hoverInfo = null;
-        shapeRenderer.begin();
-        shapeRenderer.end();
         MouseUtil.update();
         ControlInputs.update();
         tick++;
@@ -264,7 +258,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             for (int i = 3; i < size; i += 4) {
                 pixels.put(i, (byte) 255);
             }
-            String imagePath = "../screenshots/" + Calendar.getInstance().getTime().toString().replace(":", "-").replace(" ", "-") + ".png";
+            String imagePath = (Images.inArchive ? "screenshots/" : "../screenshots/") + Calendar.getInstance().getTime().toString().replace(":", "-").replace(" ", "-") + ".png";
             PixmapIO.writePNG(Gdx.files.local(imagePath), pixmap, Deflater.DEFAULT_COMPRESSION, true);
             pixmap.dispose();
         }

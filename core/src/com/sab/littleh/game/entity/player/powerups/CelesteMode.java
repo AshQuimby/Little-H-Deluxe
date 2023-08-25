@@ -30,6 +30,13 @@ public class CelesteMode extends Powerup {
 
     @Override
     public void jump(Level game) {
+        if (player.swimming) {
+            if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+                player.velocityY = 14;
+                SoundEngine.playSound("swim.ogg");
+            }
+            return;
+        }
         if (player.crushed) return;
         if (player.touchingGround && dashTime > 0) {
             dashTime = 0;
@@ -103,7 +110,8 @@ public class CelesteMode extends Powerup {
             }
             stamina = 240;
 //            if (game.mapSettings[Level.ALLOW_AIR_JUMP]) doubleJump = true;
-            player.doubleJump = true;
+            if (game.mapData.getValue("double_jumping").asBool())
+                player.doubleJump = true;
             if (ControlInputs.isPressed(Control.LEFT) ^ ControlInputs.isPressed(Control.RIGHT)) {
                 player.currentAnimation = Player.runAnimation;
             } else {
@@ -190,12 +198,12 @@ public class CelesteMode extends Powerup {
         if (!player.crouched) {
             if (ControlInputs.isPressed(Control.LEFT)) {
                 if (!player.touchingWall) player.direction = -1;
-                player.velocityX -= 1.2f;
+                player.velocityX -= 1.2f * (player.swimming ? 0.5f : 1);
             }
 
             if (ControlInputs.isPressed(Control.RIGHT)) {
                 if (!player.touchingWall) player.direction = 1;
-                player.velocityX += 1.2f;
+                player.velocityX += 1.2f * (player.swimming ? 0.5f : 1);
             }
         }
     }

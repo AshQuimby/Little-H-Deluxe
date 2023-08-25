@@ -1,8 +1,10 @@
 package com.sab.littleh.util;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -12,8 +14,14 @@ import java.util.List;
 
 public class Graphics extends SpriteBatch {
     private final PolygonSpriteBatch polyBatch = new PolygonSpriteBatch();
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private Color tint = Color.WHITE;
     private Color trueColor = Color.WHITE;
+
+    public Graphics() {
+        super();
+        shapeRenderer.setAutoShapeType(true);
+    }
 
     public void drawPatch(Patch patch, float x, float y, float width, float height, int patchScale) {
         patch.render(this, patchScale, x, y, width, height);
@@ -191,5 +199,23 @@ public class Graphics extends SpriteBatch {
 
     public Color getTint() {
         return tint;
+    }
+
+    public void startShapeRenderer(Color color) {
+        end();
+        shapeRenderer.begin();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        shapeRenderer.setColor(color);
+        shapeRenderer.setProjectionMatrix(getProjectionMatrix());
+    }
+
+    public void endShapeRenderer() {
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        begin();
+    }
+
+    public void drawRect(float x, float y, float width, float height) {
+        shapeRenderer.rect(x, y, width, height);
     }
 }

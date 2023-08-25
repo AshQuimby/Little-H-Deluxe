@@ -1,16 +1,11 @@
 package com.sab.littleh.game.entity.player.powerups;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.*;
-
-import java.awt.*;
 
 public class GravityMode extends Powerup {
     public GravityMode(Player player) {
@@ -26,13 +21,8 @@ public class GravityMode extends Powerup {
 
     @Override
     public void update(Level game) {
+        player.canCrouch = false;
         super.update(game);
-        if (player.crouched) {
-            player.crouched = false;
-            if (ControlInputs.isJustPressed(Control.DOWN)) {
-                flipGravity();
-            }
-        }
         if (!player.touchingGround) {
             if (player.touchingWall) {
                 if (!player.slippery) player.velocityY *= 0.85f;
@@ -45,6 +35,14 @@ public class GravityMode extends Powerup {
         }
         if (player.y > game.getHeight() * 64 + 256)
             player.kill();
+
+        if (player.currentAnimation == Player.jumpAnimation || player.currentAnimation == Player.fallAnimation) {
+            if (player.velocityY < 0) {
+                player.currentAnimation = flippedGravity ? Player.jumpAnimation : Player.fallAnimation;
+            } else {
+                player.currentAnimation = flippedGravity ? Player.fallAnimation : Player.jumpAnimation;
+            }
+        }
     }
 
     @Override

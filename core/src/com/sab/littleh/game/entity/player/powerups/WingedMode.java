@@ -77,7 +77,7 @@ public class WingedMode extends Powerup {
          player.leftWallFor = 8;
          player.x += -2 * player.wallDirection;
          player.velocityX = -24 * player.wallDirection;
-      } else if (player.jumpReleased && player.doubleJump && player.velocityY < -2) {
+      } else if (player.jumpReleased && player.doubleJump && game.mapData.getValue("double_jumping").asBool() && player.velocityY < -2) {
          SoundEngine.playSound("double_jump.ogg");
          game.addParticle(new Particle(player.x, player.y + 16, 0f, 0f, 48, 32, 6, 4, 1, 0f, 0f, 0, 2, "particles/double_jump.png", 9));
          player.velocityY = 18;

@@ -18,7 +18,7 @@ public class Images {
     public static HashMap<String, Texture> cache = new HashMap<>();
     private static Color hColor = new Color(1f, 0f, 0f, 1f);
 
-    public static void load() {
+    static {
         inArchive = Images.class.getResourceAsStream("Images.class").toString().contains("jar");
     }
 

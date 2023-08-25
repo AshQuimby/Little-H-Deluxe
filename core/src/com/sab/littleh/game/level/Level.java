@@ -38,6 +38,7 @@ public class Level {
             "tundra",
             "hyperspace"
     };
+    public static Level currentLevel;
     public final SabData mapData;
     public List<Tile> backgroundTiles;
     public List<Tile> allTiles;
@@ -88,6 +89,7 @@ public class Level {
                 mapData.insertValue(options[i], new SabValue(values[i]));
             }
         }
+        currentLevel = this;
     }
 
     public void init() {
@@ -471,6 +473,7 @@ public class Level {
 
         List<Tile> postRenders = new ArrayList<>();
         List<Tile> visibleTiles = new ArrayList<>();
+        List<Point> toDrawGrid = new ArrayList<>();
 
         // Draw in the front but behind players
         for (int i = startX; i < endX; i++) {
@@ -482,7 +485,9 @@ public class Level {
                     if (backgroundPriority) {
                         Tile tile = getBackgroundTileAt(i, j);
                         if (tile != null) {
-                            if (!(tile.isSolid() && tile.hasTag("tileset"))) tile.render(inGame(), g);
+                            if (!(tile.isSolid() && tile.hasTag("tileset"))) {
+                                tile.render(inGame(), g);
+                            }
                             else visibleTiles.add(tile);
                             if (tile.hasTag("post_render"))
                                 postRenders.add(tile);
@@ -492,11 +497,14 @@ public class Level {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
                     if (tile != null) {
-                        if (!(tile.isSolid() && tile.hasTag("tileset"))) tile.render(inGame(), g);
+                        if (!(tile.isSolid() && tile.hasTag("tileset"))) {
+                            tile.render(inGame(), g);
+                        }
                         else visibleTiles.add(tile);
                         if (tile.hasTag("post_render"))
                             postRenders.add(tile);
                     }
+                    toDrawGrid.add(new Point(i * 64, j * 64));
                 } else {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
@@ -538,7 +546,7 @@ public class Level {
         }
 
         // Draw in the front
-        for (Tile tile :visibleTiles) {
+        for (Tile tile : visibleTiles) {
             if (!inGame()) {
                 // Draw background in front
                 if (backgroundPriority) {
@@ -570,6 +578,24 @@ public class Level {
         drawPostRenders(g, postRenders);
 
         g.resetTint();
+
+        if (Settings.localSettings.grid.value) {
+
+            float zoom = LittleH.program.dynamicCamera.zoom;
+            Color color = new Color(0.875f, 0.875f, 0.875f, Math.max(0, 1 - zoom / 6));
+
+            if (color.a > 0.01f) {
+
+                g.startShapeRenderer(color);
+
+                for (Point point : toDrawGrid) {
+                    g.drawRect(point.x, point.y, 64, 64);
+                }
+
+                g.endShapeRenderer();
+
+            }
+        }
 
         particles.forEach(particle -> particle.render(g));
         enemies.forEach(enemy -> enemy.render(g, this));

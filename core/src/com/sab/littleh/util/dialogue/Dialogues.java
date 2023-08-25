@@ -69,7 +69,6 @@ public class Dialogues {
                if (parens == 0) {
                   if (next.equals(",")) next += "\\wF(5)";
                   else if (next.equals(".")) next += "\\wF(15)";
-                  else if (next.equals("!")) next += "\\wF(15)";
                   else if (next.equals("?")) next += "\\wF(15)";
                   else if (next.equals(":")) next += "\\wF(5)";
                   else if (next.equals(";")) next += "\\wF(10)";

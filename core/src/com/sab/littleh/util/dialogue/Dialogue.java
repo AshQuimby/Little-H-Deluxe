@@ -3,6 +3,7 @@ package com.sab.littleh.util.dialogue;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.game.level.Level;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
@@ -135,9 +136,20 @@ public class Dialogue {
          case "pS" -> {
             SoundEngine.playSound(parameter);
          }
+         // playMusic (path)
+         case "pM" -> {
+            SoundEngine.playMusic(parameter);
+         }
          // waitFor (ticks)
          case "wF" -> {
             waitFor = Integer.parseInt(parameter);
+         }
+         // endBlock (silent)
+         case "eB" -> {
+            if (!Boolean.parseBoolean(parameter))
+               SoundEngine.playSound("blip.ogg");
+            toEnd();
+            nextBlock();
          }
          // goFast (letters/tick)
          case "gF" -> {
@@ -146,6 +158,18 @@ public class Dialogue {
          // characterName (id)
          case "cN" -> {
             lastBlock += characterNames[Integer.parseInt(parameter)] + ": ";
+         }
+         // killPlayer (end dialogue)
+         case "kP" -> {
+            if (Boolean.parseBoolean(parameter)) {
+               while (!finished()) {
+                  toEnd();
+                  nextBlock();
+               }
+            }
+            if (Level.currentLevel != null && Level.currentLevel.inGame()) {
+               Level.currentLevel.player.kill();
+            }
          }
          default -> {
             malformedCommand(command, "Command does not exist");
