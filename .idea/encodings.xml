@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/core/src/Images.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/Particle.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/TileEditor.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Particle.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/Enemy.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyA.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyE.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyF.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/WingedMode.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/Ball.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/CampaignState.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/Entity.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/GameState.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/LimblessH.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/Map.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/MapEditor.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/PlayState.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/Player.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/Tile.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/WingedH.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/enemy/A.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/enemy/E.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/enemy/Enemy.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/map/enemy/F.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/AABB.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/Animation.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/Camera.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/Menu.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/MouseUtils.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/SABDecoder.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/Settings.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/SoundEngine.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/TextUtils.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/dialogue/Dialogue.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/core/src/com/sab/littleh/util/dialogue/Dialogues.java" charset="windows-1252" />
+  </component>
+</project>
