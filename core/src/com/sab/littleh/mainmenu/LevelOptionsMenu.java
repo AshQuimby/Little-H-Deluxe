@@ -10,6 +10,7 @@ import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.sab_format.SabData;
+import com.sab.littleh.util.sab_format.SabReader;
 import com.sab.littleh.util.sab_format.SabValue;
 import com.sab.littleh.util.sab_format.SabWriter;
 
@@ -141,11 +142,10 @@ public class LevelOptionsMenu extends MainMenu {
         mapData.insertValue("name", new SabValue(newName));
         try {
             String oldFile = "";
-            Scanner scanner = new Scanner(file);
+            Scanner scanner = SabReader.skipSabPreface(new Scanner(file));
             scanner.useDelimiter("");
             while (scanner.hasNext()) {
-                if (scanner.hasNext("@")) scanner.nextLine();
-                else oldFile += scanner.nextLine() + "\n";
+                oldFile += scanner.nextLine() + "\n";
             }
             scanner.close();
             file.delete();

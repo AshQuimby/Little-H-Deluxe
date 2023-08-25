@@ -14,7 +14,7 @@
 @coin [ volatile, pickup, coin, property_set, 4_set ]
 @coin_box [ volatile, coin_box, notifiable, notify_all_coins, notified_alternate_type, property_set, 8_set ]
 @color_cube [ property_set, 15_set ]
-@dynamic_color_cube [ string_picker, render_color, invisible, post_render, property_set, 4_set ]
+@dynamic_color_cube [ string_picker, render_color, property_set, 4_set ]
 @dialogue_trigger [ string_picker, pickup, invisible, dialogue ]
 @end [ volatile, pickup, sinusoid, post_render_in_game, end, invisible ]
 @enemy [ enemy, invisible, volatile, updatable, property_set, 3_set ]
