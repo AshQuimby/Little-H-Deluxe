@@ -24,7 +24,8 @@ public class TileSelection {
         if (copyTiles) {
             for (int i = 0; i < rectangle.width; i++) {
                 for (int j = 0; j < rectangle.height; j++) {
-                    Tile tileAt = background ? level.getBackgroundTileAt(i, j) : level.getTileAt(i, j);
+                    Tile tileAt = background ? level.getBackgroundTileAt(rectangle.x + i, rectangle.y + j)
+                            : level.getTileAt(rectangle.x + i, rectangle.y + j);
                     if (tileAt != null) {
                         tiles.add(tileAt.copy());
                         tilePositions.add(new Point(tileAt.x - rectangle.x, tileAt.y - rectangle.y));

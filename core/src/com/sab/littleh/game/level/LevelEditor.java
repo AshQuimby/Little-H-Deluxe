@@ -39,10 +39,10 @@ public class LevelEditor {
 
     public void setSaved(boolean value) {
         saved = value;
-        String title = LittleH.TITLE + " | Editing level: " + level.mapData.getValue("name");
+        String title = " | Editing level: " + level.mapData.getValue("name");
         if (!saved)
             title += " (Unsaved)";
-        Gdx.graphics.setTitle(title);
+        LittleH.setTitle(title);
     }
 
     public Point addTile(Tile tileToCopy, int x, int y, boolean addToUndoQueue) {
