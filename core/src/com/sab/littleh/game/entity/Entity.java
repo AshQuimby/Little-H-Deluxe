@@ -77,6 +77,9 @@ public class Entity {
 
         solidInteractions(entityHitbox, collisions, game);
         collisions = getNearbyTiles(game.tileMap);
+        List<Tile> backgroundTiles = getNearbyTiles(game.backgroundMap);
+        backgroundTiles.removeIf(tile -> !tile.hasTag("ignore_background"));
+        collisions.addAll(backgroundTiles);
         tileInteractions(entityHitbox, collisions, game);
 
         set(entityHitbox);

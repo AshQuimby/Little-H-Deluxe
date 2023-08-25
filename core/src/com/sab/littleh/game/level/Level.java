@@ -412,7 +412,7 @@ public class Level {
         int endX = startX + screenTileWidth;
         int endY = startY + screenTileHeight;
 
-        List<Tile> postRenders = new ArrayList<>();
+        List<Tile> backgroundPostRenders = new ArrayList<>();
 
         g.resetTint();
         g.resetColor();
@@ -444,7 +444,7 @@ public class Level {
                     if (tile != null) {
                         tile.render(inGame(), g);
                         if (tile.hasTag("post_render"))
-                            postRenders.add(tile);
+                            backgroundPostRenders.add(tile);
                     }
                 } else {
                     // Draw background
@@ -453,17 +453,15 @@ public class Level {
                     if (tile != null) {
                         tile.render(inGame(), g);
                         if (tile.hasTag("post_render"))
-                            postRenders.add(tile);
+                            backgroundPostRenders.add(tile);
                         else if (tile.hasTag("post_render_in_game") && player != null)
-                            postRenders.add(tile);
+                            backgroundPostRenders.add(tile);
                     }
                 }
             }
         }
 
-        drawPostRenders(g, postRenders);
-
-        postRenders.clear();
+        List<Tile> postRenders = new ArrayList<>();
 
         g.resetTint();
         g.resetColor();
@@ -518,6 +516,26 @@ public class Level {
         if (inGame())
             player.render(g, this);
 
+        // Post renders
+        if (!inGame()) {
+            if (backgroundPriority) {
+                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+            } else {
+                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+            }
+        } else {
+            g.setTint(new Color(0.5f, 0.5f, 0.5f, 1f));
+        }
+        drawPostRenders(g, backgroundPostRenders);
+        if (!inGame()) {
+            if (backgroundPriority) {
+                g.setTint(new Color(1f, 1f, 1f, 0.5f));
+            } else {
+                g.resetTint();
+            }
+        } else {
+            g.resetTint();
+        }
         drawPostRenders(g, postRenders);
 
         g.resetTint();
@@ -546,6 +564,7 @@ public class Level {
     public void drawPostRenders(Graphics g, List<Tile> postRenders) {
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
+                // TODO: This is where water rendering happens, check with tile.hasTag("water")
                 tile.render(false, g);
             }
             if (tile.hasTag("text")) {

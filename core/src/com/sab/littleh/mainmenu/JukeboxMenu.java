@@ -4,22 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.game.entity.enemy.A;
-import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelLoader;
-import com.sab.littleh.game.level.UndoSelection;
 import com.sab.littleh.settings.ListSetting;
 import com.sab.littleh.settings.SettingButton;
-import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.sab_format.SabReader;
 import com.sab.littleh.util.sab_format.SabValue;
-import com.sun.tools.javac.Main;
 
 import java.util.*;
 

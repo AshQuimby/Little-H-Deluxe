@@ -317,21 +317,12 @@ public class Player extends Entity {
         return ticksAlive <= 1;
     }
 
-    public void collide(Level game) {
-        java.util.List<Tile> collisions = new ArrayList<Tile>();
-        Rectangle playerHitbox = new Rectangle(x, y, width, height);
-
-        solidInteractions(playerHitbox, collisions, game);
-        collisions = getNearbyTiles(game.tileMap);
-        tileInteractions(playerHitbox, collisions, game);
-
-        set(playerHitbox);
-    }
-
+    @Override
     public void onCollision(boolean horizontal, boolean vertical) {
         powerup.onCollision(horizontal, vertical);
     }
 
+    @Override
     public void tileInteractions(Rectangle playerHitbox, List<Tile> collisions, Level game) {
         Set<Tile> newLastTouchedTiles = new HashSet<>();
         for (Tile tile : collisions) {

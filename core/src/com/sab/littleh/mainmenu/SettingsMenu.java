@@ -1,31 +1,14 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.game.entity.enemy.A;
-import com.sab.littleh.game.level.Level;
-import com.sab.littleh.game.level.LevelLoader;
-import com.sab.littleh.settings.PercentageSetting;
-import com.sab.littleh.settings.Setting;
 import com.sab.littleh.settings.SettingButton;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
-import com.sab.littleh.util.Menu;
-import com.sab.littleh.util.sab_format.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
 
 public class SettingsMenu extends MainMenu {
     private List<MenuButton> menuButtons;

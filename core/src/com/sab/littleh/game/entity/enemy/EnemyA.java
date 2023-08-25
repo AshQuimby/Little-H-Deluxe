@@ -4,11 +4,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
+import com.sab.littleh.util.SoundEngine;
 
-public class A extends Enemy {
-   public A(int x, int y, Player player, Tile parent) {
+public class EnemyA extends Enemy {
+   public EnemyA(int x, int y, Player player, Tile parent) {
       super(x, y, player, parent);
       image = "enemies/a.png";
+   }
+
+   public int getEnemyType() {
+      return 2;
    }
    
    @Override
@@ -21,7 +26,7 @@ public class A extends Enemy {
       frame = runAnimation.stepLooping();
       super.update(game);
       if (!touchingGround) {
-         if (velocityY > 0) {
+         if (velocityY < 0) {
             frame = 5;
          } else {
             frame = 6;
@@ -31,7 +36,7 @@ public class A extends Enemy {
       if (playerDist > 1480 * 1480) {
          remove = true;
       }
-      Tile tileAhead = getTile(direction * 1, 0, game.tileMap);
+      Tile tileAhead = getTile(direction, 0, game.tileMap);
       boolean jump = touchingGround && tileAhead != null && (tileAhead.isSolid() || tileAhead.hasTag("death"));
       
       float testX = x;
@@ -53,7 +58,8 @@ public class A extends Enemy {
          }
       }
       if (jump) {
-         velocityY = 28;
+         velocityY = 26;
+         SoundEngine.playSound("jump.ogg");
       }
       this.direction = (int) Math.signum(game.player.x - this.x);
       if (direction == 0) direction = -1;
