@@ -594,7 +594,7 @@ public class Level {
         Tile[][] neighbors = new Tile[3][3];
         for (int i = tileX - 1; i < tileX + 2; i++) {
             for (int j = tileY - 1; j < tileY + 2; j++) {
-                if (!(i < 0 || j < 0 || i >= getWidth() || j >= getHeight()) && getTileAt(i, j) != null && !getTileAt(i, j).ignoreTiling) {
+                if (!(i < 0 || j < 0 || i >= getWidth() || j >= getHeight()) && getTileAt(i, j) != null) {
                     neighbors[tileX - i + 1][tileY - j + 1] = getTileAt(i, j);
                 } else {
                     neighbors[tileX - i + 1][tileY - j + 1] = null;
@@ -605,12 +605,25 @@ public class Level {
     }
 
     public void drawPostRenders(Graphics g, List<Tile> postRenders) {
-//        waterShader.setUniformf("u_tick", gameTick / 60f);
+        waterShader.bind();
+        waterShader.setUniformf("u_time", gameTick / 60f);
+        g.setShader(null);
+        g.getShader().bind();
+
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
-                    tile.render(false, g);
-//                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                    Tile[][] neighbors = getNeighbors(tile.x, tile.y);
+                    waterShader.bind();
+                    waterShader.setUniformi("u_neighbors",
+                            neighbors[0][1] != null && neighbors[0][1].isSolid() ? 1 : 0,
+                            neighbors[2][1] != null && neighbors[2][1].isSolid() ? 1 : 0,
+                            neighbors[1][0] != null && neighbors[1][0].isSolid() ? 1 : 0,
+                            neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0);
+                    waterShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
+                    g.setShader(null);
+                    g.getShader().bind();
+                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
                 } else {
                     tile.render(false, g);
                 }

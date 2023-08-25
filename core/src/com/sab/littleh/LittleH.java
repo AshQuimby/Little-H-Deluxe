@@ -81,7 +81,12 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void create() {
-        Level.waterShader = new ShaderProgram("shaders/default.vsh", "shaders/water.fsh");
+        Level.waterShader = new ShaderProgram(Gdx.files.internal("shaders/water.vsh"), Gdx.files.internal("shaders/water.fsh"));
+        if (!Level.waterShader.isCompiled()) {
+            System.out.println(Level.waterShader.getLog());
+            System.exit(1);
+        }
+
         g = new Graphics();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
