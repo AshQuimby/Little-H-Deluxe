@@ -325,6 +325,7 @@ public class Player extends Entity {
     @Override
     public void tileInteractions(Rectangle playerHitbox, List<Tile> collisions, Level game) {
         Set<Tile> newLastTouchedTiles = new HashSet<>();
+        boolean splash = true;
         for (Tile tile : collisions) {
             if (crouched && tile.isSolid() && tile.hasTag("half") && (tile.tileType == 0 || tile.tileType == 2)) {
                 ControlInputs.pressControl(Control.DOWN);
@@ -341,6 +342,13 @@ public class Player extends Entity {
                     else if (velocityY < 36) velocityY = 36;
                 }
                 if (tile.hasTag("water")) {
+                    for (Tile otherTile : lastTouchedTiles) {
+                        if (otherTile.hasTag("water")) splash = false;
+                    }
+                    if (splash) {
+                        SoundEngine.playSound("splash.ogg");
+                        splash = false;
+                    }
                     if (!ignoreWater) {
                         swimming = true;
                     }

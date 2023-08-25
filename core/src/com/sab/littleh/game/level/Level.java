@@ -461,22 +461,13 @@ public class Level {
             }
         }
 
-        List<Tile> postRenders = new ArrayList<>();
-
         g.resetTint();
         g.resetColor();
 
-        if (!inGame()) {
-            if (backgroundPriority) {
-                g.setTint(new Color(1f, 1f, 1f, 0.5f));
-            } else {
-                g.resetTint();
-            }
-        } else {
-            g.resetTint();
-        }
+        List<Tile> postRenders = new ArrayList<>();
+        List<Tile> visibleTiles = new ArrayList<>();
 
-        // Draw in the front
+        // Draw in the front but behind players
         for (int i = startX; i < endX; i++) {
             if (i < 0 || i >= getWidth()) continue;
             for (int j = startY; j < endY; j++) {
@@ -486,7 +477,8 @@ public class Level {
                     if (backgroundPriority) {
                         Tile tile = getBackgroundTileAt(i, j);
                         if (tile != null) {
-                            tile.render(inGame(), g);
+                            if (!tile.isSolid()) tile.render(inGame(), g);
+                            else visibleTiles.add(tile);
                             if (tile.hasTag("post_render"))
                                 postRenders.add(tile);
                         }
@@ -495,7 +487,8 @@ public class Level {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
                     if (tile != null) {
-                        tile.render(inGame(), g);
+                        if (!tile.isSolid()) tile.render(inGame(), g);
+                        else visibleTiles.add(tile);
                         if (tile.hasTag("post_render"))
                             postRenders.add(tile);
                     }
@@ -503,7 +496,8 @@ public class Level {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
                     if (tile != null) {
-                        tile.render(inGame(), g);
+                        if (!tile.isSolid()) tile.render(inGame(), g);
+                        else visibleTiles.add(tile);
                         if (tile.hasTag("post_render"))
                             postRenders.add(tile);
                         else if (tile.hasTag("post_render_in_game") && player != null)
@@ -516,7 +510,6 @@ public class Level {
         if (inGame())
             player.render(g, this);
 
-        // Post renders
         if (!inGame()) {
             if (backgroundPriority) {
                 g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
@@ -526,7 +519,49 @@ public class Level {
         } else {
             g.setTint(new Color(0.5f, 0.5f, 0.5f, 1f));
         }
+
         drawPostRenders(g, backgroundPostRenders);
+
+        if (!inGame()) {
+            if (backgroundPriority) {
+                g.setTint(new Color(1f, 1f, 1f, 0.5f));
+            } else {
+                g.resetTint();
+            }
+        } else {
+            g.resetTint();
+        }
+
+        // Draw in the front
+        for (Tile tile :visibleTiles) {
+            if (!inGame()) {
+                // Draw background in front
+                if (backgroundPriority) {
+                    if (tile != null) {
+                        tile.render(inGame(), g);
+                        if (tile.hasTag("post_render"))
+                            postRenders.add(tile);
+                    }
+                    continue;
+                }
+                // Draw foreground
+                if (tile != null) {
+                    tile.render(inGame(), g);
+                    if (tile.hasTag("post_render"))
+                        postRenders.add(tile);
+                }
+            } else {
+                // Draw foreground
+                if (tile != null) {
+                    tile.render(inGame(), g);
+                    if (tile.hasTag("post_render"))
+                        postRenders.add(tile);
+                    else if (tile.hasTag("post_render_in_game") && player != null)
+                        postRenders.add(tile);
+                }
+            }
+        }
+
         if (!inGame()) {
             if (backgroundPriority) {
                 g.setTint(new Color(1f, 1f, 1f, 0.5f));
