@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -615,11 +616,17 @@ public class Level {
                 if (tile.hasTag("water")) {
                     Tile[][] neighbors = getNeighbors(tile.x, tile.y);
                     waterShader.bind();
-                    waterShader.setUniformi("u_neighbors",
-                            neighbors[0][1] != null && neighbors[0][1].isSolid() ? 1 : 0,
-                            neighbors[2][1] != null && neighbors[2][1].isSolid() ? 1 : 0,
+                    waterShader.setUniformMatrix("u_neighbors", new Matrix3(new float[] {
+                            neighbors[0][0] != null && neighbors[0][0].isSolid() ? 1 : 0,
                             neighbors[1][0] != null && neighbors[1][0].isSolid() ? 1 : 0,
-                            neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0);
+                            neighbors[2][0] != null && neighbors[2][0].isSolid() ? 1 : 0,
+                            neighbors[0][1] != null && neighbors[0][1].isSolid() ? 1 : 0,
+                            neighbors[1][1] != null && neighbors[1][1].isSolid() ? 1 : 0,
+                            neighbors[2][1] != null && neighbors[2][1].isSolid() ? 1 : 0,
+                            neighbors[0][2] != null && neighbors[0][2].isSolid() ? 1 : 0,
+                            neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0,
+                            neighbors[2][2] != null && neighbors[2][2].isSolid() ? 1 : 0,
+                    }));
                     waterShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
                     g.setShader(null);
                     g.getShader().bind();
