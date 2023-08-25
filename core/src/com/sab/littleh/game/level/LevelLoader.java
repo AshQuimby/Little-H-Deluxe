@@ -60,11 +60,13 @@ public class LevelLoader {
                 "true",
                 "true",
                 "true",
+                "true",
                 Settings.localSettings.authorName.value,
                 "My Level",
                 "mountains",
                 "-1",
-                "0.1"
+                "0.1",
+                "true"
         };
     }
 
@@ -94,6 +96,7 @@ public class LevelLoader {
         Scanner scanner = SabReader.skipSabPreface(new Scanner(inputStream));
 
         List<Tile> tiles = new ArrayList<>();
+        List<Tile> background = new ArrayList<>();
 
         int levelWidth = 31;
         int levelHeight = 31;
@@ -101,7 +104,27 @@ public class LevelLoader {
         Set<Point> usedPositions = new HashSet<>();
 
         while (scanner.hasNext()) {
-            Tile tile = getTile(scanner.nextLine());
+            String nextLine = scanner.nextLine();
+
+            // Load background
+            if (nextLine.startsWith("@background_tiles")) {
+                while (scanner.hasNext()) {
+                    nextLine = scanner.nextLine();
+                    Tile tile = getTile(nextLine);
+                    if (tile != null && !tile.image.equals("delete")) {
+                        Point tilePosition = new Point(tile.x, tile.y);
+                        levelWidth = Math.max(levelWidth, tile.x);
+                        levelHeight = Math.max(levelHeight, tile.y);
+                        if (tile.hasTag("start"))
+                            LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
+                        background.add(tile);
+                        usedPositions.add(tilePosition);
+                    }
+                }
+                break;
+            }
+
+            Tile tile = getTile(nextLine);
             if (tile != null && !tile.image.equals("delete")) {
                 Point tilePosition = new Point(tile.x, tile.y);
                 if (usedPositions.contains(tilePosition)) continue;
@@ -145,6 +168,12 @@ public class LevelLoader {
                 if (minY == 0 && minX == 0) break;
             }
 
+            for (Tile tile : background) {
+                minX = Math.min(tile.x, minX);
+                minY = Math.min(tile.y, minY);
+                if (minY == 0 && minX == 0) break;
+            }
+
             if (minY != 0 || minX != 0) {
                 for (Tile tile : tiles) {
                     tile.x -= minX;
@@ -152,10 +181,17 @@ public class LevelLoader {
                     if (tile.hasTag("start"))
                         LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                 }
+
+                for (Tile tile : background) {
+                    tile.x -= minX;
+                    tile.y -= minY;
+                }
             }
         }
 
         level.addTiles(tiles, levelWidth, levelHeight);
+        level.addBackground(background);
+
         return level;
     }
 
