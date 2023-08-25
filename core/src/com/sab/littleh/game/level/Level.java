@@ -599,6 +599,7 @@ public class Level {
     }
 
     public void drawPostRenders(Graphics g, List<Tile> postRenders) {
+        waterShader.setUniformf("u_tick", gameTick / 60f);
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
