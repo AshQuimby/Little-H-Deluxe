@@ -21,7 +21,7 @@ public class CreateLevelMenu extends MainMenu {
     List<TypingBox> inputFields;
     List<MenuButton> buttons;
     public CreateLevelMenu(String levelName) {
-        Gdx.graphics.setTitle(LittleH.TITLE + " | Creating a New Level");
+        LittleH.setTitle(" | Creating a New Level");
         inputFields = new ArrayList<>();
         buttons = new ArrayList<>();
 

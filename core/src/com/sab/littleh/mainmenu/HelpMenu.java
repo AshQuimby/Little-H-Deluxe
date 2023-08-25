@@ -27,7 +27,7 @@ public class HelpMenu extends MainMenu {
 
     @Override
     public void start() {
-        Gdx.graphics.setTitle(LittleH.TITLE + " | Viewing Help Menu");
+        LittleH.setTitle(" | Viewing Help Menu");
     }
 
     @Override

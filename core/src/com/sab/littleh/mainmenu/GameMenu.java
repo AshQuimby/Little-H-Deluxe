@@ -19,7 +19,7 @@ public class GameMenu extends MainMenu {
     public GameMenu(File file, Level level) {
         this.level = level;
         this.file = file;
-        Gdx.graphics.setTitle(LittleH.TITLE + " | Playing level: " + level.mapData.getValue("name"));
+        LittleH.setTitle(" | Playing level: " + level.mapData.getValue("name"));
         Point startPos = level.getStartPos();
         if (startPos == null) {
             failedPlaying = true;

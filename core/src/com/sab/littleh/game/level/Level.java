@@ -479,7 +479,7 @@ public class Level {
                     if (backgroundPriority) {
                         Tile tile = getBackgroundTileAt(i, j);
                         if (tile != null) {
-                            if (!tile.isSolid() && tile.hasTag("tileset")) tile.render(inGame(), g);
+                            if (!(tile.isSolid() && tile.hasTag("tileset"))) tile.render(inGame(), g);
                             else visibleTiles.add(tile);
                             if (tile.hasTag("post_render"))
                                 postRenders.add(tile);
@@ -489,7 +489,7 @@ public class Level {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
                     if (tile != null) {
-                        if (!tile.isSolid() && tile.hasTag("tileset")) tile.render(inGame(), g);
+                        if (!(tile.isSolid() && tile.hasTag("tileset"))) tile.render(inGame(), g);
                         else visibleTiles.add(tile);
                         if (tile.hasTag("post_render"))
                             postRenders.add(tile);
@@ -498,7 +498,7 @@ public class Level {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
                     if (tile != null) {
-                        if (!tile.isSolid() && tile.hasTag("tileset")) tile.render(inGame(), g);
+                        if (!(tile.isSolid() && tile.hasTag("tileset"))) tile.render(inGame(), g);
                         else visibleTiles.add(tile);
                         if (tile.hasTag("post_render"))
                             postRenders.add(tile);

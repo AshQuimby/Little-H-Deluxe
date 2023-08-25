@@ -71,7 +71,7 @@ public class LevelOptionsMenu extends MainMenu {
 
     @Override
     public void start() {
-        Gdx.graphics.setTitle(LittleH.TITLE + " | Viewing Level " + mapData.getValue("name"));
+        LittleH.setTitle(" | Viewing Level " + mapData.getValue("name"));
         Cursors.switchCursor("cursor");
     }
 

@@ -19,7 +19,7 @@ public class LevelSelectMenu extends MainMenu {
 
     @Override
     public void start() {
-        Gdx.graphics.setTitle(LittleH.TITLE + " | Browsing Levels");
+        LittleH.setTitle(" | Browsing Levels");
         Cursors.switchCursor("cursor");
         File[] foundMaps = LittleH.findMaps();
         LevelButton[] levelButtons = new LevelButton[foundMaps.length];

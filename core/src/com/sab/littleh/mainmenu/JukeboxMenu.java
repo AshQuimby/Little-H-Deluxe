@@ -93,7 +93,7 @@ public class JukeboxMenu extends MainMenu {
     public void start() {
         LittleH.program.dynamicCamera.reset();
         LittleH.program.dynamicCamera.targetPosition.y = 300;
-        Gdx.graphics.setTitle(LittleH.TITLE + " | Listening to bangers");
+        LittleH.setTitle(" | Listening to bangers");
     }
 
     public void changedSongIndex() {

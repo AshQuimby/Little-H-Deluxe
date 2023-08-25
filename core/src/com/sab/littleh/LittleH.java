@@ -36,6 +36,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.OperatingSystemMXBean;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -71,6 +72,11 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         borderedFont = Fonts.getFont(Settings.localSettings.font.asRawValue() + "_bordered");
         borderedFont.setColor(Color.WHITE);
         defaultFontScale = Settings.localSettings.font.getFontSize();
+    }
+
+    public static void setTitle(String title) {
+        if (!System.getProperty("os.name").startsWith("Mac"))
+            Gdx.graphics.setTitle(TITLE + title);
     }
 
     @Override
