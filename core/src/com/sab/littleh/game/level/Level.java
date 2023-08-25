@@ -599,12 +599,12 @@ public class Level {
     }
 
     public void drawPostRenders(Graphics g, List<Tile> postRenders) {
-        waterShader.setUniformf("u_tick", gameTick / 60f);
+//        waterShader.setUniformf("u_tick", gameTick / 60f);
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
-                    tile.render(false, g);
-//                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+//                    tile.render(false, g);
+                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
                 } else {
                     tile.render(false, g);
                 }
