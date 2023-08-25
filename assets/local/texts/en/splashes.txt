@@ -33,3 +33,5 @@ You can only swap gravity while touching the ground, think carefully about when 
 You open the fridge
 You see all the bodies there
 The Among Us Man
+%split%
+Due to fast load times, you likely won't ever be able to read one of these in a legitimate loading screen.

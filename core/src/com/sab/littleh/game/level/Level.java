@@ -426,7 +426,7 @@ public class Level {
                 g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
             }
         } else {
-            g.setTint(new Color(0.5f, 0.5f, 0.5f, 1f));
+            g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
         }
 
         // Draw in the back
@@ -519,14 +519,14 @@ public class Level {
                 g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
             }
         } else {
-            g.setTint(new Color(0.5f, 0.5f, 0.5f, 1f));
+            g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
         }
 
         drawPostRenders(g, backgroundPostRenders);
 
         if (!inGame()) {
             if (backgroundPriority) {
-                g.setTint(new Color(1f, 1f, 1f, 0.5f));
+                g.setTint(new Color(1f, 1f, 1f, 0.65f));
             } else {
                 g.resetTint();
             }
@@ -564,15 +564,6 @@ public class Level {
             }
         }
 
-        if (!inGame()) {
-            if (backgroundPriority) {
-                g.setTint(new Color(1f, 1f, 1f, 0.5f));
-            } else {
-                g.resetTint();
-            }
-        } else {
-            g.resetTint();
-        }
         drawPostRenders(g, postRenders);
 
         g.resetTint();
@@ -598,13 +589,28 @@ public class Level {
         }
     }
 
+    public Tile[][] getNeighbors(int tileX, int tileY) {
+        // Magic
+        Tile[][] neighbors = new Tile[3][3];
+        for (int i = tileX - 1; i < tileX + 2; i++) {
+            for (int j = tileY - 1; j < tileY + 2; j++) {
+                if (!(i < 0 || j < 0 || i >= getWidth() || j >= getHeight()) && getTileAt(i, j) != null && !getTileAt(i, j).ignoreTiling) {
+                    neighbors[tileX - i + 1][tileY - j + 1] = getTileAt(i, j);
+                } else {
+                    neighbors[tileX - i + 1][tileY - j + 1] = null;
+                }
+            }
+        }
+        return neighbors;
+    }
+
     public void drawPostRenders(Graphics g, List<Tile> postRenders) {
 //        waterShader.setUniformf("u_tick", gameTick / 60f);
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
-//                    tile.render(false, g);
-                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                    tile.render(false, g);
+//                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
                 } else {
                     tile.render(false, g);
                 }

@@ -602,6 +602,10 @@ public class LevelEditorMenu extends MainMenu {
                 if (!level.inGame())
                     startTesting();
                 break;
+            case Input.Keys.TAB :
+                editingBackground = !editingBackground;
+                editor = editingBackground ? backgroundEditor : levelEditor;
+                break;
         }
     }
 

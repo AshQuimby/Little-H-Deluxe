@@ -26,7 +26,6 @@ public class GravityMode extends Powerup {
 
     @Override
     public void update(Level game) {
-        player.crushed = true;
         super.update(game);
         if (player.crouched) {
             player.crouched = false;
