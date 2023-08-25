@@ -48,11 +48,11 @@ public class TileSelection {
     }
 
     public void render(Graphics g) {
-        g.setColor(Images.quickAlpha(0.5f));
+        g.setTint(Images.quickAlpha(0.5f));
         for (Tile tile : tiles) {
             tile.render(false, g);
         }
-        g.resetColor();
+        g.resetTint();
     }
 
     public void paste(LevelEditor editor) {

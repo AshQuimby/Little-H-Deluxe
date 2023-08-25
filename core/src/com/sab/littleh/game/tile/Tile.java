@@ -1,5 +1,6 @@
 package com.sab.littleh.game.tile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -289,7 +290,10 @@ public class Tile {
         if (hasTag("invisible") && playerExists) {
             return;
         }
+        if (hasTag("render_color"))
+            g.setColor(Color.valueOf("#" + extra.toUpperCase().trim()));
         g.drawImage(getImage(), x * 64, y * 64, 64, 64, getDrawSection());
+        g.resetColor();
     }
 
     public Rectangle toRectangle() {

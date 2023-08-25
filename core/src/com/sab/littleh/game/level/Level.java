@@ -577,6 +577,37 @@ public class Level {
             g.drawString("EDITING BACKGROUND", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
         }
 
+        if (inGame()) {
+            if (gameTick < 240 || Cursors.cursorIs("magnifier")) {
+                String[] levelOptions = {
+                        "double_jumping",
+                        "wall_sliding",
+                        "crouching",
+                        "look_around"
+                };
+                String[] levelOptionImages = {
+                        "ui/buttons/icons/double_jump.png",
+                        "ui/buttons/icons/wall_jump.png",
+                        "ui/buttons/icons/slide.png",
+                        "ui/buttons/icons/magnifying_glass.png"
+                };
+
+                g.setColor(new Color(1, 1, 1, Math.max(1, Math.min(240 - gameTick, 120)) / 120f));
+                if (Cursors.cursorIs("magnifier")) {
+                    g.resetColor();
+                }
+
+                for (int i = 0; i < levelOptions.length; i++) {
+                    g.draw(Images.getImage(levelOptionImages[i]),
+                            -MainMenu.relZeroX() - levelOptions.length * 80 + i * 80 + 8, MainMenu.relZeroY() + 8, 64, 64);
+                    g.draw(Images.getImage(mapData.getValue(levelOptions[i]).asBool() ? "ui/level_setting_on.png" : "ui/level_setting_off.png"),
+                            -MainMenu.relZeroX() - levelOptions.length * 80 + i * 80, MainMenu.relZeroY(), 80, 80);
+                }
+
+                g.resetColor();
+            }
+        }
+
         if (popup != null) {
             popup.render(g);
             if (popup.timeLeft < 0) {
@@ -637,13 +668,6 @@ public class Level {
 
                     g.drawString(tile.extra, LittleH.borderedFont, tile.x * 64 + 32, tile.y * 64 + 32, size * LittleH.defaultFontScale, 0);
                 }
-            }
-            if (tile.hasTag("render_color")) {
-                if (tile.extra == null || tile.extra.length() < 6) {
-                } else {
-                    g.setColor(Color.valueOf("#" + tile.extra.toUpperCase().trim()));
-                }
-                tile.render(false, g);
             }
             if (tile.hasTag("sinusoid")) {
                 g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 16, 64, 64, tile.getDrawSection());

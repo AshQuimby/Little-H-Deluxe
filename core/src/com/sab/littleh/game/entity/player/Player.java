@@ -346,7 +346,11 @@ public class Player extends Entity {
                         if (otherTile.hasTag("water")) splash = false;
                     }
                     if (splash) {
-                        SoundEngine.playSound("splash.ogg");
+                        if (velocityMagnitude() > 24) {
+                            SoundEngine.playSound("splash.ogg");
+                        } else {
+                            SoundEngine.playSound("splish.ogg");
+                        }
                         splash = false;
                     }
                     if (!ignoreWater) {

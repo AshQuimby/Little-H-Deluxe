@@ -6,10 +6,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -37,11 +35,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.OperatingSystemMXBean;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
+import java.util.zip.Deflater;
 
 public class LittleH extends ApplicationAdapter implements InputProcessor, ControllerListener {
     public static final String TITLE = "The Little H Deluxe";
@@ -251,13 +249,25 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.F11)
+        if (keycode == Input.Keys.F11) {
             if (Gdx.graphics.isFullscreen())
                 Gdx.graphics.setWindowedMode(1600, 900);
             else
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        else if (keycode == Input.Keys.F3)
+        } else if (keycode == Input.Keys.F3) {
             Images.clearCache();
+        } else if (keycode == Input.Keys.F12) {
+            Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+            ByteBuffer pixels = pixmap.getPixels();
+
+            int size = Gdx.graphics.getBackBufferWidth() * Gdx.graphics.getBackBufferHeight() * 4;
+            for (int i = 3; i < size; i += 4) {
+                pixels.put(i, (byte) 255);
+            }
+            String imagePath = "../screenshots/" + Calendar.getInstance().getTime().toString().replace(":", "-").replace(" ", "-") + ".png";
+            PixmapIO.writePNG(Gdx.files.local(imagePath), pixmap, Deflater.DEFAULT_COMPRESSION, true);
+            pixmap.dispose();
+        }
         ControlInputs.press(keycode);
         mainMenu.keyDown(keycode);
         return true;

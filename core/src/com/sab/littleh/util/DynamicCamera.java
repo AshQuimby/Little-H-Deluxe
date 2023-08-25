@@ -44,8 +44,7 @@ public class DynamicCamera extends OrthographicCamera {
     }
 
     public float getCameraRotation() {
-        float camAngle = (float) Math.atan2(up.x, up.y)*MathUtils.radiansToDegrees;
-        return camAngle;
+        return (float) Math.atan2(up.x, up.y) * MathUtils.radiansToDegrees;
     }
 
     public void updateCamera() {

@@ -19,14 +19,14 @@ import java.util.Set;
 public class LevelEditor {
     protected static DynamicCamera camera = LittleH.program.dynamicCamera;
     protected Level level;
-    public boolean saved;
+    public static boolean saved;
     protected Set<Point> fillTiles;
-    protected Rectangle selection;
-    protected boolean selectionAlive;
-    protected TileSelection tileSelection;
-    protected Vector2 selectionAnchor;
-    protected boolean movingSelection;
-    protected boolean nudgingSelection;
+    protected static Rectangle selection;
+    protected static boolean selectionAlive;
+    protected static TileSelection tileSelection;
+    protected static Vector2 selectionAnchor;
+    protected static boolean movingSelection;
+    protected static boolean nudgingSelection;
     protected List<UndoAction> undoQueue;
     protected int undoIndex;
 
