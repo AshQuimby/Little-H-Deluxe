@@ -291,7 +291,7 @@ public class Tile {
             return;
         }
         if (hasTag("render_color"))
-            g.setColor(Color.valueOf("#" + extra.toUpperCase().trim()));
+            g.setColor(extra == null ? Color.WHITE : Color.valueOf("#" + extra.toUpperCase().trim()));
         g.drawImage(getImage(), x * 64, y * 64, 64, 64, getDrawSection());
         g.resetColor();
     }

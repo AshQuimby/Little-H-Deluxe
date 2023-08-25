@@ -11,6 +11,13 @@ public class DesktopLauncher {
 		config.setTitle("The Little H Deluxe");
 		config.setWindowedMode(1600, 900);
 		config.setWindowIcon("images/icon.png");
-		new Lwjgl3Application(new LittleH(), config);
+		new Lwjgl3Application(new LittleH(), config) {
+			@Override
+			public void exit()
+			{
+				if (((LittleH) getApplicationListener()).attemptClose())
+					super.exit();
+			}
+		};;
 	}
 }

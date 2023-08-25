@@ -67,7 +67,8 @@ public class LevelEditorMenu extends MainMenu {
     private Menu<ImageButton> toolButtons;
     private Menu<ImageButton> settingsButtons;
     private Menu<MenuButton> backgroundMenu;
-    private Menu<MenuButton> confirmationMenu;
+    private Menu<MenuButton> severeConfirmationMenu;
+    private Menu<MenuButton> severesevereConfirmationMenu;
     private Menu<? extends MenuButton> currentMenu;
     private static DynamicCamera camera = LittleH.program.dynamicCamera;
     private File file;
@@ -127,7 +128,7 @@ public class LevelEditorMenu extends MainMenu {
             currentMenu = settingsButtons;
         });
 
-        confirmationMenu = new Menu<>(new MenuButton[] {
+        severeConfirmationMenu = new Menu<>(new MenuButton[] {
                 new MenuButton("button", "Save & Exit", 0, 0, 256, 96,
                         () -> {
                             LevelLoader.saveLevel(file, level);
@@ -135,6 +136,22 @@ public class LevelEditorMenu extends MainMenu {
                         }),
                 new MenuButton("button", "Exit", 0, 0, 256, 96,
                         () -> LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData))),
+                new MenuButton("button", "Cancel", 0, 0, 256, 96,
+                        () -> currentMenu = null)
+        }, 256, 96, 16);
+
+        severesevereConfirmationMenu = new Menu<>(new MenuButton[] {
+                new MenuButton("button", "Save & Close", 0, 0, 256, 96,
+                        () -> {
+                            LevelLoader.saveLevel(file, level);
+                            LittleH.program.dispose();
+                            System.exit(0);
+                        }),
+                new MenuButton("button", "Close", 0, 0, 256, 96,
+                        () -> {
+                            LittleH.program.dispose();
+                            System.exit(0);
+                        }),
                 new MenuButton("button", "Cancel", 0, 0, 256, 96,
                         () -> currentMenu = null)
         }, 256, 96, 16);
@@ -292,10 +309,15 @@ public class LevelEditorMenu extends MainMenu {
                 if (backgroundMenu.contains(mousePosition)) {
                     canPlaceTiles = false;
                 }
-            } else if (currentMenu == confirmationMenu) {
-                confirmationMenu.forEach(button -> button.update());
-                confirmationMenu.setMenuRectangle(0, 32 + 16 - 64, 0, false);
-                confirmationMenu.setCenterX(0);
+            } else if (currentMenu == severeConfirmationMenu) {
+                severeConfirmationMenu.forEach(button -> button.update());
+                severeConfirmationMenu.setMenuRectangle(0, 32 + 16 - 64, 0, false);
+                severeConfirmationMenu.setCenterX(0);
+                canPlaceTiles = false;
+            } else if (currentMenu == severesevereConfirmationMenu) {
+                severesevereConfirmationMenu.forEach(button -> button.update());
+                severesevereConfirmationMenu.setMenuRectangle(0, 32 + 16 - 64, 0, false);
+                severesevereConfirmationMenu.setCenterX(0);
                 canPlaceTiles = false;
             }
 
@@ -700,7 +722,11 @@ public class LevelEditorMenu extends MainMenu {
     }
 
     public void confirmExit() {
-        currentMenu = confirmationMenu;
+        currentMenu = severeConfirmationMenu;
+    }
+
+    public void confirmProgramExit() {
+        currentMenu = severesevereConfirmationMenu;
     }
 
     public void startTesting() {
@@ -723,8 +749,10 @@ public class LevelEditorMenu extends MainMenu {
         if (extraQuery != null) {
             extraQuery.mouseClicked();
         } else {
-            if (currentMenu == confirmationMenu) {
-                confirmationMenu.forEach(MenuButton::mouseClicked);
+            if (currentMenu == severeConfirmationMenu) {
+                severeConfirmationMenu.forEach(MenuButton::mouseClicked);
+            } else if (currentMenu == severesevereConfirmationMenu) {
+                severesevereConfirmationMenu.forEach(MenuButton::mouseClicked);
             }
         }
     }
@@ -906,18 +934,34 @@ public class LevelEditorMenu extends MainMenu {
                 button.setPosition(item.getPosition(new Vector2()));
                 button.render(g);
             }
-        } else if (currentMenu == confirmationMenu) {
-            Rectangle rect = new Rectangle(confirmationMenu.getMenuRectangle());
+        } else if (currentMenu == severeConfirmationMenu) {
+            Rectangle rect = new Rectangle(severeConfirmationMenu.getMenuRectangle());
             rect.height += 128;
             g.drawPatch(Patch.get("menu_flat"), rect, 8);
 
             g.drawString("You are about to exit without saving!", LittleH.font,
                     rect.x + rect.width / 2, rect.y + rect.height - 64, LittleH.defaultFontScale, 0);
 
-            itemButtons = confirmationMenu.getItemButtons();
+            itemButtons = severeConfirmationMenu.getItemButtons();
 
-            for (int i = 0; i < confirmationMenu.items.length; i++) {
-                MenuButton button = confirmationMenu.getItem(i);
+            for (int i = 0; i < severeConfirmationMenu.items.length; i++) {
+                MenuButton button = severeConfirmationMenu.getItem(i);
+                Rectangle item = itemButtons[i];
+                button.setPosition(item.getPosition(new Vector2()));
+                button.render(g);
+            }
+        } else if (currentMenu == severesevereConfirmationMenu) {
+            Rectangle rect = new Rectangle(severeConfirmationMenu.getMenuRectangle());
+            rect.height += 128;
+            g.drawPatch(Patch.get("menu_flat"), rect, 8);
+
+            g.drawString("You are about to close the program without saving!", LittleH.font,
+                    rect.x + rect.width / 2, rect.y + rect.height - 64, LittleH.defaultFontScale, 0);
+
+            itemButtons = severeConfirmationMenu.getItemButtons();
+
+            for (int i = 0; i < severeConfirmationMenu.items.length; i++) {
+                MenuButton button = severeConfirmationMenu.getItem(i);
                 Rectangle item = itemButtons[i];
                 button.setPosition(item.getPosition(new Vector2()));
                 button.render(g);

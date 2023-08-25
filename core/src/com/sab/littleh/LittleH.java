@@ -15,10 +15,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.game.level.Level;
-import com.sab.littleh.mainmenu.LevelErrorMenu;
-import com.sab.littleh.mainmenu.LevelSelectMenu;
-import com.sab.littleh.mainmenu.LoadingMenu;
-import com.sab.littleh.mainmenu.MainMenu;
+import com.sab.littleh.game.level.LevelEditor;
+import com.sab.littleh.mainmenu.*;
 import com.sab.littleh.settings.SettingButton;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
@@ -247,6 +245,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Level.waterShader.dispose();
     }
 
+
+
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.F11) {
@@ -417,5 +417,19 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     public MainMenu getMenu() {
         return mainMenu;
+    }
+
+    public boolean attemptClose() {
+        System.out.println("hello");
+        if (mainMenu instanceof LevelEditorMenu) {
+            System.out.println("im here");
+            LevelEditorMenu menu = (LevelEditorMenu) mainMenu;
+            if (!LevelEditor.saved) {
+                System.out.println("im living in the wall");
+                menu.confirmProgramExit();
+                return false;
+            }
+        }
+        return true;
     }
 }

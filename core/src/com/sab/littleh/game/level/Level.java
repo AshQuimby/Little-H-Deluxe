@@ -218,15 +218,17 @@ public class Level {
                 return;
             }
 
-            if (gameTick % 60 == 0) {
-                timeLimit--;
-                if (timeLimit == 0) {
-                    player.trueKill();
-                    timeLimit = mapData.getValue("time_limit").asInt();
+            if (player.startSpeedrunTimer()) {
+                if (player.ticksAlive % 60 == 0) {
+                    timeLimit--;
+                    if (timeLimit == 0) {
+                        player.trueKill();
+                        timeLimit = mapData.getValue("time_limit").asInt();
+                    }
                 }
-            }
 
-            currentTime += 16 + (gameTick % 3 == 0 ? 0 : 1);
+                currentTime += 16 + (gameTick % 3 == 0 ? 0 : 1);
+            }
         }
 
         if (player != null) {
@@ -578,6 +580,9 @@ public class Level {
             g.drawString("EDITING BACKGROUND", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
         }
 
+        if (inGame())
+            player.renderHUD(g, this);
+
         if (inGame()) {
             if (gameTick < 240 || Cursors.cursorIs("magnifier")) {
                 String[] levelOptions = {
@@ -673,7 +678,11 @@ public class Level {
                     if (tile.tileType == 0) size = 1f;
                     else if (tile.tileType == 2) size = 0.7f;
 
+                    LittleH.borderedFont.setColor(new Color(1, 1, 1, 1 - Math.min(1, player.getCenter().dst2(tile.x * 64 + 32, tile.y * 64 + 32) / (1280f * 1280f))));
+
                     g.drawString(tile.extra, LittleH.borderedFont, tile.x * 64 + 32, tile.y * 64 + 32, size * LittleH.defaultFontScale, 0);
+
+                    LittleH.borderedFont.setColor(Color.WHITE);
                 }
             }
             if (tile.hasTag("sinusoid")) {

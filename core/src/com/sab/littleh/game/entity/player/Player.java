@@ -69,13 +69,14 @@ public class Player extends Entity {
     public java.util.List<Point> previousPositions;
     public java.util.List<Float> previousSpeeds;
     private Powerup powerup;
+    private boolean speedrunning;
 
     public Player(Point startPos) {
         ticksAlive = 0;
         dead = false;
         currentAnimation = idleAnimation;
         x = startPos.x * 64 + 8;
-        y = startPos.y * 64 + 8;
+        y = startPos.y * 64;
         this.startPos = startPos;
         direction = 1;
         velocityX = 0;
@@ -115,7 +116,7 @@ public class Player extends Entity {
         touchingGround = false;
         win = false;
         x = startPos.x * 64 + 8;
-        y = startPos.y * 64 + 8;
+        y = startPos.y * 64;
         velocityX = 0;
         velocityY = 0;
         jumpReleased = false;
@@ -160,6 +161,10 @@ public class Player extends Entity {
 //        kill();
 //    }
 
+    public boolean startSpeedrunTimer() {
+        return speedrunning;
+    }
+
     @Override
     public void update(Level game) {
         if (startTick) {
@@ -176,7 +181,7 @@ public class Player extends Entity {
         }
 
         previousPositions.add(0, new Point((int) x, (int) y));
-        if (previousPositions.size() > 512) {
+        if (previousPositions.size() > 1024) {
             previousPositions.remove(previousPositions.size() - 1);
         }
         previousSpeeds.add(0, velocityMagnitude());
@@ -207,6 +212,7 @@ public class Player extends Entity {
                 velocityX *= 0;
                 velocityY *= 0;
             } else {
+                deathAnimation.setAnimationSpeed(8);
                 updateVelocity();
                 collide(game);
             }
@@ -216,6 +222,7 @@ public class Player extends Entity {
             return;
         }
         if (dead) {
+            deathAnimation.setAnimationSpeed(4);
             if (currentAnimation.getFinished()) {
                 if (trueKill) {
                     game.reset();
@@ -257,6 +264,16 @@ public class Player extends Entity {
         slippery = false;
         swimming = false;
         collide(game);
+
+        // Don't start the timer until the player moves (to avoid unfair lag spikes on level load)
+        if (!speedrunning) {
+            if (previousPositions.size() > 0 && !previousPositions.get(0).equals(new Point((int) x, (int) y))) {
+                System.out.println(previousPositions.get(0));
+                System.out.println(new Point((int) x, (int) y));
+                speedrunning = true;
+            }
+            ticksAlive = 1;
+        }
     }
 
     public Vector2 getCenter() {
@@ -539,7 +556,9 @@ public class Player extends Entity {
         drawTrail(g);
         powerup.preDrawPlayer(g, game);
         drawPlayer(g, game);
-        LittleH.program.useStaticCamera();
+    }
+
+    public void renderHUD(Graphics g, Level game) {
         for (int i = 0; i < totalCoinCounts.length; i++) {
             int total = totalCoinCounts[i];
             if (shouldRenderCoinCounts[i]) {
@@ -547,7 +566,6 @@ public class Player extends Entity {
                 g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-MainMenu.relZeroX() - 40, -MainMenu.relZeroY() - 48 - 48 * i - 64, 32, 40), new Rectangle(0, 5 * i, 4, 5));
             }
         }
-        LittleH.program.useDynamicCamera();
     }
 
     public void drawPlayer(Graphics g, Level game) {
