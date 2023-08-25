@@ -29,7 +29,7 @@ public class EnemyF extends Enemy {
       super.update(game);
       float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
       if (playerDist > 1480 * 1480) {
-         remove = true;
+         despawn = true;
       } else {
          Tile tileAhead = getTile(direction, 0, game.tileMap);
          if (tileAhead != null && (tileAhead.hasTag("death") || (!tileAhead.hasTag("enemy_box") && tileAhead.isSolid()))) {

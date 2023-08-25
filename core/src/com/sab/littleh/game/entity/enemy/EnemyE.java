@@ -27,7 +27,7 @@ public class EnemyE extends Enemy {
       }
       float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
       if (playerDist > 1480 * 1480) {
-         remove = true;
+         despawn = true;
       }
       if (touchingGround) {
          Tile tileAhead = getTile(direction, 0, game.tileMap);

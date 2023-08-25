@@ -220,7 +220,7 @@ public class Level {
                 return;
             }
 
-            if (player.startSpeedrunTimer()) {
+            if (player.startSpeedrunTimer() && !player.win) {
                 if (player.ticksAlive % 60 == 0) {
                     timeLimit--;
                     if (timeLimit == 0) {
@@ -755,12 +755,26 @@ public class Level {
     public String getSplit() {
         long time = currentTime - checkedTime;
         checkedTime = currentTime;
-        return String.format("%s:%s:%s", time / 60000, time / 1000 % 60, time % 1000);
+        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
+                getTimeWithZeros(time / 1000 % 60, 2),
+                getTimeWithZeros(time % 1000, 3));
+    }
+
+    public String getTimeWithZeros(long time, int minChars) {
+        String str = String.valueOf(time);
+
+        while (str.length() < minChars) {
+            str = 0 + str;
+        }
+
+        return str;
     }
 
     public String getTime() {
         long time = currentTime;
-        return String.format("%s:%s:%s", time / 60000, time / 1000 % 60, time % 1000);
+        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
+                getTimeWithZeros(time / 1000 % 60, 2),
+                getTimeWithZeros(time % 1000, 3));
     }
 
     public List<Enemy> getEnemies() {

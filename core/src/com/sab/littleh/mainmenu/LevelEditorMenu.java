@@ -557,6 +557,18 @@ public class LevelEditorMenu extends MainMenu {
                 if (keyNum < toolButtons.items.length) {
                     setToolIndex(keyNum);
                 }
+            } else if (keycode == Input.Keys.E) {
+                setToolIndex(0);
+            } else if (keycode == Input.Keys.R) {
+                setToolIndex(1);
+            } else if (keycode == Input.Keys.T) {
+                setToolIndex(2);
+            } else if (keycode == Input.Keys.F) {
+                setToolIndex(3);
+            } else if (keycode == Input.Keys.G) {
+                setToolIndex(4);
+            } else if (keycode == Input.Keys.V) {
+                setToolIndex(5);
             }
         } else {
             if (keycode == Input.Keys.K)
