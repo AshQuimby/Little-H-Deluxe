@@ -2,7 +2,6 @@ package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -24,10 +23,9 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class LevelEditorMenu extends MainMenu {
+    public boolean canPlaceTiles;
     private List<List<Tile>> tileSelections;
     private TypingQuery timeQuery;
     private TypingQuery extraQuery;
@@ -38,7 +36,7 @@ public class LevelEditorMenu extends MainMenu {
     private Menu<ImageButton> settingsButtons;
     private Menu<MenuButton> backgroundMenu;
     private Menu<MenuButton> severeConfirmationMenu;
-    private Menu<MenuButton> severesevereConfirmationMenu;
+    private Menu<MenuButton> severeSevereConfirmationMenu;
     private Menu<? extends MenuButton> currentMenu;
     private static DynamicCamera camera = LittleH.program.dynamicCamera;
     private File file;
@@ -52,7 +50,6 @@ public class LevelEditorMenu extends MainMenu {
     private Vector2 previousMousePosition;
     private Point tiledMousePosition;
     private Player lastPlayer;
-    private boolean canPlaceTiles;
     private boolean backgroundVisible;
     private Tile modifiedExtraTile;
     private int tileIndex;
@@ -84,12 +81,12 @@ public class LevelEditorMenu extends MainMenu {
                             LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
                         }),
                 new MenuButton("button", "Exit", 0, 0, 256, 96,
-                        () -> LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData))),
+                        () -> stop()),
                 new MenuButton("button", "Cancel", 0, 0, 256, 96,
                         () -> currentMenu = null)
         }, 256, 96, 16);
 
-        severesevereConfirmationMenu = new Menu<>(new MenuButton[] {
+        severeSevereConfirmationMenu = new Menu<>(new MenuButton[] {
                 new MenuButton("button", "Save & Close", 0, 0, 256, 96,
                         () -> {
                             LevelLoader.saveLevel(file, level);
@@ -172,6 +169,12 @@ public class LevelEditorMenu extends MainMenu {
         SoundEngine.playMusic("menu/building_song.ogg");
     }
 
+    public void stop() {
+        LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
+        setToolIndex(5);
+        SoundEngine.playMusic("menu/menu_theme.ogg");
+    }
+
     public void resetTileMenu() {
         List<Tile> tileSelection = getTileSelection();
 
@@ -212,6 +215,7 @@ public class LevelEditorMenu extends MainMenu {
 
     @Override
     public void start() {
+        setToolIndex(toolButtons.itemIndex);
         level.init();
 
         tileSelections = new ArrayList<>();
@@ -327,10 +331,10 @@ public class LevelEditorMenu extends MainMenu {
                 severeConfirmationMenu.setMenuRectangle(0, 32 + 16 - 64, 0, false);
                 severeConfirmationMenu.setCenterX(0);
                 canPlaceTiles = false;
-            } else if (currentMenu == severesevereConfirmationMenu) {
-                severesevereConfirmationMenu.forEach(button -> button.update());
-                severesevereConfirmationMenu.setMenuRectangle(0, 32 + 16 - 64, 0, false);
-                severesevereConfirmationMenu.setCenterX(0);
+            } else if (currentMenu == severeSevereConfirmationMenu) {
+                severeSevereConfirmationMenu.forEach(button -> button.update());
+                severeSevereConfirmationMenu.setMenuRectangle(0, 32 + 16 - 64, 0, false);
+                severeSevereConfirmationMenu.setCenterX(0);
                 canPlaceTiles = false;
             }
 
@@ -642,10 +646,7 @@ public class LevelEditorMenu extends MainMenu {
                 if (editor.hasSelection()) {
                     editor.endSelection();
                 } else if (!level.inGame() && level.escapePressed()) {
-                    if (!editor.saved)
-                        confirmExit();
-                    else
-                        LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
+                    program.switchMenu(new EditorPauseMenu(this));
                 } else if (level.escapePressed()) {
                     level.endGame();
                     setToolIndex(toolButtons.itemIndex);
@@ -771,7 +772,7 @@ public class LevelEditorMenu extends MainMenu {
     }
 
     public void confirmProgramExit() {
-        currentMenu = severesevereConfirmationMenu;
+        currentMenu = severeSevereConfirmationMenu;
     }
 
     public void startTesting() {
@@ -796,8 +797,8 @@ public class LevelEditorMenu extends MainMenu {
         } else {
             if (currentMenu == severeConfirmationMenu) {
                 severeConfirmationMenu.forEach(MenuButton::mouseClicked);
-            } else if (currentMenu == severesevereConfirmationMenu) {
-                severesevereConfirmationMenu.forEach(MenuButton::mouseClicked);
+            } else if (currentMenu == severeSevereConfirmationMenu) {
+                severeSevereConfirmationMenu.forEach(MenuButton::mouseClicked);
             }
         }
     }
@@ -817,8 +818,6 @@ public class LevelEditorMenu extends MainMenu {
 
     @Override
     public void close() {
-        setToolIndex(5);
-        SoundEngine.playMusic("menu/menu_theme.ogg");
     }
 
     public void resetToolCursor() {
@@ -995,7 +994,7 @@ public class LevelEditorMenu extends MainMenu {
                 button.setPosition(item.getPosition(new Vector2()));
                 button.render(g);
             }
-        } else if (currentMenu == severesevereConfirmationMenu) {
+        } else if (currentMenu == severeSevereConfirmationMenu) {
             Rectangle rect = new Rectangle(severeConfirmationMenu.getMenuRectangle());
             rect.height += 128;
             g.drawPatch(Patch.get("menu_flat"), rect, 8);

@@ -171,6 +171,10 @@ public class Dialogue {
                Level.currentLevel.player.kill();
             }
          }
+         // crashGame (crash message)
+         case "cG" -> {
+            throw new RuntimeException(parameter);
+         }
          default -> {
             malformedCommand(command, "Command does not exist");
          }

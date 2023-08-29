@@ -41,7 +41,7 @@ public class LevelSelectMenu extends MainMenu {
             optionButtons = new Menu<>(new ImageButton[]{
                     optionButton,
                     optionButton.quickCreate("ui/buttons/icons/settings_gear.png", "Settings", () -> {
-                        LittleH.program.switchMenu(new SettingsMenu());
+                        LittleH.program.switchMenu(new SettingsMenu(this));
                     }),
                     optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
                         LittleH.program.switchMenu(new HelpMenu());
@@ -60,7 +60,7 @@ public class LevelSelectMenu extends MainMenu {
             optionButtons = new Menu<>(new ImageButton[]{
                     optionButton,
                     optionButton.quickCreate("ui/buttons/icons/settings_gear.png", "Settings", () -> {
-                        LittleH.program.switchMenu(new SettingsMenu());
+                        LittleH.program.switchMenu(new SettingsMenu(this));
                     }),
                     optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
                         LittleH.program.switchMenu(new HelpMenu());

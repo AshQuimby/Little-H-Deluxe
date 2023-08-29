@@ -126,6 +126,7 @@ public class StoneMode extends Powerup {
 
       if (ControlInputs.isJustPressed(Control.DOWN)) {
          if (!player.touchingGround) {
+            SoundEngine.playSound("slam_start.ogg");
             groundSlam = 1;
          }
       }

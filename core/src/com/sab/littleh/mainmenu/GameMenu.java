@@ -12,7 +12,7 @@ import java.io.File;
 
 public class GameMenu extends MainMenu {
     private static DynamicCamera camera = LittleH.program.dynamicCamera;
-    private File file;
+    protected File file;
     protected Level level;
     public boolean failedPlaying = false;
 
@@ -37,26 +37,32 @@ public class GameMenu extends MainMenu {
     public void keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
             if (level.escapePressed())
-                LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
+                program.switchMenu(new GamePauseMenu(this));
         } else if (keycode == Input.Keys.ENTER) {
             level.enterPressed();
         } else if (keycode == Input.Keys.K) {
             level.suicide();
+        } else if (keycode == Input.Keys.R) {
+            level.reset();
         }
+    }
+
+    public void stop() {
+        program.switchMenu(new LevelOptionsMenu(file, level.mapData));
+        Cursors.switchCursor("cursor");
+        SoundEngine.playMusic("menu/menu_theme.ogg");
     }
 
     @Override
     public void update() {
         level.update();
         if (!level.inGame()) {
-            LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
+            stop();
         }
     }
 
     @Override
     public void close() {
-        Cursors.switchCursor("cursor");
-        SoundEngine.playMusic("menu/menu_theme.ogg");
     }
 
     @Override

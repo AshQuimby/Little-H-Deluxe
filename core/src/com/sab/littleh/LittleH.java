@@ -79,6 +79,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public void create() {
         Shaders.load();
+        Control.load();
 
         g = new Graphics();
         staticCamera = new OrthographicCamera(resolutionX, resolutionY);

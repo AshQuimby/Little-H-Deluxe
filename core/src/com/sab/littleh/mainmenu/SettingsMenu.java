@@ -6,6 +6,7 @@ import com.sab.littleh.settings.SettingButton;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
+import com.sun.tools.javac.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,10 @@ public class SettingsMenu extends MainMenu {
     private List<MenuButton> videoSettings;
     private List<MenuButton> audioSettings;
     private TypingQuery typingQuery;
+    private MainMenu cameFrom;
 
-    public SettingsMenu() {
+    public SettingsMenu(MainMenu cameFrom) {
+        this.cameFrom = cameFrom;
         menuButtons = new ArrayList<>();
         menuButtons.add(new MenuButton("square_button", "Game Settings", -384 / 2, 576 / 2 - 32, 384, 64, () -> {
             currentMenu = gameSettings;
@@ -40,12 +43,12 @@ public class SettingsMenu extends MainMenu {
         }));
         menuButtons.add(new MenuButton("square_button", "Save & Return", -384 / 2 - 384 - 16, -640 / 2 + 16, 384, 64, () -> {
             Settings.localSettings.save();
-            LittleH.program.switchMenu(new LevelSelectMenu());
+            LittleH.program.switchMenu(cameFrom);
             LittleH.program.resetWindow();
         }));
         menuButtons.add(new MenuButton("square_button", "Don't Save", -384 / 2, -640 / 2 + 16, 384, 64, () -> {
             Settings.localSettings.load();
-            LittleH.program.switchMenu(new LevelSelectMenu());
+            LittleH.program.switchMenu(cameFrom);
             LittleH.program.resetWindow();
         }));
         menuButtons.add(new MenuButton("square_button", "Reset Settings", 384 / 2 + 16, -640 / 2 + 16, 384, 64, () -> {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.Cursors;
+import com.sab.littleh.util.SoundEngine;
 
 import java.awt.*;
 import java.io.File;
@@ -19,19 +20,28 @@ public class InternalLevelMenu extends GameMenu {
     public void keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
             if (level.escapePressed())
-                LittleH.program.switchMenu(menuToReturnTo);
+                program.switchMenu(new InternalLevelPauseMenu(this));
         } else if (keycode == Input.Keys.ENTER) {
             level.enterPressed();
         } else if (keycode == Input.Keys.K) {
             level.suicide();
+        } else if (keycode == Input.Keys.R) {
+            level.reset();
         }
+    }
+
+    @Override
+    public void stop() {
+        LittleH.program.switchMenu(menuToReturnTo);
+        Cursors.switchCursor("cursor");
+        SoundEngine.playMusic("menu/menu_theme.ogg");
     }
 
     @Override
     public void update() {
         level.update();
         if (!level.inGame()) {
-            LittleH.program.switchMenu(menuToReturnTo);
+           stop();
         }
     }
 }

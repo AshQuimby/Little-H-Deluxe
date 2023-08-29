@@ -333,6 +333,7 @@ public class Level {
         syncTiles();
         if (LittleH.program.getMenu() instanceof LevelEditorMenu) {
             ((LevelEditorMenu) LittleH.program.getMenu()).resetToolCursor();
+            SoundEngine.playMusic("menu/building_song.ogg");
         }
     }
 

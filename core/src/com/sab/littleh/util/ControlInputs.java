@@ -10,7 +10,7 @@ public class ControlInputs {
     private static final Map<Control, Integer> pressedFor = new HashMap<>();
 
     public static void press(int keycode) {
-        for (Control input : Control.controls) {
+        for (Control input : Control.getControls()) {
             if (input.containsKey(keycode)) {
                 pressed.put(input, true);
                 justPressed.put(input, true);
@@ -19,7 +19,7 @@ public class ControlInputs {
     }
 
     public static void release(int keycode) {
-        for (Control input : Control.controls) {
+        for (Control input : Control.getControls()) {
             if (input.containsKey(keycode)) {
                 pressed.put(input, false);
                 justReleased.put(input, true);
