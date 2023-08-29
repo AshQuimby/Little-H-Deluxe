@@ -17,6 +17,7 @@ public class Settings {
     // Gameplay
     public final BoolSetting debugMode = new BoolSetting("debug_mode", "Developer Mode", false);
     public final BoolSetting backgroundVisibility = new BoolSetting("background_visibility", "Default Background Visibility", true);
+    public final BoolSetting dividedTileSelection = new BoolSetting("divided_tile_selection", "Divide Tile Selector", false);
     public final StringSetting authorName = new StringSetting("author_name", "Change Author Name", getRandomName());
     public final PercentageSetting hColor = new PercentageSetting("h_color", "Player Color", 0, -1, 360, " hue");
 
@@ -69,7 +70,7 @@ public class Settings {
 
     public final Setting<?>[] settings = new Setting[] {
             // Gameplay
-            debugMode, backgroundVisibility, authorName, hColor, rainbowTitle,
+            debugMode, backgroundVisibility, authorName, hColor, rainbowTitle, dividedTileSelection,
             // Video
             fullscreen, grid, screenShake, zoomScalar, font, selectionContrast,
             // Audio

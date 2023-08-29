@@ -1,0 +1,8 @@
+@0 tiles/coin
+@1 tiles/coin_box
+@2 tiles/power_fruit
+@3 tiles/power_fruit_spawner
+@5 tiles/key
+@6 tiles/key_box
+@7 tiles/evil_key
+@8 tiles/evil_key_box

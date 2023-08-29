@@ -28,7 +28,7 @@ public class EnemyC extends Enemy {
       super.update(game);
       direction = (int) Math.signum(velocityX) == 0 ? direction : (int) Math.signum(velocityX);
       if (touchingGround) {
-         if (ControlInputs.isJustPressed(Control.JUMP)) {
+         if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
             velocityY = 25;
             SoundEngine.playSound("jump.ogg");
          }

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
-    public static ShaderProgram waterShader;
     public static final String[] backgrounds = {
             "mountains",
             "cold_mountains",
@@ -109,6 +108,7 @@ public class Level {
         currentTime = 0;
         checkedTime = currentTime;
         Cursors.switchCursor("none");
+        notify("notify_game_start", startPos.x, startPos.y);
     }
 
     public void removeTile(int x, int y) {
@@ -339,8 +339,8 @@ public class Level {
     public void resetToCheckpointState() {
         enemies.clear();
         volatileTiles.clear();
-        notifiableTiles.clear();
-        updatableTiles.clear();
+        notifiableTiles.removeIf(tile -> tile.hasTag("volatile"));
+        updatableTiles.removeIf(tile -> tile.hasTag("volatile"));
         for (Tile tile : checkpointState) {
             Tile copy = tile.copy();
             if (tile.hasTag("notifiable"))
@@ -394,6 +394,17 @@ public class Level {
             }
             if (tile.hasTag("updatable")) {
                 updatableTiles.add(tile);
+            }
+        }
+        for (Tile tile : backgroundTiles) {
+            if (tile.hasTag("ignore_background")) {
+                Tile copy = tile.copy();
+                if (tile.hasTag("updatable")) {
+                    updatableTiles.add(copy);
+                }
+                if (tile.hasTag("notifiable")) {
+                    notifiableTiles.add(copy);
+                }
             }
         }
         saveCheckpointState();
@@ -492,6 +503,7 @@ public class Level {
                             if (tile.hasTag("post_render"))
                                 postRenders.add(tile);
                         }
+                        toDrawGrid.add(new Point(i * 64, j * 64));
                         continue;
                     }
                     // Draw foreground
@@ -520,10 +532,9 @@ public class Level {
             }
         }
 
+        enemies.forEach(enemy -> enemy.render(g, this));
         if (inGame())
             player.render(g, this);
-        particles.forEach(particle -> particle.render(g));
-        enemies.forEach(enemy -> enemy.render(g, this));
 
         if (!inGame()) {
             if (backgroundPriority) {
@@ -535,7 +546,7 @@ public class Level {
             g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
         }
 
-        drawPostRenders(g, backgroundPostRenders);
+        drawPostRenders(g, backgroundPostRenders, true);
 
         if (!inGame()) {
             if (backgroundPriority) {
@@ -546,6 +557,8 @@ public class Level {
         } else {
             g.resetTint();
         }
+
+        particles.forEach(particle -> particle.render(g));
 
         // Draw in the front
         for (Tile tile : visibleTiles) {
@@ -577,7 +590,7 @@ public class Level {
             }
         }
 
-        drawPostRenders(g, postRenders);
+        drawPostRenders(g, postRenders, false);
 
         g.resetTint();
 
@@ -651,13 +664,14 @@ public class Level {
         }
     }
 
-    public Tile[][] getNeighbors(int tileX, int tileY) {
+    public Tile[][] getNeighbors(int tileX, int tileY, boolean background) {
         // Magic
         Tile[][] neighbors = new Tile[3][3];
         for (int i = tileX - 1; i < tileX + 2; i++) {
             for (int j = tileY - 1; j < tileY + 2; j++) {
-                if (!(i < 0 || j < 0 || i >= getWidth() || j >= getHeight()) && getTileAt(i, j) != null) {
-                    neighbors[tileX - i + 1][tileY - j + 1] = getTileAt(i, j);
+                Tile tile = background ? getBackgroundTileAt(i, j) : getTileAt(i, j);
+                if (!(i < 0 || j < 0 || i >= getWidth() || j >= getHeight()) && tile != null) {
+                    neighbors[tileX - i + 1][tileY - j + 1] = tile;
                 } else {
                     neighbors[tileX - i + 1][tileY - j + 1] = null;
                 }
@@ -666,18 +680,17 @@ public class Level {
         return neighbors;
     }
 
-    public void drawPostRenders(Graphics g, List<Tile> postRenders) {
-        waterShader.bind();
-        waterShader.setUniformf("u_time", gameTick / 60f);
-        g.setShader(null);
-        g.getShader().bind();
+    public void drawPostRenders(Graphics g, List<Tile> postRenders, boolean background) {
+        Shaders.waterShader.bind();
+        Shaders.waterShader.setUniformf("u_time", gameTick / 60f);
+        g.resetShader();
 
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
-                    Tile[][] neighbors = getNeighbors(tile.x, tile.y);
-                    waterShader.bind();
-                    waterShader.setUniformMatrix("u_neighbors", new Matrix3(new float[] {
+                    Tile[][] neighbors = getNeighbors(tile.x, tile.y, background);
+                    Shaders.waterShader.bind();
+                    Shaders.waterShader.setUniformMatrix("u_neighbors", new Matrix3(new float[] {
                             neighbors[0][0] != null && neighbors[0][0].isSolid() ? 1 : 0,
                             neighbors[1][0] != null && neighbors[1][0].isSolid() ? 1 : 0,
                             neighbors[2][0] != null && neighbors[2][0].isSolid() ? 1 : 0,
@@ -688,10 +701,9 @@ public class Level {
                             neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0,
                             neighbors[2][2] != null && neighbors[2][2].isSolid() ? 1 : 0,
                     }));
-                    waterShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
-                    g.setShader(null);
-                    g.getShader().bind();
-                    g.drawImageWithShader(waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                    Shaders.waterShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
+                    g.resetShader();
+                    g.drawImageWithShader(Shaders.waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
                 } else {
                     tile.render(false, g);
                 }
@@ -711,7 +723,7 @@ public class Level {
                 }
             }
             if (tile.hasTag("sinusoid")) {
-                g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 16, 64, 64, tile.getDrawSection());
+                g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 8, 64, 64, tile.getDrawSection());
             }
             g.resetColor();
         }
@@ -742,7 +754,7 @@ public class Level {
     public void notify(String notification, int... data) {
         for (Tile tile : notifiableTiles) {
             if (tile.hasTag(notification)) {
-                tile.notify(notification, data);
+                tile.notify(this, notification, data);
             }
         }
     }

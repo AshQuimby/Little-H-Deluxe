@@ -46,6 +46,9 @@ public class LevelSelectMenu extends MainMenu {
                     optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
                         LittleH.program.switchMenu(new HelpMenu());
                     }),
+                    optionButton.quickCreate("ui/jukebox/loop.png", "Reload maps", () -> {
+                        LittleH.program.switchMenu(new LevelSelectMenu());
+                    }),
                     optionButton.quickCreate("ui/buttons/icons/jukebox_note.png", "Jukebox", () -> {
                         LittleH.program.switchMenu(new JukeboxMenu());
                     }),
@@ -61,6 +64,9 @@ public class LevelSelectMenu extends MainMenu {
                     }),
                     optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
                         LittleH.program.switchMenu(new HelpMenu());
+                    }),
+                    optionButton.quickCreate("ui/jukebox/loop.png", "Reload maps", () -> {
+                        LittleH.program.switchMenu(new LevelSelectMenu());
                     }),
                     optionButton.quickCreate("ui/buttons/icons/jukebox_note.png", "Jukebox", () -> {
                         LittleH.program.switchMenu(new JukeboxMenu());

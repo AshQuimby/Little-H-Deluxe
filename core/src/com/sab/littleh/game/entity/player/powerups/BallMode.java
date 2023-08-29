@@ -9,9 +9,6 @@ import com.sab.littleh.util.ControlInputs;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.SoundEngine;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-
 // BALLMODE
 // (BALLS!!!!!)
 
@@ -20,7 +17,6 @@ public class BallMode extends Powerup {
    private static Animation rollAnimation = new Animation(1, 0);
    private float rotationSpeed;
    private float ballRotation;
-   private boolean stopBounce;
    private boolean superSlam;
    private int bounceSoundCool;
 
@@ -37,7 +33,7 @@ public class BallMode extends Powerup {
 
    @Override
    public void jump(Level game) {
-      if (player.swimming) {
+      if (player.touchingWater) {
          if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
             player.velocityY = -12;
             SoundEngine.playSound("swim.ogg");
@@ -50,10 +46,10 @@ public class BallMode extends Powerup {
    @Override
    public void updateVelocity() {
       // Ball floats
-      if (player.swimming) {
+      if (player.touchingWater) {
          player.velocityX *= 0.98f;
          player.velocityY *= 0.98f;
-         player.velocityY += 0.5f;
+         player.velocityY += 0.85f;
          return;
       }
       if (!(player.slippery && player.crouched)) player.velocityX *= 0.975f;
@@ -74,15 +70,10 @@ public class BallMode extends Powerup {
             rotationSpeed = player.velocityX / 32f;
          }
       }
-      if ((ControlInputs.isPressed(Control.RIGHT) ^ ControlInputs.isPressed(Control.LEFT)) || !ControlInputs.isPressed(Control.DOWN)) {
-         stopBounce = false;
-      }
       if (player.touchingGround) superSlam = false;
       if (ControlInputs.isJustPressed(Control.DOWN) && game.mapData.getValue("crouching").asBool()) {
          if (!player.touchingGround && !superSlam) {
             superSlam = true;
-         } else {
-            stopBounce = true;
          }
       }
       // Makes the little H SLAM down with BIG BALL ENERGY
@@ -116,25 +107,21 @@ public class BallMode extends Powerup {
          player.velocityX = Math.max(15, Math.abs(player.velocityX)) * Math.signum(player.velocityX);
       }
       if (vertical) {
-         if (stopBounce) {
-            player.velocityY = 0;
-         } else {
-            player.velocityY *= -1f;
-            // Minimum BOUNCING BALL SPEED
-            player.velocityY = Math.max(15, Math.abs(player.velocityY)) * Math.signum(player.velocityY);
-            if (bounceSoundCool <= 0) {
-               SoundEngine.playSound("ball_bounce.ogg");
-               bounceSoundCool = 5;
-            }
+         player.velocityY *= -1f;
+         // Minimum BOUNCING BALL SPEED
+         player.velocityY = Math.max(15, Math.abs(player.velocityY)) * Math.signum(player.velocityY);
+         if (bounceSoundCool <= 0) {
+            SoundEngine.playSound("ball_bounce.ogg");
+            bounceSoundCool = 5;
          }
       }
    }
    
    @Override
    public void touchingTile(Tile tile) {
-      // Makes bouncy tiles LAUNCH the little H
+      // Makes bouncy tiles LAUNCH the BALL
       if (tile.hasTag("bounce")) {
-         player.velocityY -= 0.5f;
+         player.velocityY += 0.5f;
          player.velocityY = Math.min(96f, player.velocityY);
       }
    }

@@ -28,6 +28,7 @@ public class DynamicCamera extends OrthographicCamera {
     public void addScreenShake(int intensity) {
         if (Settings.localSettings.screenShake.value) {
             screenShake += intensity;
+            screenShake = Math.min(screenShake, 32);
         }
     }
 

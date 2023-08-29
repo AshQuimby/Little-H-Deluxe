@@ -32,6 +32,7 @@ public class Tile {
     // Tells the tile if it's a tileset or a bunch of individual images
     public boolean ignoreTiling;
     private Rectangle cachedDrawRect;
+    private Object arbDat;
     // Set because we only use it to check if one is present
     public Set<String> tags;
 
@@ -346,6 +347,59 @@ public class Tile {
         return tileHitbox;
     }
 
+    public List<Rectangle> toRectangles() {
+        List<Rectangle> hitboxes = new ArrayList<>();
+        Rectangle tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
+        if (hasTag("small_triangle")) {
+            switch (tileType) {
+                case 0 :
+                    tileHitbox.height = 8;
+                    hitboxes.add(tileHitbox);
+                    tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
+                    tileHitbox.height = 32;
+                    tileHitbox.width = 16;
+                    tileHitbox.x += 16;
+                    hitboxes.add(tileHitbox);
+                    break;
+                case 3 :
+                    tileHitbox.width = 8;
+                    tileHitbox.x += 56;
+                    hitboxes.add(tileHitbox);
+                    tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
+                    tileHitbox.width = 32;
+                    tileHitbox.x += 32;
+                    tileHitbox.height = 16;
+                    tileHitbox.y += 16;
+                    hitboxes.add(tileHitbox);
+                    break;
+                case 2 :
+                    tileHitbox.height = 8;
+                    tileHitbox.y += 56;
+                    hitboxes.add(tileHitbox);
+                    tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
+                    tileHitbox.height = 32;
+                    tileHitbox.y += 32;
+                    tileHitbox.width = 16;
+                    tileHitbox.x += 16;
+                    hitboxes.add(tileHitbox);
+                    break;
+                case 1 :
+                    tileHitbox.width = 8;
+                    hitboxes.add(tileHitbox);
+                    tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
+                    tileHitbox.width = 32;
+                    tileHitbox.height = 16;
+                    tileHitbox.y += 16;
+                    hitboxes.add(tileHitbox);
+                    break;
+                default :
+                    break;
+            }
+        }
+
+        return hitboxes;
+    }
+
     public void setImage(String image) {
         this.image = image;
         setTileType(tileType);
@@ -405,7 +459,7 @@ public class Tile {
         return new Tile(x, y, image, tileType, tags, extra, ignoreTiling, cachedDrawRect);
     }
 
-    public void notify(String notification, int[] data) {
+    public void notify(Level game, String notification, int[] data) {
         if (hasTag("notified_reset_type")) {
             setTileType(0);
         }
@@ -413,21 +467,47 @@ public class Tile {
             if (!hasTag("coin_box") || hasTag("coin_box") && data[0] == tileType / 2)
                 setTileType(tileType % 2 == 0 ? tileType + 1 : tileType - 1);
         }
+        if (hasTag("respawn_power_fruit")) {
+            Tile powerFruit = game.getTileAt(x, y);
+            if (powerFruit.hasTag("powerup")) {
+                arbDat = new Object[2];
+                ((Object[]) arbDat)[0] = powerFruit;
+                ((Object[]) arbDat)[1] = 120;
+            }
+        }
     }
 
-    public void update(Level level) {
+    public void update(Level game) {
         if (hasTag("enemy")) {
-            for (Enemy enemy : level.getEnemies()) {
+            for (Enemy enemy : game.getEnemies()) {
                 if (enemy.getParent().equals(this)) return;
             }
 
-            if (level.player.isFresh()) {
-                level.addEnemy(Enemy.createEnemy(x, y, level.player, this, tileType));
+            if (game.player.isFresh()) {
+                game.addEnemy(Enemy.createEnemy(x, y, game.player, this, tileType));
             } else {
                 Vector2 tileCenter = new Vector2(x * 64 + 32, y * 64 + 32);
-                float playerDist = level.player.getCenter().dst2(tileCenter);
+                float playerDist = game.player.getCenter().dst2(tileCenter);
                 if (playerDist > 1112 * 1112) {
-                    level.addEnemy(Enemy.createEnemy(x, y, level.player, this, tileType));
+                    game.addEnemy(Enemy.createEnemy(x, y, game.player, this, tileType));
+                }
+            }
+        }
+
+        if (hasTag("respawn_power_fruit")) {
+            if (arbDat != null) {
+                Object[] data = (Object[]) arbDat;
+                if (game.getTileAt(x, y) == null) {
+                    int timer = (Integer) data[1];
+                    if (timer <= 0) {
+                        Tile powerFruit = ((Tile) data[0]).copy();
+                        if (!toRectangle().overlaps(game.player.toRectangle())) {
+                            game.addTileToMap(powerFruit);
+                            timer = 90;
+                        }
+                    }
+                    timer--;
+                    data[1] = timer;
                 }
             }
         }

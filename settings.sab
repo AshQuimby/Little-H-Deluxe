@@ -6,8 +6,9 @@
 @master_volume 34
 @screen_shake true
 @high_contrast_selection true
+@divided_tile_selection false
 @background_visibility true
-@music_volume 2
+@music_volume 5
 @fullscreen windowed_fullscreen
 @zoom_scalar 100
 @mute_game false

@@ -45,7 +45,6 @@ public class Player extends Entity {
     public float coolRoll;
     public float maxGroundSpeed;
     public Animation currentAnimation;
-    public boolean swimming;
     public boolean ignoreWater;
     public boolean crouched;
     public boolean crushed;
@@ -118,6 +117,7 @@ public class Player extends Entity {
         jumpReleased = false;
         doubleJump = false;
         dead = false;
+        previousSpeeds.clear();
         currentAnimation = idleAnimation;
         deathAnimation.reset();
         deathAnimation.setAnimationSpeed(4);
@@ -163,6 +163,14 @@ public class Player extends Entity {
 
     @Override
     public void update(Level game) {
+        touchingWater = false;
+        for (Tile tile : lastTouchedTiles) {
+            if (tile.hasTag("water")) {
+                touchingWater = true;
+                break;
+            }
+        }
+
         if (startTick) {
             setCoinCounts(game);
             startTick = false;
@@ -258,7 +266,6 @@ public class Player extends Entity {
         touchingGround = false;
         touchingWall = false;
         slippery = false;
-        swimming = false;
         canCrouch = true;
         collide(game);
 
@@ -286,42 +293,9 @@ public class Player extends Entity {
 
     // Return false to prevent the player from having their velocity set to 0
     @Override
-    public boolean onCollide(Level game, com.badlogic.gdx.math.Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
-        if (tile.hasTag("key_box")) {
-            if (tile.hasTag("evil")) {
-                if (hasEvilKey) {
-                    hasEvilKey = false;
-                    for (int i = 0; i < 4; i++) {
-                        game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -20), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 0f, i, 0, "particles/evil_key_box_rubble.png", 30));
-                    }
-                    SoundEngine.playSound("hit.ogg");
-                    game.inGameRemoveTile(tile);
-                    return false;
-                }
-            } else if (keyCount > 0) {
-                keyCount--;
-                for (int i = 0; i < 4; i++) {
-                    game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -8), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 1.2f, i, 0, "particles/key_box_rubble.png", 30));
-                }
-                SoundEngine.playSound("hit.ogg");
-                game.inGameRemoveTile(tile);
-                return false;
-            }
-        }
-        if (tile.hasTag("slippery")) {
-            slippery = true;
-        }
-        if (yCollision) {
-            if (velocityY < 0) {
-                touchingGround = true;
-            }
-            if (tile.hasTag("slippery")) {
-                slippery = true;
-            }
-        } else {
-            if (game.mapData.getValue("wall_sliding").asBool() && !tile.hasTag("slick")) {
-                touchingWall = true;
-            }
+    public boolean onCollide(Level game, Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
+        if (!powerup.onCollide(game, entityHitbox, tileHitbox, tile, yCollision)) {
+            return false;
         }
         return super.onCollide(game, entityHitbox, tileHitbox, tile, yCollision);
     }
@@ -338,116 +312,23 @@ public class Player extends Entity {
     @Override
     public void tileInteractions(Rectangle playerHitbox, List<Tile> collisions, Level game) {
         Set<Tile> newLastTouchedTiles = new HashSet<>();
-        boolean splash = true;
         for (Tile tile : collisions) {
             if (crouched && tile.isSolid() && tile.hasTag("half") && (tile.tileType == 0 || tile.tileType == 2)) {
                 ControlInputs.pressControl(Control.DOWN);
                 crushed = true;
             }
-            Rectangle tileHitbox = tile.toRectangle();
-            if (playerHitbox.overlaps(tileHitbox)) {
-                touchingTile(tile);
-                if (tile.hasTag("death")) {
-                    if (playerHitbox.overlaps(tileHitbox)) kill();
-                } else if (tile.hasTag("bounce")) {
-                    if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
-                    if (velocityY < -36) velocityY *= -1.5f;
-                    else if (velocityY < 36) velocityY = 36;
-                }
-                if (tile.hasTag("water")) {
-                    for (Tile otherTile : lastTouchedTiles) {
-                        if (otherTile.hasTag("water")) splash = false;
-                    }
-                    if (splash) {
-                        if (velocityMagnitude() > 24) {
-                            SoundEngine.playSound("splash.ogg");
-                        } else {
-                            SoundEngine.playSound("splish.ogg");
-                        }
-                        splash = false;
-                    }
-                    if (!ignoreWater) {
-                        swimming = true;
-                    }
-                }
-                if (tile.hasTag("checkpoint") && tile.tileType % 2 == 0) {
-                    SoundEngine.playSound("checkpoint.ogg");
-                    startPos.x = tile.x;
-                    startPos.y = tile.y;
-                    game.notify("notify_checkpoint", null);
-                    tile.setTileType(1);
-                    game.saveCheckpointState();
-                    savedKeyCount = keyCount;
-                    savedEvilKey = hasEvilKey;
-                    savedPowerup = powerup;
-                    game.showTimer();
-                } else if (!win && tile.hasTag("end")) {
-                    game.showTimer();
-                    for (int i = 0; i < 16; i++) {
-                        game.addParticle(new Particle(x + width / 4, y + height / 4, (float) ((Math.random() - 0.5) * -16), (float) ((Math.random() - 0.5) * -16), 24, 24, 3, 3, 1, 0.96f, 0f, (int) (Math.random() * 2), 0, "particles/twinkle.png", 120));
-                    }
-                    win();
-                }
-                if (tile.hasTag("pickup")) {
+            if (tile.hasTag("multi_hitbox")) {
+                List<Rectangle> tileHitboxes = tile.toRectangles();
+                for (Rectangle tileHitbox : tileHitboxes) {
                     if (playerHitbox.overlaps(tileHitbox)) {
-                        game.inGameRemoveTile(tile);
-                        if (tile.hasTag("dialogue")) {
-                            String key = tile.extra.trim();
-                            game.setDialogue(Dialogues.getDialogue(key));
-                            continue;
-                        }
-                        if (tile.hasTag("coin")) {
-                            SoundEngine.playSound("coin.ogg");
-                            coinCounts[tile.tileType]++;
-                            if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
-                                SoundEngine.playSound("all_coins_collected.ogg");
-                                game.notify("notify_all_coins", new int[]{ tile.tileType });
-                            }
-                        }
-                        if (tile.hasTag("powerup")) {
-                            SoundEngine.playSound("powerup_get.ogg");
-                            if (tile.tileType == 0) powerup = new Powerup(this);
-                            else if (tile.tileType == 1) powerup = new BallMode(this);
-                            else if (tile.tileType == 2) powerup = new WingedMode(this);
-                            else if (tile.tileType == 3) powerup = new CelesteMode(this);
-                            else if (tile.tileType == 4) powerup = new GravityMode(this);
-                        }
-                        if (tile.hasTag("key")) {
-                            SoundEngine.playSound("coin.ogg");
-                            if (tile.hasTag("evil")) {
-                                evilKey = new EvilKey(tile.x, tile.y);
-                                hasEvilKey = true;
-                                continue;
-                            }
-                            keyCount++;
-                        }
-                        if (tile.hasTag("timer")) {
-                            SoundEngine.playSound("powerup_get.ogg");
-                            if (game.timeLimit > -1) {
-                                switch (tile.getPropertyIndex()) {
-                                    case 0 :
-                                        game.timeLimit += 10;
-                                        game.startPopup("+10 seconds", 180);
-                                        break;
-                                    case 1 :
-                                        game.timeLimit += 30;
-                                        game.startPopup("+30 seconds", 180);
-                                        break;
-                                    case 2 :
-                                        game.timeLimit += 60;
-                                        game.startPopup("+60 seconds", 180);
-                                        break;
-                                    case 3 :
-                                        game.timeLimit += 100;
-                                        game.startPopup("+100 seconds", 180);
-                                        break;
-                                }
-                            }
-                            game.timeLimit = Math.min(9999, game.timeLimit);
-                        }
+                        touchingTile(game, playerHitbox, tile, tileHitbox, newLastTouchedTiles);
                     }
                 }
-                newLastTouchedTiles.add(tile);
+            } else {
+                Rectangle tileHitbox = tile.toRectangle();
+                if (playerHitbox.overlaps(tileHitbox)) {
+                    touchingTile(game, playerHitbox, tile, tileHitbox, newLastTouchedTiles);
+                }
             }
         }
         lastTouchedTiles = newLastTouchedTiles;
@@ -481,7 +362,109 @@ public class Player extends Entity {
         return currentAnimation == winAnimation && currentAnimation.getFrame() >= 17;
     }
 
-    public void touchingTile(Tile tile) {
+    public void touchingTile(Level game, Rectangle playerHitbox, Tile tile, Rectangle tileHitbox, Set<Tile> newLastTouchedTiles) {
+        if (tile.hasTag("multi_hitbox")) {
+        }
+        boolean splash = true;
+        touchingTile(game, tile);
+        if (tile.hasTag("death")) {
+            if (playerHitbox.overlaps(tileHitbox)) kill();
+        } else if (tile.hasTag("bounce")) {
+            if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
+            if (velocityY < -36) velocityY *= -1.5f;
+            else if (velocityY < 36) velocityY = 36;
+        }
+        if (tile.hasTag("water")) {
+            for (Tile otherTile : lastTouchedTiles) {
+                if (otherTile.hasTag("water")) splash = false;
+            }
+            if (splash) {
+                if (velocityMagnitude() > 24) {
+                    SoundEngine.playSound("splash.ogg");
+                } else {
+                    SoundEngine.playSound("splish.ogg");
+                }
+            }
+        }
+        if (tile.hasTag("checkpoint") && tile.tileType % 2 == 0) {
+            SoundEngine.playSound("checkpoint.ogg");
+            startPos.x = tile.x;
+            startPos.y = tile.y;
+            game.notify("notify_checkpoint", null);
+            tile.setTileType(1);
+            game.saveCheckpointState();
+            savedKeyCount = keyCount;
+            savedEvilKey = hasEvilKey;
+            savedPowerup = powerup;
+            game.showTimer();
+        } else if (!win && tile.hasTag("end")) {
+            game.showTimer();
+            for (int i = 0; i < 16; i++) {
+                game.addParticle(new Particle(x + width / 4, y + height / 4, (float) ((Math.random() - 0.5) * -16), (float) ((Math.random() - 0.5) * -16), 24, 24, 3, 3, 1, 0.96f, 0f, (int) (Math.random() * 2), 0, "particles/twinkle.png", 120));
+            }
+            win();
+        }
+        if (tile.hasTag("pickup")) {
+            if (playerHitbox.overlaps(tileHitbox)) {
+                game.inGameRemoveTile(tile);
+                if (tile.hasTag("dialogue")) {
+                    String key = tile.extra.trim();
+                    game.setDialogue(Dialogues.getDialogue(key));
+                    return;
+                }
+                if (tile.hasTag("coin")) {
+                    SoundEngine.playSound("coin.ogg");
+                    coinCounts[tile.tileType]++;
+                    if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
+                        SoundEngine.playSound("all_coins_collected.ogg");
+                        game.notify("notify_all_coins", new int[]{ tile.tileType });
+                    }
+                }
+                if (tile.hasTag("powerup")) {
+                    SoundEngine.playSound("powerup_get.ogg");
+                    if (tile.tileType == 0) powerup = new Powerup(this);
+                    else if (tile.tileType == 1) powerup = new BallMode(this);
+                    else if (tile.tileType == 2) powerup = new WingedMode(this);
+                    else if (tile.tileType == 3) powerup = new CelesteMode(this);
+                    else if (tile.tileType == 4) powerup = new GravityMode(this);
+                    else if (tile.tileType == 5) powerup = new StoneMode(this);
+                }
+                if (tile.hasTag("key")) {
+                    SoundEngine.playSound("coin.ogg");
+                    if (tile.hasTag("evil")) {
+                        evilKey = new EvilKey(tile.x, tile.y);
+                        hasEvilKey = true;
+                        return;
+                    }
+                    keyCount++;
+                }
+                if (tile.hasTag("timer")) {
+                    SoundEngine.playSound("powerup_get.ogg");
+                    if (game.timeLimit > -1) {
+                        switch (tile.getPropertyIndex()) {
+                            case 0 :
+                                game.timeLimit += 10;
+                                game.startPopup("+10 seconds", 180);
+                                break;
+                            case 1 :
+                                game.timeLimit += 30;
+                                game.startPopup("+30 seconds", 180);
+                                break;
+                            case 2 :
+                                game.timeLimit += 60;
+                                game.startPopup("+60 seconds", 180);
+                                break;
+                            case 3 :
+                                game.timeLimit += 100;
+                                game.startPopup("+100 seconds", 180);
+                                break;
+                        }
+                    }
+                    game.timeLimit = Math.min(9999, game.timeLimit);
+                }
+            }
+        }
+        newLastTouchedTiles.add(tile);
         powerup.touchingTile(tile);
     }
 
@@ -530,7 +513,7 @@ public class Player extends Entity {
 
             for (int i = 0; i < 9; i++) {
                 vertices[i * 2] = trail[0][i];
-                vertices[i * 2 + 1] = trail[1][i];
+                vertices[i * 2 + 1] = trail[1][i] + 8;
             }
 
             g.setColor(new Color(1, 1, 1, Math.min(1, Math.max(0, (int) speed - 24) * 2 / 255f)));
@@ -571,7 +554,7 @@ public class Player extends Entity {
     }
 
     public void touchingEnemy(Enemy enemy) {
-        kill();
+        powerup.touchingEnemy(enemy);
     }
 
     public class EvilKey {
@@ -580,7 +563,7 @@ public class Player extends Entity {
         public int startUp;
 
         public EvilKey(int tileX, int tileY) {
-            hitbox = new Rectangle(tileX * 64 + 16, tileY * 64 + 16, 48, 48);
+            hitbox = new Rectangle(tileX * 64 + 16, tileY * 64, 48, 48);
             startUp = 120;
         }
 

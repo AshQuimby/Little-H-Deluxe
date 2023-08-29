@@ -51,16 +51,17 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static final int resolutionX = 1024;
     public static final int resolutionY = 576;
     public static LittleH program;
+    static {
+        Settings.localSettings.load();
+    }
     private Graphics g;
+    private FrameBuffer buffer;
     public OrthographicCamera staticCamera;
     public DynamicCamera dynamicCamera;
     private MainMenu mainMenu;
     private String hoverInfo;
     private boolean dontRender, hardPause;
-
-    static {
-        Settings.localSettings.load();
-    }
+    private boolean controllersNotSupported;
 
     public static void updateFont() {
         font = Fonts.getFont(Settings.localSettings.font.asRawValue());
@@ -77,11 +78,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void create() {
-        Level.waterShader = new ShaderProgram(Gdx.files.internal("shaders/water.vsh"), Gdx.files.internal("shaders/water.fsh"));
-        if (!Level.waterShader.isCompiled()) {
-            System.out.println(Level.waterShader.getLog());
-            System.exit(1);
-        }
+        Shaders.load();
 
         g = new Graphics();
         staticCamera = new OrthographicCamera(resolutionX, resolutionY);
@@ -122,9 +119,12 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         dontRender = false;
         SoundEngine.playMusic("menu/menu_theme.ogg");
         SoundEngine.update();
-        Controllers.addListener(program);
+        try {
+            Controllers.addListener(program);
+        } catch (Exception e) {
+            controllersNotSupported = true;
+        }
         Images.cacheHColor();
-        System.out.println(mapsFolder.getPath());
     }
 
     public void update() {
@@ -195,6 +195,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void render() {
+//        buffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+//        buffer.begin();
+//        buffer.bind();
         if (hardPause)
             return;
         update();
@@ -224,7 +227,11 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             g.drawString(hoverInfo, font, hoverInfoRect.x + 8, hoverInfoRect.y + hoverInfoRect.height / 2 + 4, defaultFontScale * 0.75f, -1);
         }
 
+//        g.end();
+//        buffer.end();
+//        g.draw(buffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
         g.end();
+
         hoverInfo = null;
         MouseUtil.update();
         ControlInputs.update();
@@ -238,10 +245,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public void dispose() {
         g.dispose();
-        Level.waterShader.dispose();
+        Shaders.dispose();
     }
-
-
 
     @Override
     public boolean keyDown(int keycode) {

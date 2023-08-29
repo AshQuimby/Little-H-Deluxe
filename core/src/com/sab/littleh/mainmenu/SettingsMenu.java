@@ -63,9 +63,10 @@ public class SettingsMenu extends MainMenu {
         audioSettings.add(new MenuButton("square_button", "Test SFX", -272 / 2, -96 * 2, 272, 64, this::playTestSound));
 
         gameSettings.add(new SettingButton(Settings.localSettings.debugMode, -72 / 2 - 96 * 2 - 32, 96));
-        gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 96));
-        gameSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -16, 361));
-        gameSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -32, 64, 64)) {
+        gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 128));
+        gameSettings.add(new SettingButton(Settings.localSettings.dividedTileSelection, -72 / 2 + 96 * 2 + 32, 32));
+        gameSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -64, 361));
+        gameSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -96, 64, 64)) {
             @Override
             public void render(Graphics g) {
                 super.render(g);
@@ -74,7 +75,7 @@ public class SettingsMenu extends MainMenu {
                 g.resetColor();
             }
         });
-        gameSettings.add(new MenuButton("square_button", "Change Name", -272 / 2, -128, 272, 64, this::askForRename));
+        gameSettings.add(new MenuButton("square_button", "Change Name", -272 / 2, -128 - 64, 272, 64, this::askForRename));
 
 
         videoSettings.add(new SettingButton(Settings.localSettings.font, -280 / 2 + 256, -96));

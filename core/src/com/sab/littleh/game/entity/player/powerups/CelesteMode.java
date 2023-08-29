@@ -6,9 +6,6 @@ import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.*;
-import com.sab.littleh.util.Graphics;
-
-import java.awt.*;
 
 public class CelesteMode extends Powerup {
     private static Animation climbAnimation = new Animation(12, 8, 27);
@@ -26,11 +23,12 @@ public class CelesteMode extends Powerup {
     public void init(Player player) {
         player.image = "player/celeste_h";
         dashTime = 0;
+        stamina = 240;
     }
 
     @Override
     public void jump(Level game) {
-        if (player.swimming) {
+        if (player.touchingWater) {
             if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
                 player.velocityY = 14;
                 SoundEngine.playSound("swim.ogg");
@@ -132,7 +130,7 @@ public class CelesteMode extends Powerup {
             } else {
                 player.currentAnimation = Player.jumpAnimation;
             }
-            if (player.touchingWall && !ControlInputs.isPressed(Control.JUMP)) {
+            if (player.touchingWall && !(ControlInputs.isPressed(Control.JUMP) && player.velocityY > 0 && (player.currentAnimation != climbAnimation || player.currentAnimation != clingAnimation))) {
                 player.currentAnimation = clingAnimation;
                 dashTime = 0;
                 if (stamina > 0) {
@@ -196,15 +194,7 @@ public class CelesteMode extends Powerup {
         }
 
         if (!player.crouched) {
-            if (ControlInputs.isPressed(Control.LEFT)) {
-                if (!player.touchingWall) player.direction = -1;
-                player.velocityX -= 1.2f * (player.swimming ? 0.5f : 1);
-            }
-
-            if (ControlInputs.isPressed(Control.RIGHT)) {
-                if (!player.touchingWall) player.direction = 1;
-                player.velocityX += 1.2f * (player.swimming ? 0.5f : 1);
-            }
+            move();
         }
     }
 

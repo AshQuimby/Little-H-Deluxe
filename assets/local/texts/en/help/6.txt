@@ -9,3 +9,6 @@ Power Fruits
      -Cloudpepper: This light-as-a-feather fruit makes you grow wings! Your jump is improved, and you can double jump as much as you want (as long as they are enabled). Even if air jumps aren't enabled, holding down the jump button lets you glide through the air.
      -Strawberry: Like your double jump? You'll like this midair dash even more. Plus, instead of sliding down walls, you can climb up them before jumping off. It also makes the Little h realize something...
      -Gravberry: What would happen if instead of jumping you swapped gravity? Wait no longer to find out because that's exactly what this power fruit does! Instead of crouching or jumping you swap gravity. Don't fall too close to the sun, though.
+     -Stone Fruit: H SMASH! Your double jump is weaker, but while in midair you can press down to slam into the ground. Water also barely impedes you... at the cost of not being able to swim.
+
+    There is also an invisible tile with a P-shaped insignia, this is the power fruit-respawner. Any power fruit placed in front of it while it is in the background will be respawned if eaten!

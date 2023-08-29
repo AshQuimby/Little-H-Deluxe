@@ -3,6 +3,7 @@ package com.sab.littleh.game.entity.player.powerups;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.game.entity.Particle;
+import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
@@ -22,7 +23,7 @@ public class Powerup {
     }
 
     public void jump(Level game) {
-        if (player.swimming) {
+        if (player.touchingWater) {
             if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
                 player.velocityY = 14;
                 SoundEngine.playSound("swim.ogg");
@@ -107,15 +108,19 @@ public class Powerup {
             player.jumpReleased = true;
         }
         if (!player.crouched) {
-            if (ControlInputs.isPressed(Control.LEFT)) {
-                if (!player.touchingWall) player.direction = -1;
-                player.velocityX -= 1.2f * (player.swimming ? 0.5f : 1);
-            }
+            move();
+        }
+    }
 
-            if (ControlInputs.isPressed(Control.RIGHT)) {
-                if (!player.touchingWall) player.direction = 1;
-                player.velocityX += 1.2f * (player.swimming ? 0.5f : 1);
-            }
+    public void move() {
+        if (ControlInputs.isPressed(Control.LEFT)) {
+            if (!player.touchingWall) player.direction = -1;
+            player.velocityX -= 1.2f * (player.touchingWater ? 0.5f : 1);
+        }
+
+        if (ControlInputs.isPressed(Control.RIGHT)) {
+            if (!player.touchingWall) player.direction = 1;
+            player.velocityX += 1.2f * (player.touchingWater ? 0.5f : 1);
         }
     }
 
@@ -137,7 +142,7 @@ public class Powerup {
     }
 
     public void updateVelocity() {
-        if (player.swimming) {
+        if (player.touchingWater) {
             player.velocityX *= 0.94f;
             player.velocityY *= 0.94f;
             player.velocityY -= 0.3f;
@@ -177,5 +182,49 @@ public class Powerup {
         g.drawImage(Images.getImage(player.image + ".png"), new Rectangle(player.x - 8, player.y, 64, 64),
                 new Rectangle((player.direction == 1 ? 0 : 8), 8 * player.frame, (player.direction == 1 ? 8 : -8), 8),
                 -MathUtils.radiansToDegrees * player.rotation);
+    }
+
+    public void touchingEnemy(Enemy enemy) {
+        player.kill();
+    }
+
+    public boolean onCollide(Level game, Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
+        if (tile.hasTag("key_box")) {
+            if (tile.hasTag("evil")) {
+                if (player.hasEvilKey) {
+                    player.hasEvilKey = false;
+                    for (int i = 0; i < 4; i++) {
+                        game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -20), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 0f, i, 0, "particles/evil_key_box_rubble.png", 30));
+                    }
+                    SoundEngine.playSound("hit.ogg");
+                    game.inGameRemoveTile(tile);
+                    return false;
+                }
+            } else if (player.keyCount > 0) {
+                player.keyCount--;
+                for (int i = 0; i < 4; i++) {
+                    game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -8), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 1.2f, i, 0, "particles/key_box_rubble.png", 30));
+                }
+                SoundEngine.playSound("hit.ogg");
+                game.inGameRemoveTile(tile);
+                return false;
+            }
+        }
+        if (tile.hasTag("slippery")) {
+            player.slippery = true;
+        }
+        if (yCollision) {
+            if (player.velocityY < 0) {
+                player.touchingGround = true;
+            }
+            if (tile.hasTag("slippery")) {
+                player.slippery = true;
+            }
+        } else {
+            if (game.mapData.getValue("wall_sliding").asBool() && !tile.hasTag("slick")) {
+                player.touchingWall = true;
+            }
+        }
+        return true;
     }
 }

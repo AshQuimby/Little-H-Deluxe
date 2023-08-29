@@ -167,6 +167,7 @@ public class Graphics extends SpriteBatch {
         poly.setOrigin(0, 0);
         poly.draw(polyBatch);
         polyBatch.end();
+        pix.dispose();
         begin();
     }
 
@@ -217,5 +218,10 @@ public class Graphics extends SpriteBatch {
 
     public void drawRect(float x, float y, float width, float height) {
         shapeRenderer.rect(x, y, width, height);
+    }
+
+    public void resetShader() {
+        setShader(null);
+        getShader().bind();
     }
 }

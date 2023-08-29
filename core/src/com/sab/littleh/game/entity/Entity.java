@@ -31,6 +31,12 @@ public class Entity {
 
     public void update(Level game) {
         touchingWater = false;
+        for (Tile tile : lastTouchedTiles) {
+            if (tile.hasTag("water")) {
+                touchingWater = true;
+                break;
+            }
+        }
         lastTouchedTiles = new HashSet<>();
         collide(game);
         if (touchingWater) {
@@ -127,10 +133,12 @@ public class Entity {
             Rectangle tileHitbox = tile.toRectangle();
             if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 1) == Math.signum(velocityY) || tile.tileType % 2 != 0) || lastTouchedTiles.contains(tile)) continue;
             if (Collisions.resolveY(entityHitbox, tileHitbox, velocityY)) {
-                if (velocityY < 0) {
-                    touchingGround = true;
+                if (onCollide(game, entityHitbox, tileHitbox, tile, true)) {
+                    stopY = true;
+                    if (velocityY < 0) {
+                        touchingGround = true;
+                    }
                 }
-                if (onCollide(game, entityHitbox, tileHitbox, tile, true)) stopY = true;
             }
         }
 
@@ -140,7 +148,7 @@ public class Entity {
     public void kill() {
     }
 
-    public void touchingTile(Tile tile) {
+    public void touchingTile(Level game, Tile tile) {
 
     }
 
@@ -157,7 +165,7 @@ public class Entity {
         for (Tile tile : collisions) {
             Rectangle tileHitbox = tile.toRectangle();
             if (playerHitbox.overlaps(tileHitbox)) {
-                touchingTile(tile);
+                touchingTile(game, tile);
                 if (tile.hasTag("one_way")) {
                     lastTouchedTiles.add(tile);
                 }

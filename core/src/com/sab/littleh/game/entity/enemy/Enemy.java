@@ -66,7 +66,7 @@ public class Enemy extends Entity {
    }
    
    @Override
-   public void touchingTile(Tile tile) {
+   public void touchingTile(Level game, Tile tile) {
       if (tile.hasTag("death")) kill();
       if (tile.hasTag("bounce")) {
          if (velocityY < 16)
@@ -75,7 +75,7 @@ public class Enemy extends Entity {
       }
       if (tile.hasTag("enemy_box")) {
          if (tile.tileType / 2 == 0 || tile.tileType / 2 == getEnemyType()) {
-            tile.notify("notify_enemy_touched", new int[0]);
+            tile.notify(game, "notify_enemy_touched", new int[0]);
             kill();
          }
       }
@@ -89,7 +89,7 @@ public class Enemy extends Entity {
    public boolean onCollide(Level game, Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
       if (tile.hasTag("enemy_box")) {
          if (tile.tileType / 2 == 0 || tile.tileType / 2 == getEnemyType()) {
-            tile.notify("notify_enemy_touched", new int[0]);
+            tile.notify(game, "notify_enemy_touched", new int[0]);
             kill();
          }
       }

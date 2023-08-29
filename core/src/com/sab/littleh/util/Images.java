@@ -37,12 +37,12 @@ public class Images {
         return image;
     }
 
-    public static void updateCache() {
-        cache.clear();
-    }
-
     public static Color getHColor() {
         return hColor;
+    }
+
+    public static Color getHColor(float hueShift) {
+        return new Color(1f, 1f, 1f, 1f).fromHsv(Settings.localSettings.hColor.asRelativeFloat() * 360f + hueShift, 1f, 1f);
     }
 
     public static void cacheHColor() {

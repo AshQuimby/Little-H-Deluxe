@@ -4,15 +4,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
-import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.Animation;
 import com.sab.littleh.util.Control;
 import com.sab.littleh.util.ControlInputs;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.SoundEngine;
-
-import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 public class WingedMode extends Powerup {
 
@@ -27,12 +23,13 @@ public class WingedMode extends Powerup {
 
    public void init(Player player) {
       gliding = false;
+      ControlInputs.releaseControl(Control.JUMP);
       player.image = "player/wing_h";
    }
 
    @Override
    public void updateVelocity() {
-      if (player.swimming) {
+      if (player.touchingWater) {
          gliding = false;
          player.velocityX *= 0.92f;
          player.velocityY *= 0.92f;
@@ -57,7 +54,7 @@ public class WingedMode extends Powerup {
    @Override
    public void jump(Level game) {
       // Winged H can't swim
-      if (player.swimming) {
+      if (player.touchingWater) {
          if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
             player.velocityY = 1;
             SoundEngine.playSound("swim.ogg");
