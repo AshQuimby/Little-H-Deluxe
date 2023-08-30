@@ -1,12 +1,11 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.util.*;
@@ -18,7 +17,6 @@ import com.sab.littleh.util.sab_format.SabWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class LevelOptionsMenu extends MainMenu {
@@ -165,7 +163,7 @@ public class LevelOptionsMenu extends MainMenu {
     public void keyDown(int keycode) {
         if (typingQuery != null)
             typingQuery.updateQueryKey(keycode, 64, false);
-        else if (keycode == Input.Keys.ESCAPE)
+        else if (ControlInputs.isJustPressed("return"))
             LittleH.program.switchMenu(new LevelSelectMenu());
 
     }

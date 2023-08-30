@@ -2,12 +2,11 @@ package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Input;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.Cursors;
 import com.sab.littleh.util.SoundEngine;
-
-import java.awt.*;
-import java.io.File;
 
 public class InternalLevelMenu extends GameMenu {
     private MainMenu menuToReturnTo;
@@ -18,14 +17,14 @@ public class InternalLevelMenu extends GameMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (keycode == Input.Keys.ESCAPE) {
+        if (ControlInputs.isJustPressed("return")) {
             if (level.escapePressed())
                 program.switchMenu(new InternalLevelPauseMenu(this));
-        } else if (keycode == Input.Keys.ENTER) {
+        } else if (ControlInputs.isJustPressed("select")) {
             level.enterPressed();
-        } else if (keycode == Input.Keys.K) {
+        } else if (ControlInputs.isJustPressed("suicide")) {
             level.suicide();
-        } else if (keycode == Input.Keys.R) {
+        } else if (ControlInputs.isJustPressed("quick_restart")) {
             level.reset();
         }
     }

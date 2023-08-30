@@ -248,6 +248,14 @@ public class LevelEditor {
                 tile.x += widthToAdd;
                 tile.y += heightToAdd;
             }
+
+            if (selection != null) {
+                selection.x += widthToAdd;
+                selection.y += heightToAdd;
+                if (tileSelection != null) {
+                    tileSelection.resize(widthToAdd, heightToAdd);
+                }
+            }
         }
 
         if (LittleH.program.getMenu() instanceof LevelEditorMenu) {

@@ -1,15 +1,14 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Menu;
-import com.sun.tools.javac.Main;
 
 public class HelpMenu extends MainMenu {
     private LocalText[] helpPanels;
@@ -38,7 +37,7 @@ public class HelpMenu extends MainMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.ENTER) {
+        if (ControlInputs.isJustPressed("return") || ControlInputs.isJustPressed("select")) {
             goBack();
         }
     }

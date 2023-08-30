@@ -1,13 +1,12 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.util.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class PauseMenu extends MainMenu {
@@ -46,7 +45,7 @@ public abstract class PauseMenu extends MainMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (keycode == Input.Keys.ESCAPE) {
+        if (ControlInputs.isJustPressed("return")) {
             program.switchMenu(menuBehind);
         }
     }

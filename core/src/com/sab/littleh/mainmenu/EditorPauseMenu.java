@@ -16,8 +16,8 @@ public class EditorPauseMenu extends PauseMenu {
             if (LevelEditor.saved) {
                 editorMenu.stop();
             } else {
-                editorMenu.confirmExit();
                 program.switchMenu(menuBehind);
+                editorMenu.confirmExit();
             }
         }));
         editorMenu.canPlaceTiles = false;

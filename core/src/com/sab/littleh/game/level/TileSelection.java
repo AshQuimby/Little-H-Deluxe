@@ -57,7 +57,8 @@ public class TileSelection {
 
     public void paste(LevelEditor editor) {
         UndoSelection undoSelection = new UndoSelection();
-        tiles.forEach(tile -> {
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile tile = tiles.get(i);
             Tile tileAt = editor.getLevel().getTileAt(tile.x, tile.y);
             if (tileAt == null) {
                 tileAt = new Tile("delete");
@@ -65,12 +66,25 @@ public class TileSelection {
                 tileAt.y = tile.y;
             }
             undoSelection.add(tileAt, tile);
-            editor.addTile(tile, tile.x, tile.y, false);
-        });
+            Point resize = editor.addTile(tile, tile.x, tile.y, false);
+            if (resize.x > 0 || resize.y > 0) {
+                for (int j = i + 1; j < tiles.size(); j++) {
+                    tiles.get(j).x += resize.x;
+                    tiles.get(i).x += resize.x;
+                }
+            }
+        }
         editor.addUndoAction(undoSelection);
     }
 
     public void setRect(Rectangle selection) {
         rectangle = selection;
+    }
+
+    public void resize(int widthToAdd, int heightToAdd) {
+        for (Tile tile : tiles) {
+            tile.x += widthToAdd;
+            tile.y += heightToAdd;
+        }
     }
 }
