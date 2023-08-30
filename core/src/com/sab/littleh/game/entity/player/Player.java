@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
@@ -249,11 +251,11 @@ public class Player extends Entity {
         // Crouching
 //        if (game.mapSettings[Level.ALLOW_CROUCH]) {
         if (canCrouch && game.mapData.getValue("crouching").asBool()) {
-            if (ControlInputs.isJustPressed(Control.LEFT) ^ ControlInputs.isJustPressed(Control.RIGHT) || !ControlInputs.isPressed(Control.DOWN) || !touchingGround) {
+            if (ControlInputs.isJustPressed(Controls.LEFT) ^ ControlInputs.isJustPressed(Controls.RIGHT) || !ControlInputs.isPressed(Controls.DOWN) || !touchingGround) {
                 height = 48;
                 crouched = false;
             }
-            if (ControlInputs.isJustPressed(Control.DOWN) && touchingGround) {
+            if (ControlInputs.isJustPressed(Controls.DOWN) && touchingGround) {
                 touchingWall = false;
                 velocityX *= 1.5f;
                 height = 24;
@@ -314,7 +316,7 @@ public class Player extends Entity {
         Set<Tile> newLastTouchedTiles = new HashSet<>();
         for (Tile tile : collisions) {
             if (crouched && tile.isSolid() && tile.hasTag("half") && (tile.tileType == 0 || tile.tileType == 2)) {
-                ControlInputs.pressControl(Control.DOWN);
+                ControlInputs.pressControl(Controls.DOWN);
                 crushed = true;
             }
             if (tile.hasTag("multi_hitbox")) {

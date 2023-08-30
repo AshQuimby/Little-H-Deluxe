@@ -9,31 +9,22 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.sab.littleh.game.level.Level;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.level.LevelEditor;
 import com.sab.littleh.mainmenu.*;
-import com.sab.littleh.settings.SettingButton;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.sab.littleh.util.Graphics;
-import com.sun.tools.javac.Main;
-import org.w3c.dom.Text;
 
-import javax.swing.*;
-import javax.swing.text.html.StyleSheet;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.management.OperatingSystemMXBean;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.*;
@@ -79,7 +70,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public void create() {
         Shaders.load();
-        Control.load();
+        Controls.load();
 
         g = new Graphics();
         staticCamera = new OrthographicCamera(resolutionX, resolutionY);
@@ -338,18 +329,18 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
         if (buttonCode < 2) {
-            ControlInputs.pressControl(Control.JUMP);
+            ControlInputs.pressControl(Controls.JUMP);
         } else if (buttonCode < 4) {
-            ControlInputs.pressControl(Control.DOWN);
+            ControlInputs.pressControl(Controls.DOWN);
         } else if (buttonCode == 11) {
-            ControlInputs.pressControl(Control.UP);
-            ControlInputs.pressControl(Control.JUMP);
+            ControlInputs.pressControl(Controls.UP);
+            ControlInputs.pressControl(Controls.JUMP);
         } else if (buttonCode == 12) {
-            ControlInputs.pressControl(Control.DOWN);
+            ControlInputs.pressControl(Controls.DOWN);
         } else if (buttonCode == 13) {
-            ControlInputs.pressControl(Control.LEFT);
+            ControlInputs.pressControl(Controls.LEFT);
         } else if (buttonCode == 14) {
-            ControlInputs.pressControl(Control.RIGHT);
+            ControlInputs.pressControl(Controls.RIGHT);
         }
         return true;
     }
@@ -357,18 +348,18 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
         if (buttonCode < 2) {
-            ControlInputs.releaseControl(Control.JUMP);
+            ControlInputs.releaseControl(Controls.JUMP);
         } else if (buttonCode < 4) {
-            ControlInputs.releaseControl(Control.DOWN);
+            ControlInputs.releaseControl(Controls.DOWN);
         } else if (buttonCode == 11) {
-            ControlInputs.releaseControl(Control.UP);
-            ControlInputs.releaseControl(Control.JUMP);
+            ControlInputs.releaseControl(Controls.UP);
+            ControlInputs.releaseControl(Controls.JUMP);
         } else if (buttonCode == 12) {
-            ControlInputs.releaseControl(Control.DOWN);
+            ControlInputs.releaseControl(Controls.DOWN);
         } else if (buttonCode == 13) {
-            ControlInputs.releaseControl(Control.LEFT);
+            ControlInputs.releaseControl(Controls.LEFT);
         } else if (buttonCode == 14) {
-            ControlInputs.releaseControl(Control.RIGHT);
+            ControlInputs.releaseControl(Controls.RIGHT);
         }
         return true;
     }
@@ -377,30 +368,30 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public boolean axisMoved(Controller controller, int axisCode, float value) {
         if (axisCode == 0) {
             if (value > 0.5f) {
-                ControlInputs.pressControl(Control.RIGHT);
+                ControlInputs.pressControl(Controls.RIGHT);
             } else if (value < -0.5f) {
-                ControlInputs.pressControl(Control.LEFT);
+                ControlInputs.pressControl(Controls.LEFT);
             } else {
-                ControlInputs.releaseControl(Control.RIGHT);
-                ControlInputs.releaseControl(Control.LEFT);
+                ControlInputs.releaseControl(Controls.RIGHT);
+                ControlInputs.releaseControl(Controls.LEFT);
             }
         } else if (axisCode == 1) {
             if (value < -0.5f) {
-                ControlInputs.pressControl(Control.UP);
+                ControlInputs.pressControl(Controls.UP);
             } else if (value > 0.5f) {
-                ControlInputs.pressControl(Control.DOWN);
+                ControlInputs.pressControl(Controls.DOWN);
             } else {
-                ControlInputs.releaseControl(Control.UP);
-                ControlInputs.releaseControl(Control.DOWN);
+                ControlInputs.releaseControl(Controls.UP);
+                ControlInputs.releaseControl(Controls.DOWN);
             }
         } else if (axisCode == 3) {
             if (value < -0.5f) {
-                ControlInputs.pressControl(Control.JUMP);
+                ControlInputs.pressControl(Controls.JUMP);
             } else if (value > 0.5f) {
-                ControlInputs.pressControl(Control.DOWN);
+                ControlInputs.pressControl(Controls.DOWN);
             } else {
-                ControlInputs.releaseControl(Control.JUMP);
-                ControlInputs.releaseControl(Control.DOWN);
+                ControlInputs.releaseControl(Controls.JUMP);
+                ControlInputs.releaseControl(Controls.DOWN);
             }
         }
         return true;

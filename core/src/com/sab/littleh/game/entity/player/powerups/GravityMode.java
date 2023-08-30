@@ -2,6 +2,8 @@ package com.sab.littleh.game.entity.player.powerups;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.Graphics;
@@ -48,7 +50,7 @@ public class GravityMode extends Powerup {
     @Override
     public void jump(Level game) {
         if (player.leftGroundFor < 6)
-            if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP))
+            if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP))
                 flipGravity();
     }
 

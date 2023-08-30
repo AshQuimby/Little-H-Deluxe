@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.mainmenu.MenuButton;
 
 import java.util.regex.Pattern;
@@ -12,7 +14,7 @@ public class TypingQuery {
     public final Rectangle rectangle;
     private String prompt;
     private StringBuilder query;
-    private int headerPosition;
+    protected int headerPosition;
     private MenuButton acceptButton;
     private MenuButton rejectButton;
     public boolean complete;
@@ -55,7 +57,7 @@ public class TypingQuery {
                 headerPosition = length();
             else
                 headerPosition = Math.min(length(), headerPosition + 1);
-        } else if (keycode == Input.Keys.ENTER) {
+        } else if (ControlInputs.isJustPressed("select")) {
             if (enterIsNewline) {
                 if (query.length() < max) {
                     query.insert(headerPosition, '\n');
@@ -64,7 +66,7 @@ public class TypingQuery {
             } else {
                 complete(true);
             }
-        } else if (keycode == Input.Keys.ESCAPE) {
+        } else if (ControlInputs.isJustPressed("return")) {
             complete(false);
         }
     }
@@ -111,9 +113,9 @@ public class TypingQuery {
     }
     public String getDisplayQuery() {
         if (LittleH.getTick() / 30 % 2 == 0) {
-            return new StringBuilder(query).insert(headerPosition, "<").toString();
+            return new StringBuilder(getQuery()).insert(headerPosition, "<").toString();
         }
-        return new StringBuilder(query).insert(headerPosition, "_").toString();
+        return new StringBuilder(getQuery()).insert(headerPosition, "_").toString();
     }
     public int length() {
         return query.length();
@@ -124,11 +126,9 @@ public class TypingQuery {
             rejectButton.mouseClicked();
         }
     }
-
     public void setAbsoluteMaxSize(int maxSize) {
         this.maxSize = maxSize;
     }
-
     public String getPrompt() {
         return prompt;
     }

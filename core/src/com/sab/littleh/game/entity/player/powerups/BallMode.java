@@ -4,8 +4,8 @@ import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.Animation;
-import com.sab.littleh.util.Control;
-import com.sab.littleh.util.ControlInputs;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.SoundEngine;
 
@@ -34,7 +34,7 @@ public class BallMode extends Powerup {
    @Override
    public void jump(Level game) {
       if (player.touchingWater) {
-         if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+         if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
             player.velocityY = -12;
             SoundEngine.playSound("swim.ogg");
          }
@@ -71,7 +71,7 @@ public class BallMode extends Powerup {
          }
       }
       if (player.touchingGround) superSlam = false;
-      if (ControlInputs.isJustPressed(Control.DOWN) && game.mapData.getValue("crouching").asBool()) {
+      if (ControlInputs.isJustPressed(Controls.DOWN) && game.mapData.getValue("crouching").asBool()) {
          if (!player.touchingGround && !superSlam) {
             superSlam = true;
          }

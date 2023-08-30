@@ -1,12 +1,12 @@
 package com.sab.littleh.game.entity.player.powerups;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.Animation;
-import com.sab.littleh.util.Control;
-import com.sab.littleh.util.ControlInputs;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.SoundEngine;
 
@@ -23,7 +23,7 @@ public class WingedMode extends Powerup {
 
    public void init(Player player) {
       gliding = false;
-      ControlInputs.releaseControl(Control.JUMP);
+      ControlInputs.releaseControl(Controls.JUMP);
       player.image = "player/wing_h";
    }
 
@@ -55,7 +55,7 @@ public class WingedMode extends Powerup {
    public void jump(Level game) {
       // Winged H can't swim
       if (player.touchingWater) {
-         if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+         if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
             player.velocityY = 1;
             SoundEngine.playSound("swim.ogg");
          }
@@ -86,13 +86,13 @@ public class WingedMode extends Powerup {
    public void update(Level game) {
       if (game.mapData.getValue("double_jumping").asBool()) player.doubleJump = true;
       if (!player.dead && !player.win) {
-         gliding = ControlInputs.getPressedFor(Control.JUMP) > 30;
+         gliding = ControlInputs.getPressedFor(Controls.JUMP) > 30;
          if (gliding) {
-            if (ControlInputs.isPressed(Control.RIGHT)) flyingRotation -= Math.PI / 24;
-            if (ControlInputs.isPressed(Control.LEFT)) flyingRotation += Math.PI / 24;
+            if (ControlInputs.isPressed(Controls.RIGHT)) flyingRotation -= Math.PI / 24;
+            if (ControlInputs.isPressed(Controls.LEFT)) flyingRotation += Math.PI / 24;
             if (player.touchingGround) {
                gliding = false;
-               ControlInputs.releaseControl(Control.JUMP);
+               ControlInputs.releaseControl(Controls.JUMP);
             }
             if (player.velocityMagnitude() < 20 && player.velocityY < 8) {
                player.frame = flapAnimation.stepLooping();

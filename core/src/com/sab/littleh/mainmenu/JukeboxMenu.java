@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.settings.ListSetting;
 import com.sab.littleh.settings.SettingButton;
@@ -138,11 +140,11 @@ public class JukeboxMenu extends MainMenu {
 
     @Override
     public void update() {
-        if (ControlInputs.isJustPressed(Control.RIGHT)) {
+        if (ControlInputs.isJustPressed(Controls.RIGHT)) {
             SoundEngine.playSound("blip.ogg");
             settingButton.setting.next();
         }
-        if (ControlInputs.isJustPressed(Control.LEFT)) {
+        if (ControlInputs.isJustPressed(Controls.LEFT)) {
             SoundEngine.playSound("blip.ogg");
             settingButton.setting.previous();
         }
@@ -186,9 +188,9 @@ public class JukeboxMenu extends MainMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (keycode == Input.Keys.ESCAPE)
+        if (ControlInputs.isJustPressed("return"))
             LittleH.program.switchMenu(new LevelSelectMenu());
-        else if (keycode == Input.Keys.SPACE)
+        else if (ControlInputs.isJustPressed(Controls.JUMP))
             buttons.get(1).onPress.run();
     }
 

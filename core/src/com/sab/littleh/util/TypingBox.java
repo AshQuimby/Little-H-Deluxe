@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 
 public class TypingBox extends TypingQuery {
-    private boolean focused;
+    protected boolean focused;
 
     public TypingBox(String description, String startingValue, Rectangle box) {
         super(description, startingValue, box);

@@ -2,6 +2,8 @@ package com.sab.littleh.game.entity.player.powerups;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
@@ -24,7 +26,7 @@ public class Powerup {
 
     public void jump(Level game) {
         if (player.touchingWater) {
-            if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+            if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
                 player.velocityY = 14;
                 SoundEngine.playSound("swim.ogg");
             }
@@ -54,7 +56,7 @@ public class Powerup {
     }
 
     public void update(Level game) {
-        if (!player.jumpReleased && (ControlInputs.isPressed(Control.JUMP) || ControlInputs.isPressed(Control.UP)) && player.jumpStrength > 0 && player.jumpStrength < 8 || player.jumpStrength > 0 && player.jumpStrength < 5) {
+        if (!player.jumpReleased && (ControlInputs.isPressed(Controls.JUMP) || ControlInputs.isPressed(Controls.UP)) && player.jumpStrength > 0 && player.jumpStrength < 8 || player.jumpStrength > 0 && player.jumpStrength < 5) {
             player.jumpStrength++;
             player.velocityY += 3.5f;
         } else {
@@ -64,7 +66,7 @@ public class Powerup {
             player.leftGroundFor = 0;
 //            if (game.mapSettings[Level.ALLOW_AIR_JUMP]) doubleJump = true;
             player.doubleJump = true;
-            if (ControlInputs.isPressed(Control.LEFT) ^ ControlInputs.isPressed(Control.RIGHT)) {
+            if (ControlInputs.isPressed(Controls.LEFT) ^ ControlInputs.isPressed(Controls.RIGHT)) {
                 player.currentAnimation = Player.runAnimation;
             } else {
                 if (!player.slippery && !player.crouched) player.velocityX *= 0.5f;
@@ -101,7 +103,7 @@ public class Powerup {
         if (player.coolRoll > 0.025f) player.coolRoll -= 0.025f;
         if (Math.abs(player.velocityX) < 2f) player.coolRoll = 0;
 
-        if (ControlInputs.isPressed(Control.JUMP) || ControlInputs.isPressed(Control.UP)) {
+        if (ControlInputs.isPressed(Controls.JUMP) || ControlInputs.isPressed(Controls.UP)) {
             player.jump(game);
             player.jumpReleased = false;
         } else {
@@ -113,12 +115,12 @@ public class Powerup {
     }
 
     public void move() {
-        if (ControlInputs.isPressed(Control.LEFT)) {
+        if (ControlInputs.isPressed(Controls.LEFT)) {
             if (!player.touchingWall) player.direction = -1;
             player.velocityX -= 1.2f * (player.touchingWater ? 0.5f : 1);
         }
 
-        if (ControlInputs.isPressed(Control.RIGHT)) {
+        if (ControlInputs.isPressed(Controls.RIGHT)) {
             if (!player.touchingWall) player.direction = 1;
             player.velocityX += 1.2f * (player.touchingWater ? 0.5f : 1);
         }

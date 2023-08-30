@@ -3,17 +3,16 @@ package com.sab.littleh.game.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.tile.Tile;
-import com.sab.littleh.mainmenu.GameMenu;
 import com.sab.littleh.mainmenu.LevelEditorMenu;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.settings.Settings;
@@ -209,11 +208,11 @@ public class Level {
                 if (!currentDialogue.finishedBlock()) {
                     currentDialogue.next();
                 }
-                ControlInputs.releaseControl(Control.UP);
-                ControlInputs.releaseControl(Control.DOWN);
-                ControlInputs.releaseControl(Control.LEFT);
-                ControlInputs.releaseControl(Control.RIGHT);
-                ControlInputs.releaseControl(Control.JUMP);
+                ControlInputs.releaseControl(Controls.UP);
+                ControlInputs.releaseControl(Controls.DOWN);
+                ControlInputs.releaseControl(Controls.LEFT);
+                ControlInputs.releaseControl(Controls.RIGHT);
+                ControlInputs.releaseControl(Controls.JUMP);
                 player.update(this);
                 particles.forEach(Particle::update);
                 particles.removeIf(particle -> !particle.alive);
@@ -547,7 +546,7 @@ public class Level {
             g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
         }
 
-        drawPostRenders(g, backgroundPostRenders, true);
+        postRenders.addAll(drawPostRenders(g, backgroundPostRenders, true));
 
         if (!inGame()) {
             if (backgroundPriority) {
@@ -569,7 +568,7 @@ public class Level {
                     if (tile != null) {
                         tile.render(inGame(), g);
                         if (tile.hasTag("post_render"))
-                            postRenders.add(tile);
+                            postRenders.add(0, tile);
                     }
                     continue;
                 }
@@ -577,16 +576,16 @@ public class Level {
                 if (tile != null) {
                     tile.render(inGame(), g);
                     if (tile.hasTag("post_render"))
-                        postRenders.add(tile);
+                        postRenders.add(0, tile);
                 }
             } else {
                 // Draw foreground
                 if (tile != null) {
                     tile.render(inGame(), g);
                     if (tile.hasTag("post_render"))
-                        postRenders.add(tile);
+                        postRenders.add(0, tile);
                     else if (tile.hasTag("post_render_in_game") && player != null)
-                        postRenders.add(tile);
+                        postRenders.add(0, tile);
                 }
             }
         }
@@ -681,7 +680,8 @@ public class Level {
         return neighbors;
     }
 
-    public void drawPostRenders(Graphics g, List<Tile> postRenders, boolean background) {
+    public List<Tile> drawPostRenders(Graphics g, List<Tile> postRenders, boolean background) {
+        List<Tile> leftovers = new ArrayList<>();
         Shaders.waterShader.bind();
         Shaders.waterShader.setUniformf("u_time", gameTick / 60f);
         g.resetShader();
@@ -689,22 +689,26 @@ public class Level {
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
-                    Tile[][] neighbors = getNeighbors(tile.x, tile.y, background);
-                    Shaders.waterShader.bind();
-                    Shaders.waterShader.setUniformMatrix("u_neighbors", new Matrix3(new float[] {
-                            neighbors[0][0] != null && neighbors[0][0].isSolid() ? 1 : 0,
-                            neighbors[1][0] != null && neighbors[1][0].isSolid() ? 1 : 0,
-                            neighbors[2][0] != null && neighbors[2][0].isSolid() ? 1 : 0,
-                            neighbors[0][1] != null && neighbors[0][1].isSolid() ? 1 : 0,
-                            neighbors[1][1] != null && neighbors[1][1].isSolid() ? 1 : 0,
-                            neighbors[2][1] != null && neighbors[2][1].isSolid() ? 1 : 0,
-                            neighbors[0][2] != null && neighbors[0][2].isSolid() ? 1 : 0,
-                            neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0,
-                            neighbors[2][2] != null && neighbors[2][2].isSolid() ? 1 : 0,
-                    }));
-                    Shaders.waterShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
-                    g.resetShader();
-                    g.drawImageWithShader(Shaders.waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                    if (background) {
+                        leftovers.add(tile);
+                    } else {
+                        Tile[][] neighbors = getNeighbors(tile.x, tile.y, background);
+                        Shaders.waterShader.bind();
+                        Shaders.waterShader.setUniformMatrix("u_neighbors", new Matrix3(new float[]{
+                                neighbors[0][0] != null && neighbors[0][0].isSolid() ? 1 : 0,
+                                neighbors[1][0] != null && neighbors[1][0].isSolid() ? 1 : 0,
+                                neighbors[2][0] != null && neighbors[2][0].isSolid() ? 1 : 0,
+                                neighbors[0][1] != null && neighbors[0][1].isSolid() ? 1 : 0,
+                                neighbors[1][1] != null && neighbors[1][1].isSolid() ? 1 : 0,
+                                neighbors[2][1] != null && neighbors[2][1].isSolid() ? 1 : 0,
+                                neighbors[0][2] != null && neighbors[0][2].isSolid() ? 1 : 0,
+                                neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0,
+                                neighbors[2][2] != null && neighbors[2][2].isSolid() ? 1 : 0,
+                        }));
+                        Shaders.waterShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
+                        g.resetShader();
+                        g.drawImageWithShader(Shaders.waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                    }
                 } else {
                     tile.render(false, g);
                 }
@@ -728,6 +732,8 @@ public class Level {
             }
             g.resetColor();
         }
+
+        return leftovers;
     }
 
     public void renderHUD(Graphics g) {

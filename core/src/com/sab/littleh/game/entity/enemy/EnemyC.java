@@ -1,11 +1,10 @@
 package com.sab.littleh.game.entity.enemy;
 
-import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
-import com.sab.littleh.util.Control;
-import com.sab.littleh.util.ControlInputs;
+import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.util.SoundEngine;
 
 public class EnemyC extends Enemy {
@@ -28,7 +27,7 @@ public class EnemyC extends Enemy {
       super.update(game);
       direction = (int) Math.signum(velocityX) == 0 ? direction : (int) Math.signum(velocityX);
       if (touchingGround) {
-         if (ControlInputs.isJustPressed(Control.JUMP) || ControlInputs.isJustPressed(Control.UP)) {
+         if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
             velocityY = 25;
             SoundEngine.playSound("jump.ogg");
          }
@@ -44,11 +43,11 @@ public class EnemyC extends Enemy {
             frame = 6;
          }
       }
-      if (ControlInputs.isPressed(Control.LEFT) ^ ControlInputs.isPressed(Control.RIGHT)) {
-         if (ControlInputs.isPressed(Control.LEFT)) {
+      if (ControlInputs.isPressed(Controls.LEFT) ^ ControlInputs.isPressed(Controls.RIGHT)) {
+         if (ControlInputs.isPressed(Controls.LEFT)) {
             velocityX -= 1f;
          }
-         if (ControlInputs.isPressed(Control.RIGHT)) {
+         if (ControlInputs.isPressed(Controls.RIGHT)) {
             velocityX += 1f;
          }
       } else if (touchingGround) {
