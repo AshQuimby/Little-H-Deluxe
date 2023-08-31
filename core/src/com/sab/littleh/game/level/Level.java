@@ -12,6 +12,7 @@ import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
+import com.sab.littleh.game.entity.player.powerups.GunMode;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.mainmenu.LevelEditorMenu;
 import com.sab.littleh.mainmenu.MainMenu;
@@ -95,6 +96,7 @@ public class Level {
     }
 
     public void startGame(Point startPos) {
+        GunMode.bullets.clear();
         levelEnded = true;
         Dialogues.resetDialogues();
         player = new Player(new Point(startPos.x, startPos.y));
@@ -236,7 +238,7 @@ public class Level {
             if (!player.warpingOut())
                 LittleH.program.dynamicCamera.targetPosition = new Vector2(player.getCenterX(), player.y + player.height / 2);
             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && mapData.getValue("look_around").asBool()) {
-                if (Cursors.cursorIsNot("magnifier")) {
+                if (Cursors.cursorIs("none")) {
                     Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
                     Cursors.switchCursor("magnifier");
                 }
@@ -244,7 +246,7 @@ public class Level {
                 LittleH.program.dynamicCamera.update();
                 LittleH.program.dynamicCamera.setPosition(MouseUtil.getDynamicMousePosition());
             } else {
-                if (Cursors.cursorIsNot("none")) {
+                if (Cursors.cursorIs("magnifier")) {
                     Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
                     Cursors.switchCursor("none");
                 }
@@ -286,6 +288,17 @@ public class Level {
             if (tile.hasTag("volatile")) {
                 volatileTiles.remove(tile);
             }
+            if (tile.hasTag("notifiable")) {
+                notifiableTiles.remove(tile);
+            }
+            if (tile.hasTag("updatable")) {
+                System.out.println(tile);
+                for (Tile other : updatableTiles) {
+                    if (other.x == tile.x && other.y == tile.y)
+                        System.out.println(other);
+                }
+                updatableTiles.remove(tile);
+            }
             tileMap.get(tile.x).set(tile.y, null);
         } else {
             throw new IllegalStateException("The Level must be desynced before calling this to avoid the permanent deletion of tiles");
@@ -324,6 +337,7 @@ public class Level {
     }
 
     public void endGame() {
+        GunMode.bullets.clear();
         currentDialogue = null;
         player = null;
         levelEnded = true;
@@ -337,6 +351,7 @@ public class Level {
     }
 
     public void resetToCheckpointState() {
+        GunMode.bullets.clear();
         enemies.clear();
         volatileTiles.clear();
         notifiableTiles.removeIf(tile -> tile.hasTag("volatile"));
@@ -780,6 +795,7 @@ public class Level {
     }
 
     public void reset() {
+        GunMode.bullets.clear();
         player = null;
         startGame(startPos);
     }

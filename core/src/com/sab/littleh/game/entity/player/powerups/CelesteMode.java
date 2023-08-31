@@ -176,7 +176,8 @@ public class CelesteMode extends Powerup {
         if (dashTime > 0) {
             player.trailSpeed = 64;
             if (dashTime % 3 == 0) {
-                game.addParticle(new Particle(player.x, player.y, 0, 0, 64, 64, 8, 8, player.direction, 0, 0, 0, 0, "player/h_trail.png", 20, 0.05f));
+                game.addParticle(new Particle(player.x, player.y, 0, 0, 64, 64, 8, 8,
+                        player.direction, 0, 0, 0, 0, "player/h_trail.png", 20, 0.05f));
             }
             noGravity = true;
             player.velocityX = dash.x;

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,13 @@ public class Graphics extends SpriteBatch {
     }
 
     public void drawImageWithShader(ShaderProgram shader, Texture image, float x, float y, float width, float height, Rectangle drawFrom) {
-        setShader(shader);
-        draw(image, x, y, width, height, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
-        setShader(null);
+        if (Settings.localSettings.useShaders.value) {
+            setShader(shader);
+            draw(image, x, y, width, height, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
+            setShader(null);
+        } else {
+            draw(image, x, y, width, height, (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, false, false);
+        }
     }
 
     public void drawImage(Texture image, float x, float y, float width, float height, Rectangle drawFrom, float rotation) {

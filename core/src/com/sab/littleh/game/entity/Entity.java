@@ -28,8 +28,7 @@ public class Entity {
     public boolean touchingGround;
     public boolean touchingWater;
     public String image;
-
-    public Set<Tile> lastTouchedTiles;
+    public Set<Tile> lastTouchedTiles = new HashSet<>();
 
     public void update(Level game) {
         touchingWater = false;

@@ -68,7 +68,6 @@ public class StoneMode extends Powerup {
    public boolean onCollide(Level game, Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
       if (groundSlam >= GROUND_SLAM_DELAY) {
          if (tile.hasTag("crumbling")) {
-            player.keyCount--;
             for (int i = 0; i < 4; i++) {
                game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -8), (float) (Math.random() * -10), 64, 64, 8, 8, 1, 0.98f, 1.2f, i, 0, "particles/mud_rubble.png", 30));
             }

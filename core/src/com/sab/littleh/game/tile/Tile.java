@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelLoader;
@@ -511,5 +513,50 @@ public class Tile {
                 }
             }
         }
+
+        if (hasTag("ambient_particles")) {
+            if (MathUtils.random() < 0.02f) {
+                if (hasTag("end")) {
+                    game.addParticle(new Particle(x * 64 + MathUtils.random() * 64, y * 64 + MathUtils.random() * 64,
+                            (float) ((MathUtils.random() - 0.5) * 2), (float) ((MathUtils.random() - 0.5) * 2),
+                            24, 24, 3, 3, 1, 0.98f, 0f,
+                            (int) (MathUtils.random() * 2), 0, "particles/twinkle.png", 60, 0.02f));
+                }
+
+                if (hasTag("evil") && hasTag("key")) {
+                    game.addParticle(new Particle(x * 64 + MathUtils.random() * 64, y * 64 + MathUtils.random() * 64,
+                            (float) ((MathUtils.random() - 0.5) * 2), (float) ((MathUtils.random() - 0.5) * 2),
+                            32, 32, 4, 4, 1, 0.98f, 0f,
+                            (int) (MathUtils.random() * 4), 0, "particles/evil_smoke.png", 60, 0.02f));
+                }
+
+                if (hasTag("powerup")) {
+                    game.addParticle(new Particle(x * 64 + MathUtils.random() * 64, y * 64 + MathUtils.random() * 64,
+                            (float) ((MathUtils.random() - 0.5) * 2), (float) ((MathUtils.random() - 0.5) * 2),
+                            24, 24, 3, 3, 1, 0.98f, 0f,
+                            (int) (MathUtils.random() * 3), 0, "particles/shine.png", 60, 0.02f));
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Tile) {
+            Tile other = (Tile) o;
+            if (imagesEqual(this, other)) {
+                if (ignoreTiling) {
+                    return x == other.x && y == other.y && tileType == other.tileType;
+                } else {
+                    return x == other.x && y == other.y;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return image.hashCode() + (ignoreTiling ? tileType * tileType * tileType : 0) + x * x + y;
     }
 }

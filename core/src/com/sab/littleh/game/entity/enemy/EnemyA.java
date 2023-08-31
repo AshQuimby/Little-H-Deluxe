@@ -33,7 +33,7 @@ public class EnemyA extends Enemy {
          }
       }
       float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
-      if (playerDist > 1480 * 1480) {
+      if (playerDist > 1800 * 1800) {
          despawn = true;
       }
       Tile tileAhead = getTile(direction, 0, game.tileMap);

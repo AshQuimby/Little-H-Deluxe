@@ -1,5 +1,6 @@
 package com.sab.littleh.game.entity.enemy;
 
+import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
@@ -42,6 +43,10 @@ public class EnemyC extends Enemy {
          } else {
             frame = 6;
          }
+      }
+      float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
+      if (playerDist > 1800 * 1800) {
+         despawn = true;
       }
       if (ControlInputs.isPressed(Controls.LEFT) ^ ControlInputs.isPressed(Controls.RIGHT)) {
          if (ControlInputs.isPressed(Controls.LEFT)) {

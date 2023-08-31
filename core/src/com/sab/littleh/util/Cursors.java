@@ -28,6 +28,7 @@ public class Cursors {
             String filePath = "images/ui/cursor/" + key + ".png";
             cache.put(key, Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal(filePath)), 0, 0));
         }
+        cache.put("reticle", Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("images/ui/cursor/reticle.png")), 22, 22));
     }
 
     public static void switchCursor(String identifier) {

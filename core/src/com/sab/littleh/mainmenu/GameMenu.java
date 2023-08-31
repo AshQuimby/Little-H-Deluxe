@@ -32,6 +32,7 @@ public class GameMenu extends MainMenu {
     @Override
     public void start() {
         level.init();
+        Cursors.switchCursor("none");
     }
 
     @Override

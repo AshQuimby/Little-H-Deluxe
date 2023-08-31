@@ -6,7 +6,7 @@
 @author The Big X Fan
 @name Meadows
 @double_jumping true
-@version 0.9
+@version 0.1.5
 @wall_sliding true
 35 1 tiles/sets/grass 49 
 40 8 tiles/sets/grass 5 
@@ -1649,11 +1649,7 @@
 135 23 tiles/sets/malice 5 
 134 22 tiles/sets/malice 5 
 136 24 tiles/sets/malice 5 
-14 9 tiles/grass_decor 0 
-12 9 tiles/grass_decor 1 
 27 10 tiles/grass_decor 2 
-22 9 tiles/grass_decor 2 
-23 9 tiles/grass_decor 4 
 45 12 tiles/grass_decor 4 
 41 12 tiles/grass_decor 5 
 48 11 tiles/grass_decor 5 
@@ -1663,7 +1659,19 @@
 39 11 tiles/grass_decor 0 
 47 11 tiles/grass_decor 2 
 2 9 tiles/grass_decor 0 
+66 16 tiles/grass_decor 0 
+64 15 tiles/grass_decor 2 
+77 16 tiles/grass_decor 3 
+83 14 tiles/grass_decor 0 
+99 16 tiles/grass_decor 3 
+103 18 tiles/grass_decor 0 
+101 17 tiles/grass_decor 5 
+114 21 tiles/grass_decor 4 
+122 26 tiles/grass_decor 2 
+126 27 tiles/grass_decor 0 
+123 36 tiles/grass_decor 3 
 6 9 tiles/grass_decor 1 
+14 9 tiles/grass_decor 3 
 @background_tiles
 133 26 tiles/sets/grass 36 
 132 26 tiles/sets/grass 49 

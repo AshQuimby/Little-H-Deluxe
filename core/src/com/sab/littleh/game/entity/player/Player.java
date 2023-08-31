@@ -404,7 +404,8 @@ public class Player extends Entity {
         } else if (!win && tile.hasTag("end")) {
             game.showTimer();
             for (int i = 0; i < 16; i++) {
-                game.addParticle(new Particle(x + width / 4, y + height / 4, (float) ((Math.random() - 0.5) * -16), (float) ((Math.random() - 0.5) * -16), 24, 24, 3, 3, 1, 0.96f, 0f, (int) (Math.random() * 2), 0, "particles/twinkle.png", 120));
+                game.addParticle(new Particle(x + width / 4, y + height / 4, (float) ((Math.random() - 0.5) * -16), (float) ((Math.random() - 0.5) * -16),
+                        24, 24, 3, 3, 1, 0.96f, 0f, (int) (Math.random() * 2), 0, "particles/twinkle.png", 120));
             }
             win();
         }
@@ -423,7 +424,7 @@ public class Player extends Entity {
                     coinCounts[tile.tileType]++;
                     if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
                         SoundEngine.playSound("all_coins_collected.ogg");
-                        game.notify("notify_all_coins", new int[]{ tile.tileType });
+                        game.notify("notify_all_coins", tile.tileType);
                     }
                 }
                 if (tile.hasTag("powerup")) {
@@ -434,6 +435,7 @@ public class Player extends Entity {
                     else if (tile.tileType == 3) powerup = new CelesteMode(this);
                     else if (tile.tileType == 4) powerup = new GravityMode(this);
                     else if (tile.tileType == 5) powerup = new StoneMode(this);
+                    else if (tile.tileType == 6) powerup = new GunMode(this);
                 }
                 if (tile.hasTag("key")) {
                     SoundEngine.playSound("coin.ogg");
@@ -576,13 +578,15 @@ public class Player extends Entity {
         public void update(Player player, Level game) {
             if (startUp > 0) {
                 if (startUp % 4 == 0) {
-                    game.addParticle(new Particle(hitbox.x + hitbox.width / 2 - 24, hitbox.y + hitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -6), (float) ((Math.random() - 0.5) * -6), 32, 32, 4, 4, 1, 0.98f, 0f, (int) (Math.random() * 4), 0, "particles/evil_smoke.png", 60));
+                    game.addParticle(new Particle(hitbox.x + hitbox.width / 2 - 24, hitbox.y + hitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -6), (float) ((Math.random() - 0.5) * -6), 32, 32, 4, 4, 1, 0.98f, 0f,
+                            (int) (Math.random() * 4), 0, "particles/evil_smoke.png", 60, 0.02f));
                 }
                 startUp--;
                 return;
             }
             if (Math.random() > 0.98) {
-                game.addParticle(new Particle(hitbox.x + hitbox.width / 2 - 24, hitbox.y + hitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -6), (float) ((Math.random() - 0.5) * -6), 32, 32, 4, 4, 1, 0.98f, 0f, (int) (Math.random() * 4), 0, "particles/evil_smoke.png", 30));
+                game.addParticle(new Particle(hitbox.x + hitbox.width / 2 - 24, hitbox.y + hitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -6), (float) ((Math.random() - 0.5) * -6), 32, 32, 4, 4, 1, 0.98f, 0f,
+                        (int) (Math.random() * 4), 0, "particles/evil_smoke.png", 30, 0.02f));
             }
             Point target = player.previousPositions.get(30);
             keyVelX = (target.x - hitbox.x) / 3;

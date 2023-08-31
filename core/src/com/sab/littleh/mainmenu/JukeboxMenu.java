@@ -54,7 +54,7 @@ public class JukeboxMenu extends MainMenu {
             songNames[i] = song.name;
             i++;
         }
-        settingButton = new SettingButton(new ListSetting("song", "Jukebox Song", 0, songNames, songNames), -512 / 2, -222, 512);
+        settingButton = new SettingButton(new ListSetting("song", "Jukebox Song", playing, songNames, songNames), -512 / 2, -222, 512);
         buttons.add(settingButton);
         playButton = new ImageButton("square_button", "ui/jukebox/play.png",
                 new Rectangle(MainMenu.relZeroX() + 16, MainMenu.relZeroY() + 16, 80, 88), 8, 16, 64, 64, () -> {

@@ -34,6 +34,7 @@ public class Settings {
     public final BoolSetting screenShake = new BoolSetting("screen_shake", "Screen Shake", true);
     public final BoolSetting rainbowTitle = new BoolSetting("rainbow_title", "Rainbow Title", false);
     public final BoolSetting grid = new BoolSetting("grid_enabled", "Grid Enabled", true);
+    public final BoolSetting useShaders = new BoolSetting("use_shaders", "Use Shaders", true);
     public final BoolSetting selectionContrast = new BoolSetting("high_contrast_selection", "High Contrast Selection", false);
     public final PercentageSetting zoomScalar = new PercentageSetting("zoom_scalar", "In-Game Zoom Multiplier", 100, 50, 200);
     public final FontSetting font = new FontSetting("font", "Default Font", 0, new String[] {
@@ -75,7 +76,7 @@ public class Settings {
             // Gameplay
             debugMode, backgroundVisibility, authorName, hColor, rainbowTitle, dividedTileSelection,
             // Video
-            fullscreen, grid, screenShake, zoomScalar, font, selectionContrast,
+            fullscreen, grid, screenShake, zoomScalar, font, selectionContrast, useShaders,
             // Audio
             muteGame, masterVolume, musicVolume, sfxVolume,
             // Misc
