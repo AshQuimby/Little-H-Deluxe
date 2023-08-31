@@ -332,7 +332,7 @@ public class Level {
         syncTiles();
         if (LittleH.program.getMenu() instanceof LevelEditorMenu) {
             ((LevelEditorMenu) LittleH.program.getMenu()).resetToolCursor();
-            SoundEngine.playMusic("menu/building_song.ogg");
+            SoundEngine.playMusic(Settings.localSettings.buildingSong.value);
         }
     }
 
@@ -486,6 +486,8 @@ public class Level {
         List<Tile> visibleTiles = new ArrayList<>();
         List<Point> toDrawGrid = new ArrayList<>();
 
+        postRenders.addAll(drawPostRenders(g, backgroundPostRenders, true, true));
+
         // Draw in the front but behind players
         for (int i = startX; i < endX; i++) {
             if (i < 0 || i >= getWidth()) continue;
@@ -532,9 +534,12 @@ public class Level {
             }
         }
 
+        postRenders = drawPostRenders(g, postRenders, false, true);
+
         enemies.forEach(enemy -> enemy.render(g, this));
         if (inGame())
             player.render(g, this);
+        particles.forEach(particle -> particle.render(g));
 
         if (!inGame()) {
             if (backgroundPriority) {
@@ -546,8 +551,6 @@ public class Level {
             g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
         }
 
-        postRenders.addAll(drawPostRenders(g, backgroundPostRenders, true));
-
         if (!inGame()) {
             if (backgroundPriority) {
                 g.setTint(new Color(1f, 1f, 1f, 0.65f));
@@ -557,8 +560,6 @@ public class Level {
         } else {
             g.resetTint();
         }
-
-        particles.forEach(particle -> particle.render(g));
 
         // Draw in the front
         for (Tile tile : visibleTiles) {
@@ -590,7 +591,7 @@ public class Level {
             }
         }
 
-        drawPostRenders(g, postRenders, false);
+        drawPostRenders(g, postRenders, false, false);
 
         g.resetTint();
 
@@ -680,16 +681,20 @@ public class Level {
         return neighbors;
     }
 
-    public List<Tile> drawPostRenders(Graphics g, List<Tile> postRenders, boolean background) {
+    public List<Tile> drawPostRenders(Graphics g, List<Tile> postRenders, boolean background, boolean dontDrawForcedFront) {
         List<Tile> leftovers = new ArrayList<>();
         Shaders.waterShader.bind();
         Shaders.waterShader.setUniformf("u_time", gameTick / 60f);
+        Shaders.windyShader.bind();
+        Shaders.windyShader.setUniformf("u_time", gameTick / 120f);
+        Shaders.vineShader.bind();
+        Shaders.vineShader.setUniformf("u_time", gameTick / 120f);
         g.resetShader();
 
         for (Tile tile : postRenders) {
             if (tile.hasTag("render_normal")) {
                 if (tile.hasTag("water")) {
-                    if (background) {
+                    if (dontDrawForcedFront) {
                         leftovers.add(tile);
                     } else {
                         Tile[][] neighbors = getNeighbors(tile.x, tile.y, background);
@@ -709,22 +714,52 @@ public class Level {
                         g.resetShader();
                         g.drawImageWithShader(Shaders.waterShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
                     }
+                } else if (tile.hasTag("windy")) {
+                    Tile[][] neighbors = getNeighbors(tile.x, tile.y, background);
+                    Shaders.windyShader.bind();
+                    Shaders.windyShader.setUniformf("u_attached", neighbors[1][2] != null && neighbors[1][2].isSolid() ? 1 : 0);
+                    Shaders.windyShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
+                    g.resetShader();
+                    g.drawImageWithShader(Shaders.windyShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
+                } else if (tile.hasTag("vines")) {
+                    Shaders.vineShader.bind();
+                    float length = -1;
+                    if (getTileAt(tile.x, tile.y + 1) != null) {
+                        if (getTileAt(tile.x, tile.y + 1).isSolid()) {
+                            length = 0;
+                        } else {
+                            int i = 1;
+                            while (getTileAt(tile.x, tile.y + i) != null && getTileAt(tile.x, tile.y + i).hasTag("vines")) {
+                                i++;
+                            }
+                            length = i;
+                        }
+                    }
+
+                    Shaders.vineShader.setUniformf("u_attached", length);
+                    Shaders.vineShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
+                    g.resetShader();
+                    g.drawImageWithShader(Shaders.vineShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());
                 } else {
                     tile.render(false, g);
                 }
             }
             if (tile.hasTag("text")) {
-                if (player != null) {
-                    if (tile.extra == null) tile.extra = "";
-                    float size = 0.8f;
-                    if (tile.tileType == 0) size = 1f;
-                    else if (tile.tileType == 2) size = 0.7f;
+                if (inGame()) {
+                    if (dontDrawForcedFront) {
+                        leftovers.add(tile);
+                    } else {
+                        if (tile.extra == null) tile.extra = "";
+                        float size = 0.8f;
+                        if (tile.tileType == 0) size = 1f;
+                        else if (tile.tileType == 2) size = 0.7f;
 
-                    LittleH.borderedFont.setColor(new Color(1, 1, 1, 1 - Math.min(1, player.getCenter().dst2(tile.x * 64 + 32, tile.y * 64 + 32) / (1280f * 1280f))));
+                        LittleH.borderedFont.setColor(new Color(1, 1, 1, 1 - Math.min(1, player.getCenter().dst2(tile.x * 64 + 32, tile.y * 64 + 32) / (1280f * 1280f))));
 
-                    g.drawString(tile.extra, LittleH.borderedFont, tile.x * 64 + 32, tile.y * 64 + 32, size * LittleH.defaultFontScale, 0);
+                        g.drawString(tile.extra, LittleH.borderedFont, tile.x * 64 + 32, tile.y * 64 + 32, size * LittleH.defaultFontScale, 0);
 
-                    LittleH.borderedFont.setColor(Color.WHITE);
+                        LittleH.borderedFont.setColor(Color.WHITE);
+                    }
                 }
             }
             if (tile.hasTag("sinusoid")) {

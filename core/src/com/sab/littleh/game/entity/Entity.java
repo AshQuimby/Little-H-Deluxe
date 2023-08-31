@@ -2,6 +2,8 @@ package com.sab.littleh.game.entity;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.Collisions;
@@ -160,19 +162,24 @@ public class Entity {
         return (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY);
     }
 
-    public void tileInteractions(Rectangle playerHitbox, List<Tile> collisions, Level game) {
-        lastTouchedTiles.clear();
+    public void tileInteractions(Rectangle entityHitbox, List<Tile> collisions, Level game) {
+        Set<Tile> newLastTouchedTiles = new HashSet<>();
         for (Tile tile : collisions) {
-            Rectangle tileHitbox = tile.toRectangle();
-            if (playerHitbox.overlaps(tileHitbox)) {
-                touchingTile(game, tile);
-                if (tile.hasTag("one_way")) {
-                    lastTouchedTiles.add(tile);
+            if (tile.hasTag("multi_hitbox")) {
+                List<Rectangle> tileHitboxes = tile.toRectangles();
+                for (Rectangle tileHitbox : tileHitboxes) {
+                    if (entityHitbox.overlaps(tileHitbox)) {
+                        touchingTile(game, tile);
+                        break;
+                    }
                 }
-                if (tile.hasTag("water")) {
-                    touchingWater = true;
+            } else {
+                Rectangle tileHitbox = tile.toRectangle();
+                if (entityHitbox.overlaps(tileHitbox)) {
+                    touchingTile(game, tile);
                 }
             }
         }
+        lastTouchedTiles = newLastTouchedTiles;
     }
 }

@@ -15,6 +15,7 @@ import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
+import com.sab.littleh.util.dialogue.Dialogue;
 import com.sab.littleh.util.dialogue.Dialogues;
 
 import java.awt.*;
@@ -94,6 +95,7 @@ public class Player extends Entity {
         crushed = false;
         powerup = new Powerup(this);
         savedPowerup = powerup;
+        previousPositions.clear();
     }
 
     public Player(Point startPos, Level game) {
@@ -131,7 +133,6 @@ public class Player extends Entity {
         if (hasEvilKey) {
             evilKey = new EvilKey((int) x / 64, (int) y / 64);
         }
-        previousPositions.clear();
     }
 
     public void setCoinCounts(Level game) {
@@ -324,6 +325,7 @@ public class Player extends Entity {
                 for (Rectangle tileHitbox : tileHitboxes) {
                     if (playerHitbox.overlaps(tileHitbox)) {
                         touchingTile(game, playerHitbox, tile, tileHitbox, newLastTouchedTiles);
+                        break;
                     }
                 }
             } else {
@@ -411,7 +413,9 @@ public class Player extends Entity {
                 game.inGameRemoveTile(tile);
                 if (tile.hasTag("dialogue")) {
                     String key = tile.extra.trim();
-                    game.setDialogue(Dialogues.getDialogue(key));
+                    Dialogue dialogue = Dialogues.getDialogue(key);
+                    if (dialogue != null)
+                        game.setDialogue(dialogue);
                     return;
                 }
                 if (tile.hasTag("coin")) {

@@ -181,7 +181,7 @@ public class Tile {
     }
 
     public void updateDrawSection() {
-        int localType = tileType % 15;
+        int localType = tileType % (hasTag("tileset") ? 15 : 16);
         int column = localType % 4;
         int row = localType / 4;
         Rectangle region = new Rectangle(column * 8, row * 8, 8, 8);

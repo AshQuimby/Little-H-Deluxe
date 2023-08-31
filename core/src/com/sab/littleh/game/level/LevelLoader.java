@@ -1,6 +1,7 @@
 package com.sab.littleh.game.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Version;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.tile.Tile;
@@ -42,7 +43,7 @@ public class LevelLoader {
             "My Level",
             "mountains",
             "-1",
-            "0.1",
+            LittleH.VERSION,
             "true"
     };
 
@@ -65,29 +66,33 @@ public class LevelLoader {
                 "My Level",
                 "mountains",
                 "-1",
-                "0.1",
+                LittleH.VERSION,
                 "true"
         };
     }
 
     public static Level readInternalLevel(String streamSource) {
         boolean invertY = false;
+        boolean updateTilesets = false;
         // Updates for if the level was originally made in the Little H as opposed to the Little H Deluxe
         // Basically just flips the y coordinates of every tile
 
         InputStream inputStream = LittleH.getInternalLevel(streamSource);
-
         SabData mapData = SabReader.read(inputStream);
+
+        if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
+            invertY = true;
+        }
+
+        if (mapData.getValue("version").toString().trim().equals(LittleH.VERSION)) {
+            updateTilesets = true;
+        }
 
         for (int i = 0; i < expectedProperties.length; i++) {
             String string = expectedProperties[i];
             if (!mapData.getValues().containsKey(string)) {
                 mapData.insertValue(string, defaultValues[i]);
             }
-        }
-
-        if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
-            invertY = true;
         }
 
         inputStream = LittleH.getInternalLevel(streamSource);
@@ -192,13 +197,36 @@ public class LevelLoader {
         level.addTiles(tiles, levelWidth, levelHeight);
         level.addBackground(background);
 
+        if (updateTilesets) {
+            LevelEditor levelEditor = new LevelEditor(level);
+            BackgroundEditor backgroundEditor = new BackgroundEditor(level);
+            for (Tile tile : tiles) {
+                levelEditor.checkTiling(levelEditor.getNeighbors(tile.x, tile.y), tile);
+            }
+            for (Tile tile : background) {
+                backgroundEditor.checkTiling(backgroundEditor.getNeighbors(tile.x, tile.y), tile);
+            }
+        }
+
+        mapData.insertValue("version", LittleH.VERSION);
+
         return level;
     }
 
     public static Level readLevel(SabData mapData, File file) throws IOException {
         boolean invertY = false;
+        boolean updateTilesets = false;
         // Updates for if the level was originally made in the Little H as opposed to the Little H Deluxe
         // Basically just flips the y coordinates of every tile
+
+        if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
+            invertY = true;
+            mapData.insertValue("is_deluxe", new SabValue("true"));
+        }
+
+        if (!mapData.getValue("version").toString().trim().equals(LittleH.VERSION)) {
+            updateTilesets = true;
+        }
 
         for (int i = 0; i < expectedProperties.length; i++) {
             String string = expectedProperties[i];
@@ -207,10 +235,6 @@ public class LevelLoader {
             }
         }
 
-        if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
-            invertY = true;
-            mapData.insertValue("is_deluxe", new SabValue("true"));
-        }
         Level level = new Level(mapData);
         Scanner scanner = SabReader.skipSabPreface(new Scanner(file));
 
@@ -311,7 +335,24 @@ public class LevelLoader {
         level.addTiles(tiles, levelWidth, levelHeight);
         level.addBackground(background);
 
+        if (updateTilesets) {
+            LevelEditor levelEditor = new LevelEditor(level);
+            BackgroundEditor backgroundEditor = new BackgroundEditor(level);
+            for (Tile tile : tiles) {
+                levelEditor.checkTiling(levelEditor.getNeighbors(tile.x, tile.y), tile);
+            }
+            for (Tile tile : background) {
+                backgroundEditor.checkTiling(backgroundEditor.getNeighbors(tile.x, tile.y), tile);
+            }
+        }
+
+        mapData.insertValue("version", LittleH.VERSION);
+
         if (invertY) {
+            saveLevel(file, level);
+        }
+
+        if (updateTilesets) {
             saveLevel(file, level);
         }
 

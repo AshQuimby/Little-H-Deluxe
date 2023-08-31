@@ -68,13 +68,18 @@ public class Settings {
     public final PercentageSetting musicVolume = new PercentageSetting("music_volume", "Music Volume", 100);
     public final PercentageSetting sfxVolume = new PercentageSetting("sfx_volume", "SFX Volume", 100);
 
+    // Misc
+    public final StringSetting buildingSong = new StringSetting("building_song", "Building Song", "menu/building_song.ogg");
+
     public final Setting<?>[] settings = new Setting[] {
             // Gameplay
             debugMode, backgroundVisibility, authorName, hColor, rainbowTitle, dividedTileSelection,
             // Video
             fullscreen, grid, screenShake, zoomScalar, font, selectionContrast,
             // Audio
-            muteGame, masterVolume, musicVolume, sfxVolume
+            muteGame, masterVolume, musicVolume, sfxVolume,
+            // Misc
+            buildingSong
     };
 
     public static String getRandomName() {

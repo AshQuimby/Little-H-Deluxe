@@ -1,24 +1,37 @@
 package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.settings.PercentageSetting;
+import com.sab.littleh.settings.SettingButton;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
+import com.sab.littleh.util.Graphics;
+import com.sab.littleh.util.Menu;
 import com.sab.littleh.util.sab_format.SabParsingException;
 import com.sab.littleh.util.sab_format.SabReader;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public class LevelSelectMenu extends MainMenu {
+    private SettingButton slider;
     private Menu<ImageButton> optionButtons;
     private Menu<LevelButton> mapButtons;
     private TypingQuery createLevelQuery;
+    private float levelScroll;
 
     @Override
     public void start() {
+        levelScroll = 0;
         LittleH.setTitle(" | Browsing Levels");
         Cursors.switchCursor("cursor");
         File[] foundMaps = LittleH.findMaps();
@@ -46,6 +59,13 @@ public class LevelSelectMenu extends MainMenu {
                     optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
                         LittleH.program.switchMenu(new HelpMenu());
                     }),
+                    optionButton.quickCreate("ui/buttons/icons/folder.png", "Open maps folder", () -> {
+                        try {
+                            Desktop.getDesktop().open(LittleH.mapsFolder);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }),
                     optionButton.quickCreate("ui/jukebox/loop.png", "Reload maps", () -> {
                         LittleH.program.switchMenu(new LevelSelectMenu());
                     }),
@@ -65,6 +85,13 @@ public class LevelSelectMenu extends MainMenu {
                     optionButton.quickCreate("ui/buttons/icons/help.png", "Help", () -> {
                         LittleH.program.switchMenu(new HelpMenu());
                     }),
+                    optionButton.quickCreate("ui/buttons/icons/folder.png", "Open maps folder", () -> {
+                        try {
+                            Desktop.getDesktop().open(LittleH.mapsFolder);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }),
                     optionButton.quickCreate("ui/jukebox/loop.png", "Reload maps", () -> {
                         LittleH.program.switchMenu(new LevelSelectMenu());
                     }),
@@ -75,6 +102,13 @@ public class LevelSelectMenu extends MainMenu {
         }
 
         this.mapButtons = new Menu<>(levelButtons, 256, 64, 16);
+
+        mapButtons.setMenuRectangle(relZeroX() + 32 + (int) levelScroll, program.getHeight() / 2 - 128 - 8, program.getHeight() - 128 - 32 - 64, false);
+
+        if ((int) (mapButtons.getMenuRectangle().width - program.getWidth() + 64) > 0) {
+            slider = new SettingButton(new PercentageSetting("slide", "Scroll bar :)", 0, 0,
+                    (int) (mapButtons.getMenuRectangle().width - program.getWidth() + 64)), -320, relZeroY() + 40, 640, false);
+        }
     }
 
     @Override
@@ -90,7 +124,14 @@ public class LevelSelectMenu extends MainMenu {
             }
             return;
         }
-        mapButtons.setMenuRectangle(relZeroX() + 32, program.getHeight() / 2 - 128, program.getHeight() - 128 - 32, false);
+
+        if (slider != null)
+            slider.update();
+
+        if (slider != null)
+            levelScroll = -((PercentageSetting) slider.setting).value;
+
+        mapButtons.setMenuRectangle(relZeroX() + 32 + (int) levelScroll, program.getHeight() / 2 - 128 - 8, program.getHeight() - 128 - 32 - 64, false);
         optionButtons.setMenuRectangle(relZeroX() + 16, -relZeroY() - 16, 0, false);
 
         mapButtons.forEach(MenuButton::update);
@@ -99,11 +140,28 @@ public class LevelSelectMenu extends MainMenu {
     }
 
     @Override
+    public void mouseScrolled(float amountY) {
+        levelScroll += amountY * 64f;
+        levelScroll = Math.min(0, Math.max(-(mapButtons.getMenuRectangle().width - program.getWidth() + 64), levelScroll));
+        if (slider != null)
+            slider.setting.value = (int) -levelScroll;
+    }
+
+    @Override
+    public void mouseDown(int button) {
+        if (slider != null)
+            slider.mouseDown();
+    }
+
+    @Override
     public void mouseUp(int button) {
         if (createLevelQuery != null) {
             createLevelQuery.mouseClicked();
             return;
         }
+
+        if (slider != null)
+            slider.mouseClicked();
 
         mapButtons.forEach(MenuButton::mouseClicked);
 
@@ -130,7 +188,15 @@ public class LevelSelectMenu extends MainMenu {
     public void render(Graphics g) {
         super.render(g);
 
-        mapButtons.renderMenuRectangle(g, Patch.get("menu"));
+        Rectangle rectangle = new Rectangle(relZeroX() + 32, relZeroY() + 32 + 64, program.getWidth() - 64, program.getHeight() - 128 - 32 - 64);
+
+        g.drawPatch(Patch.get("menu"), rectangle, 8);
+
+        Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+
+        Rectangle mask = new Rectangle();
+        ScissorStack.calculateScissors(LittleH.program.staticCamera, g.getTransformMatrix(), rectangle, mask);
+        boolean pop = ScissorStack.pushScissors(mask);
 
         Rectangle[] itemButtons = mapButtons.getItemButtons();
 
@@ -139,6 +205,13 @@ public class LevelSelectMenu extends MainMenu {
             button.setPosition(itemButtons[i].getPosition(new Vector2()));
             button.render(g);
         }
+
+        g.drawPatch(Patch.get("menu_hollow"), rectangle, 8);
+
+        if (pop)
+            ScissorStack.popScissors();
+
+        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
         itemButtons = optionButtons.getItemButtons();
 
@@ -151,5 +224,8 @@ public class LevelSelectMenu extends MainMenu {
         if (createLevelQuery != null) {
             createLevelQuery.render(g);
         }
+
+        if (slider != null)
+            slider.render(g);
     }
 }

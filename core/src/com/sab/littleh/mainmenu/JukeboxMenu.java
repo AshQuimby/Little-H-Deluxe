@@ -12,6 +12,7 @@ import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.settings.ListSetting;
 import com.sab.littleh.settings.SettingButton;
+import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.sab_format.SabReader;
 import com.sab.littleh.util.sab_format.SabValue;
@@ -83,8 +84,13 @@ public class JukeboxMenu extends MainMenu {
 
         buttons.add(stopLoopButton);
 
-        buttons.add(new ImageButton("square_button", "ui/jukebox/back_arrow.png",
+        buttons.add(new ImageButton("square_button", "ui/jukebox/building_song.png",
                 new Rectangle(MainMenu.relZeroX() + 16 + 88 * 3, MainMenu.relZeroY() + 16, 80, 88), 8, 16, 64, 64, () -> {
+            Settings.localSettings.buildingSong.set(jukeboxSongs.get(songIndex).path);
+        }).setHoverText("Set as Building Song"));
+
+        buttons.add(new ImageButton("square_button", "ui/jukebox/back_arrow.png",
+                new Rectangle(MainMenu.relZeroX() + 16 + 88 * 4, MainMenu.relZeroY() + 16, 80, 88), 8, 16, 64, 64, () -> {
             LittleH.program.switchMenu(new LevelSelectMenu());
         }).setHoverText("Back"));
 

@@ -2,11 +2,11 @@
 @crouching true
 @look_around true
 @time_limit -1
-@background cave
+@background cold_mountains
 @author AshQuimby
 @name tedtsing
 @double_jumping true
-@version 0.9
+@version 0.1.5
 @wall_sliding true
 139 19 tiles/sets/rock 4 
 139 18 tiles/sets/rock 47 
@@ -6886,7 +6886,6 @@
 138 24 tiles/sets/rock 4 
 138 23 tiles/sets/rock 4 
 138 22 tiles/sets/rock 47 
-216 84 tiles/spawn 0 
 204 90 tiles/power_fruit 2 
 223 90 tiles/sets/grass 2 
 224 90 tiles/sets/grass 19 
@@ -8640,7 +8639,6 @@
 74 34 tiles/power_fruit 4 
 70 34 tiles/power_fruit 2 
 72 34 tiles/power_fruit 3 
-72 31 tiles/spawn 0 
 65 29 tiles/mud 1 
 64 29 tiles/mud 1 
 64 28 tiles/mud 1 
@@ -8672,6 +8670,99 @@
 6 25 tiles/power_fruit 3 
 2 25 tiles/power_fruit 4 
 0 25 tiles/power_fruit 5 
+205 104 tiles/spawn 0 
+209 151 tiles/sets/stone 47 
+210 151 tiles/sets/stone 32 
+209 152 tiles/sets/stone 36 
+210 152 tiles/sets/stone 21 
+208 152 tiles/sets/stone 47 
+211 152 tiles/sets/stone 49 
+212 152 tiles/sets/stone 32 
+209 155 tiles/sets/stone 5 
+210 155 tiles/sets/stone 5 
+208 155 tiles/sets/stone 4 
+211 155 tiles/sets/stone 5 
+212 155 tiles/sets/stone 5 
+213 155 tiles/sets/stone 34 
+209 156 tiles/sets/stone 19 
+210 156 tiles/sets/stone 19 
+208 156 tiles/sets/stone 2 
+211 156 tiles/sets/stone 19 
+212 156 tiles/sets/stone 19 
+213 156 tiles/sets/stone 17 
+209 153 tiles/sets/stone 5 
+210 153 tiles/sets/stone 5 
+208 153 tiles/sets/stone 4 
+211 153 tiles/sets/stone 5 
+212 153 tiles/sets/stone 21 
+213 153 tiles/sets/stone 32 
+209 154 tiles/sets/stone 5 
+210 154 tiles/sets/stone 5 
+208 154 tiles/sets/stone 4 
+211 154 tiles/sets/stone 5 
+212 154 tiles/sets/stone 5 
+213 154 tiles/sets/stone 34 
+210 160 tiles/sets/water 52 
+210 161 tiles/sets/water 3 
+210 162 tiles/sets/water 3 
+210 163 tiles/sets/water 3 
+210 164 tiles/sets/water 3 
+210 165 tiles/sets/water 3 
+210 166 tiles/sets/water 3 
+210 167 tiles/sets/water 3 
+210 168 tiles/sets/water 3 
+210 169 tiles/sets/water 3 
+210 170 tiles/sets/water 3 
+210 171 tiles/sets/water 3 
+210 172 tiles/sets/water 3 
+210 173 tiles/sets/water 3 
+210 174 tiles/sets/water 3 
+210 175 tiles/sets/water 22 
+209 160 tiles/sets/water 2 
+208 159 tiles/sets/water 46 
+209 159 tiles/sets/water 56 
+210 159 tiles/sets/water 49 
+211 159 tiles/sets/water 57 
+211 160 tiles/sets/water 17 
+212 159 tiles/sets/water 16 
+209 175 tiles/sets/water 47 
+208 176 tiles/sets/water 46 
+209 176 tiles/sets/water 27 
+210 176 tiles/sets/water 19 
+211 175 tiles/sets/water 32 
+211 176 tiles/sets/water 26 
+212 176 tiles/sets/water 16 
+212 164 tiles/enemy 2 
+212 173 tiles/enemy 2 
+213 161 tiles/invisible_death 0 
+213 162 tiles/invisible_death 0 
+213 163 tiles/invisible_death 0 
+213 164 tiles/invisible_death 0 
+213 165 tiles/invisible_death 0 
+213 166 tiles/invisible_death 0 
+213 167 tiles/invisible_death 0 
+213 168 tiles/invisible_death 0 
+213 169 tiles/invisible_death 0 
+213 170 tiles/invisible_death 0 
+213 171 tiles/invisible_death 0 
+213 172 tiles/invisible_death 0 
+213 173 tiles/invisible_death 0 
+213 174 tiles/invisible_death 0 
+207 161 tiles/invisible_death 0 
+207 162 tiles/invisible_death 0 
+207 163 tiles/invisible_death 0 
+207 164 tiles/invisible_death 0 
+207 165 tiles/invisible_death 0 
+207 166 tiles/invisible_death 0 
+207 167 tiles/invisible_death 0 
+207 168 tiles/invisible_death 0 
+207 169 tiles/invisible_death 0 
+207 170 tiles/invisible_death 0 
+207 171 tiles/invisible_death 0 
+207 172 tiles/invisible_death 0 
+207 173 tiles/invisible_death 0 
+207 174 tiles/invisible_death 0 
+208 169 tiles/enemy 2 
 @background_tiles
 224 84 tiles/dynamic_color_cube 0 ffffff 
 224 85 tiles/dynamic_color_cube 0 00ffff 

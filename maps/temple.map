@@ -7,7 +7,7 @@
 @name Temple
 @double_jumping false
 @wall_sliding false
-@version 0.1
+@version 0.1.5
 22 16 tiles/sets/sandstone 5 
 23 16 tiles/sets/sandstone 5 
 23 15 tiles/sets/sandstone 49 
@@ -569,9 +569,9 @@
 22 23 tiles/sets/sandstone 19 
 11 23 tiles/sets/sandstone 19 
 11 26 tiles/sets/sandstone 49 
-12 26 tiles/sets/sandstone 49 
-12 27 tiles/sets/sandstone 5 
-12 28 tiles/sets/sandstone 5 
+12 26 tiles/sets/sandstone 32 
+12 27 tiles/sets/sandstone 34 
+12 28 tiles/sets/sandstone 34 
 11 27 tiles/sets/sandstone 5 
 11 28 tiles/sets/sandstone 5 
 11 29 tiles/sets/sandstone 51 
@@ -579,8 +579,8 @@
 11 31 tiles/sets/sandstone 2 
 13 32 tiles/sets/sandstone 19 
 13 31 tiles/sets/sandstone 21 
-12 29 tiles/sets/sandstone 5 
-12 30 tiles/sets/sandstone 5 
+12 29 tiles/sets/sandstone 34 
+12 30 tiles/sets/sandstone 21 
 12 31 tiles/sets/sandstone 51 
 12 32 tiles/sets/sandstone 2 
 14 32 tiles/sets/sandstone 19 

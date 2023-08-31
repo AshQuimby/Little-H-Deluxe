@@ -6,7 +6,7 @@
 @author AshQuimby
 @name Tutorial
 @double_jumping true
-@version 0.9
+@version 0.1.5
 @wall_sliding true
 35 9 tiles/sets/stone 49 
 34 10 tiles/sets/grass 19 

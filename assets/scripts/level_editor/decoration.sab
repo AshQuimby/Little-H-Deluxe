@@ -1,4 +1,7 @@
-@0 tiles/color_cube
-@1 tiles/dynamic_color_cube
-@2 tiles/statues
-@3 tiles/text
+@0 tiles/grass_decor
+@1 tiles/rocks_decor
+@2 tiles/vines_decor
+@3 tiles/color_cube
+@4 tiles/dynamic_color_cube
+@5 tiles/statues
+@6 tiles/text

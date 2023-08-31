@@ -33,6 +33,7 @@ import java.util.zip.Deflater;
 
 public class LittleH extends ApplicationAdapter implements InputProcessor, ControllerListener {
     public static final String TITLE = "The Little H Deluxe";
+    public static final String VERSION = "0.1.5";
     public static MainMenu pendingMenu;
     private int tick;
     public static final File mapsFolder = new File(Images.inArchive ? "maps/" : "../maps/");

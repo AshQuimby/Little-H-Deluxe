@@ -168,7 +168,7 @@ public class LevelEditorMenu extends MainMenu {
         }, 256 + 16, 144 + 24, 16);
 
         setToolIndex(0);
-        SoundEngine.playMusic("menu/building_song.ogg");
+        SoundEngine.playMusic(Settings.localSettings.buildingSong.value);
     }
 
     public void stop() {
@@ -199,8 +199,11 @@ public class LevelEditorMenu extends MainMenu {
         tileButtons = new Menu<>(buttons, 64, 64, 8) {
             @Override
             public MenuButton setItemIndex(int i) {
-                tileIndex = i - 1;
-                return super.setItemIndex(i);
+                if (i > 0) {
+                    tileIndex = i - 1;
+                    return super.setItemIndex(i);
+                }
+                return getSelectedItem();
             }
         };
         tileButtons.setItemIndex(1);
@@ -640,7 +643,7 @@ public class LevelEditorMenu extends MainMenu {
             } else if (level.escapePressed()) {
                 level.endGame();
                 setToolIndex(toolButtons.itemIndex);
-                SoundEngine.playMusic("menu/building_song.ogg");
+                SoundEngine.playMusic(Settings.localSettings.buildingSong.value);
             }
             editor.endSelection();
 
