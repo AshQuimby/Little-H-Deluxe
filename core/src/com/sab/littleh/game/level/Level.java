@@ -501,7 +501,7 @@ public class Level {
         List<Tile> visibleTiles = new ArrayList<>();
         List<Point> toDrawGrid = new ArrayList<>();
 
-        postRenders.addAll(drawPostRenders(g, backgroundPostRenders, true, true));
+        backgroundPostRenders = (drawPostRenders(g, backgroundPostRenders, true, true));
 
         // Draw in the front but behind players
         for (int i = startX; i < endX; i++) {
@@ -577,6 +577,7 @@ public class Level {
         }
 
         drawPostRenders(g, postRenders, false, false);
+        drawPostRenders(g, backgroundPostRenders, true, false);
 
         // Draw in the front
         for (Tile tile : visibleTiles) {

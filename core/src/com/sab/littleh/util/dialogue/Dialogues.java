@@ -25,7 +25,7 @@ public class Dialogues {
       try {
          scanner = new Scanner(s);
       } catch (Exception e) {
-         System.out.println("Dialogue \"/local/dialogues/" + Localization.languageKey + fileName + "\" not found");
+         System.out.println("VnDialogue \"/local/dialogues/" + Localization.languageKey + fileName + "\" not found");
          e.printStackTrace();
          return null;
       }

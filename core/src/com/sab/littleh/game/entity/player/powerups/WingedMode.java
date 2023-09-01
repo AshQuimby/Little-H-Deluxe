@@ -22,6 +22,7 @@ public class WingedMode extends Powerup {
    }
 
    public void init(Player player) {
+      super.init(player);
       gliding = false;
       ControlInputs.releaseControl(Controls.JUMP);
       player.image = "player/wing_h";

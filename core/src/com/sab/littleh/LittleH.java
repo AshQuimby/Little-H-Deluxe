@@ -103,7 +103,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Fonts.loadFont("comic_snas.ttf", 100);
         Fonts.loadFont("comic_snas.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         updateFont();
-        switchMenu(new LevelSelectMenu());
+        switchMenu(new TitleMenu());
         Gdx.input.setInputProcessor(this);
         if (!mapsFolder.exists()) {
             mapsFolder.mkdirs();

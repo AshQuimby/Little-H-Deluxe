@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.Controls;
 import com.sab.littleh.settings.PercentageSetting;
 import com.sab.littleh.settings.SettingButton;
 import com.sab.littleh.settings.Settings;
@@ -61,7 +63,9 @@ public class LevelSelectMenu extends MainMenu {
                     }),
                     optionButton.quickCreate("ui/buttons/icons/folder.png", "Open maps folder", () -> {
                         try {
-                            Desktop.getDesktop().open(LittleH.mapsFolder);
+                            if (Desktop.isDesktopSupported()) {
+                                Desktop.getDesktop().open(LittleH.mapsFolder);
+                            }
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -71,6 +75,9 @@ public class LevelSelectMenu extends MainMenu {
                     }),
                     optionButton.quickCreate("ui/buttons/icons/jukebox_note.png", "Jukebox", () -> {
                         LittleH.program.switchMenu(new JukeboxMenu());
+                    }),
+                    optionButton.quickCreate("ui/jukebox/back_arrow.png", "To Title Screen", () -> {
+                        LittleH.program.switchMenu(TitleMenu.titleScreen);
                     }),
                     optionButton.quickCreate("ui/buttons/icons/loading.png", "View fake loading screen", () -> {
                         LittleH.program.switchMenu(new FakeLoadingMenu());
@@ -97,6 +104,9 @@ public class LevelSelectMenu extends MainMenu {
                     }),
                     optionButton.quickCreate("ui/buttons/icons/jukebox_note.png", "Jukebox", () -> {
                         LittleH.program.switchMenu(new JukeboxMenu());
+                    }),
+                    optionButton.quickCreate("ui/jukebox/back_arrow.png", "To Title Screen", () -> {
+                        LittleH.program.switchMenu(TitleMenu.titleScreen);
                     })
             }, 80, 80, 16);
         }
@@ -176,6 +186,8 @@ public class LevelSelectMenu extends MainMenu {
     public void keyDown(int keycode) {
         if (createLevelQuery != null)
             createLevelQuery.updateQueryKey(keycode, 20, false);
+        else if (ControlInputs.isJustPressed(Controls.get("return")))
+            program.switchMenu(TitleMenu.titleScreen);
     }
 
     @Override

@@ -17,6 +17,7 @@ public class GravityMode extends Powerup {
 
     @Override
     public void init(Player player) {
+        super.init(player);
         player.image = "player/v_h";
         flippedGravity = false;
     }

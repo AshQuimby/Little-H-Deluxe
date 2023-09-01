@@ -29,6 +29,7 @@ public class GunMode extends Powerup {
 
     @Override
     public void init(Player player) {
+        super.init(player);
         player.image = "player/gun_h";
     }
 

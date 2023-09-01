@@ -22,6 +22,7 @@ public class CelesteMode extends Powerup {
 
     @Override
     public void init(Player player) {
+        super.init(player);
         player.image = "player/celeste_h";
         dashTime = 0;
         stamina = 240;

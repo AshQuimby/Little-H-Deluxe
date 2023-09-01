@@ -41,8 +41,12 @@ public class Images {
         return hColor;
     }
 
-    public static Color getHColor(float hueShift) {
-        return new Color(1f, 1f, 1f, 1f).fromHsv(Settings.localSettings.hColor.asRelativeFloat() * 360f + hueShift, 1f, 1f);
+    public static Color getHColor(float hueShift, float addSat, float addValue) {
+        if (Settings.localSettings.hColor.value == -1) {
+            return new Color(1f, 1f, 1f, 1f).fromHsv(LittleH.getTick() % 360 + hueShift, 1f + addSat, 1f + addValue);
+        } else {
+            return new Color(1f, 1f, 1f, 1f).fromHsv(Settings.localSettings.hColor.asRelativeFloat() * 360f + hueShift, 1f + addSat, 1f + addValue);
+        }
     }
 
     public static void cacheHColor() {

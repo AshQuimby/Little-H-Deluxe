@@ -22,6 +22,7 @@ public class StoneMode extends Powerup {
    }
 
    public void init(Player player) {
+      super.init(player);
       player.image = "player/stone_h";
    }
 

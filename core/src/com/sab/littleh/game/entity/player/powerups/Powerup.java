@@ -17,12 +17,12 @@ public class Powerup {
 
     public Powerup(Player player) {
         this.player = player;
-        Cursors.switchCursor("none");
         init(player);
     }
 
     public void init(Player player) {
         player.image = "player/h";
+        Cursors.switchCursor("none");
     }
 
     public void jump(Level game) {

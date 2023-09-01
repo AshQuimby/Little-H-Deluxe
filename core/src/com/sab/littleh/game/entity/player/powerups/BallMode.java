@@ -26,6 +26,7 @@ public class BallMode extends Powerup {
 
    @Override
    public void init(Player player) {
+      super.init(player);
       superSlam = false;
       player.image = "player/ball_h";
       bounceSoundCool = 0;

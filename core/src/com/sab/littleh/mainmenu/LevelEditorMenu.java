@@ -200,7 +200,7 @@ public class LevelEditorMenu extends MainMenu {
             @Override
             public MenuButton setItemIndex(int i) {
                 if (i > 0) {
-                    tileIndex = i - 1;
+                    setTileIndex(i - 1);
                     return super.setItemIndex(i);
                 }
                 return getSelectedItem();
@@ -409,7 +409,7 @@ public class LevelEditorMenu extends MainMenu {
                 case 1 -> {
                     useTool(false);
                 }
-                // Color picker
+                // Pen
                 case 2 -> {
                     Point tiledPreviousMousePosition = new Point();
                     tiledPreviousMousePosition.x = (int) (previousMousePosition.x / 64);
@@ -427,16 +427,36 @@ public class LevelEditorMenu extends MainMenu {
                 }
                 // Color picker
                 case 4 -> {
-                    int tileCount = getTileSelection().size();
                     Tile tileAt = editor.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
-                    if (tileAt != null) {
-                        for (int i = 0; i < tileCount; i++) {
-                            if (getEditorTile().image.equals(tileAt.image)) {
-                                tileButtons.itemIndex = i + 1;
-                                Tile buttonTile = ((TileButton) tileButtons.getSelectedItem()).getTile();
-                                if (buttonTile.ignoreTiling)
-                                    buttonTile.setTileType(tileAt.tileType);
-                                buttonTile.extra = tileAt.extra;
+                    for (List<Tile> selection : tileSelections) {
+                        for (Tile tile : selection) {
+                            if (Tile.imagesEqual(tile, tileAt)) {
+                                tileSelectionIndex = tileSelections.indexOf(selection);
+                                setTileIndex(selection.indexOf(tile));
+                                tileButtons.setItemIndex(tileIndex + 1);
+                                if (tileAt.ignoreTiling)
+                                    tile.tileType = tileAt.tileType;
+                                if (tile.hasTag("property_set")) {
+                                    MenuButton[] buttons = new MenuButton[tile.getPropertyCount() + 1];
+                                    buttons[0] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64, 0, 0, 64, 64, null);
+                                    for (int i = 1; i < buttons.length; i++) {
+                                        Tile newTile = tile.copy();
+                                        newTile.setTileType(i - 1);
+                                        buttons[i] = new TileButton(newTile, 0, 0, false);
+                                    }
+                                    Menu<MenuButton> propertyMenu = new Menu<>(buttons, 64, 64, 8);
+                                    propertyMenu.itemIndex = tile.tileType + 1;
+                                    propertyMenu.setMenuRectangle((int) (tileButtons.getMenuRectangle().x + tileButtons.getMenuRectangle().width), -relZeroY() - 72, program.getHeight() - 64, false);
+                                    tileButtons.setSubMenu(propertyMenu);
+
+                                    TileButton tileButton = (TileButton) tileButtons.getSelectedItem();
+                                    tileButton.getTile().setTileType(tileAt.tileType);
+                                } else {
+                                    tileButtons.subMenu = null;
+                                }
+                                if (tileAt.extra != null && !tileAt.extra.isBlank())
+                                    tile.extra = tileAt.extra;
+                                break;
                             }
                         }
                     }
@@ -475,6 +495,10 @@ public class LevelEditorMenu extends MainMenu {
                 }
             }
         }
+    }
+
+    private void setTileIndex(int index) {
+        tileIndex = index;
     }
 
     public void negativeResize(int x, int y) {
@@ -691,7 +715,7 @@ public class LevelEditorMenu extends MainMenu {
                             SoundEngine.playSound("blip.ogg");
                             resetTileMenu();
                         }
-                    } else if (newIndex != tileButtons.itemIndex) {
+                    } else {
                         tileButtons.setItemIndex(newIndex);
                         Tile tile = getEditorTile();
                         if (tile.hasTag("property_set")) {

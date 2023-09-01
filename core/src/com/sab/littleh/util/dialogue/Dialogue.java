@@ -79,6 +79,10 @@ public class Dialogue {
       return next(true);
    }
 
+   protected String getLastBlock() {
+      return lastBlock;
+   }
+
    public String next(boolean playBlip) {
       characterFillup += blockSpeed;
       while (characterFillup >= 1f) {
@@ -98,7 +102,7 @@ public class Dialogue {
             blipTimer++;
          }
 
-         // Dialogue commands
+         // VnDialogue commands
          if (next.equals("\\")) {
             String command = getNext() + getNext();
             int parens = 0;
@@ -130,7 +134,7 @@ public class Dialogue {
       return next;
    }
 
-   private void runCommand(String command, String parameter) {
+   protected void runCommand(String command, String parameter) {
       switch (command) {
          // playSound (path)
          case "pS" -> {
