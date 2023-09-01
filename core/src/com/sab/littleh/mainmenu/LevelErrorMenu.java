@@ -16,10 +16,13 @@ public class LevelErrorMenu extends MainMenu {
     public LevelErrorMenu(String message) {
         errorMessage = message;
     }
+
+    @Override
     public void mouseUp(int button) {
         LittleH.program.switchMenu(new LevelSelectMenu());
     }
 
+    @Override
     public void keyUp(int keycode) {
         LittleH.program.switchMenu(new LevelSelectMenu());
     }

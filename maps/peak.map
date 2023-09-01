@@ -1,9 +1,0 @@
-@crouching true
-@is_deluxe true
-@time_limit -1
-@author AshQuimby
-@background cold_mountains
-@name Peak
-@double_jumping true
-@wall_sliding true
-@version 0.1

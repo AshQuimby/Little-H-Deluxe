@@ -1,13 +1,13 @@
-@crouching false
+@crouching true
 @look_around true
 @is_deluxe true
 @time_limit 60
 @author Jade
 @background hyperspace
 @name Exam-C
-@double_jumping false
-@wall_sliding false
-@version 0.1
+@double_jumping true
+@wall_sliding true
+@version 0.1.5
 0 1 tiles/sets/rock 4 
 1 1 tiles/sets/sandstone 6 
 2 1 tiles/sets/rock 19 

@@ -6,7 +6,7 @@
 @author AshQuimby
 @name Going Under It
 @double_jumping false
-@version 0.9
+@version 0.1.5
 @wall_sliding true
 135 68 tiles/sets/snowy_turf 5 
 305 309 tiles/coin_box 6 

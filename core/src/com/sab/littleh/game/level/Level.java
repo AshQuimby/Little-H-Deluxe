@@ -538,7 +538,7 @@ public class Level {
                     // Draw foreground
                     Tile tile = getTileAt(i, j);
                     if (tile != null) {
-                        if (!(tile.isSolid() && tile.hasTag("tileset"))) tile.render(inGame(), g);
+                        if (!(tile.isSolid() && !tile.ignoreTiling)) tile.render(inGame(), g);
                         else visibleTiles.add(tile);
                         if (tile.hasTag("post_render"))
                             postRenders.add(tile);
@@ -576,6 +576,8 @@ public class Level {
             g.resetTint();
         }
 
+        drawPostRenders(g, postRenders, false, false);
+
         // Draw in the front
         for (Tile tile : visibleTiles) {
             if (!inGame()) {
@@ -605,8 +607,6 @@ public class Level {
                 }
             }
         }
-
-        drawPostRenders(g, postRenders, false, false);
 
         g.resetTint();
 
@@ -739,19 +739,30 @@ public class Level {
                 } else if (tile.hasTag("vines")) {
                     Shaders.vineShader.bind();
                     float length = -1;
+                    float vinePosition = -1;
                     if (getTileAt(tile.x, tile.y + 1) != null) {
                         if (getTileAt(tile.x, tile.y + 1).isSolid()) {
-                            length = 0;
+                            vinePosition = 0;
                         } else {
                             int i = 1;
                             while (getTileAt(tile.x, tile.y + i) != null && getTileAt(tile.x, tile.y + i).hasTag("vines")) {
                                 i++;
                             }
-                            length = i;
+                            vinePosition = i;
                         }
                     }
+                    if (getTileAt(tile.x, tile.y - 1) != null) {
+                        int i = 1;
+                        while (getTileAt(tile.x, tile.y - i) != null && getTileAt(tile.x, tile.y - i).hasTag("vines")) {
+                            i++;
+                        }
+                        length = i + vinePosition - 1;
+                    } else {
+                        length = vinePosition;
+                    }
 
-                    Shaders.vineShader.setUniformf("u_attached", length);
+                    Shaders.vineShader.setUniformf("u_attached", vinePosition);
+                    Shaders.vineShader.setUniformf("u_vineLength", length);
                     Shaders.vineShader.setUniformf("u_tilePosition", new Vector2(tile.x, tile.y));
                     g.resetShader();
                     g.drawImageWithShader(Shaders.vineShader, tile.getImage(), tile.x * 64, tile.y * 64, 64, 64, tile.getDrawSection());

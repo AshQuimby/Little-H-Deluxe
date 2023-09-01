@@ -1,0 +1,14 @@
+@crouching true
+@look_around true
+@is_deluxe true
+@time_limit -1
+@author Birdthorn
+@background hyperspace
+@name For Jade
+@double_jumping true
+@wall_sliding true
+@version 0.1
+152 4 tiles/power_fruit 2 
+152 5 tiles/spawn 0 
+1 1133 tiles/end 0 
+@background_tiles

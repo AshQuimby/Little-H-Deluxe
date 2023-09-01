@@ -9,6 +9,7 @@ varying vec2 v_texCoords;
 
 uniform float u_time;
 uniform float u_attached;
+uniform float u_vineLength;
 uniform vec2 u_tilePosition;
 
 void main()
@@ -16,6 +17,7 @@ void main()
     int corner = 0;
     int local_x = abs(u_tilePosition.x - a_position.x / 64.0) < .1 ? 0 : 1;
     int local_y = abs(u_tilePosition.y - a_position.y / 64.0) < .1 ? 0 : 1;
+    float subY = u_tilePosition.y - a_position.y / 64.0;
 
     bool wave = true;
 
@@ -30,8 +32,8 @@ void main()
 
     vec4 position = a_position;
     if (wave) {
-        position.x += cos(u_time * 4.0 + a_position.x + a_position.y) * 2.0 * ((u_attached + 0.5));
-        position.y += sin(u_time * 4.0 + a_position.x + a_position.y) * 4.0;
+        float swing = cos((u_time * 20.0 + u_tilePosition.x) / u_vineLength) * 0.15 * ((u_attached + subY + 0.5) * (u_attached + subY + 0.5) - abs(u_tilePosition.y - a_position.y / 64.0));
+        position.x += swing;
     }
 
     gl_Position = u_projTrans * position;

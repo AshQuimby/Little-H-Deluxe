@@ -1,11 +1,12 @@
 @crouching true
 @is_deluxe true
+@look_around true
 @time_limit -1
 @background mountains
 @author AshQuimby
 @name Forest
 @double_jumping true
-@version 0.9
+@version 0.1.5
 @wall_sliding true
 81 28 tiles/sets/malice 46 
 89 36 tiles/coin 0 
@@ -384,3 +385,4 @@
 69 27 tiles/sets/grass 5 
 68 27 tiles/sets/grass 5 
 67 27 tiles/sets/grass 5 
+@background_tiles
