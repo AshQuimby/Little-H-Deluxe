@@ -20,9 +20,11 @@ public class ParallaxBackground {
             "full",
             "back",
             "outmost",
+            "distant",
             "far",
             "middle",
             "near",
+            "close",
             "front"
     };
 
@@ -30,20 +32,24 @@ public class ParallaxBackground {
             "full",
             "back",
             "outmost",
+            "distant",
             "far",
             "middle",
             "near",
+            "close",
             "front",
     };
 
     public static final float[] parallaxScalar = new float[] {
             0f,
             0f,
-            32f,
-            24f,
+            40f,
+            34f,
+            28f,
+            22f,
             16f,
-            12f,
-            8f
+            10f,
+            4f
     };
     public float parallaxMultiplier = 1f;
     public float ambientSpeedMultiplier = 1f;
@@ -52,6 +58,30 @@ public class ParallaxBackground {
     private Map<String, Texture> layers;
     private DynamicCamera personalCamera;
     private DynamicCamera personalStaticCamera;
+
+    public ParallaxBackground(String path, boolean internal) {
+        if (internal) {
+            InputStream metaFile = ParallaxBackground.class.getResourceAsStream("/images/" + path + "/meta.sab");
+            SabData data;
+            try {
+                data = SabReader.read(metaFile);
+            } catch (SabParsingException e) {
+                throw new RuntimeException(e);
+            }
+            boolean firstLoaded = false;
+            layers = new HashMap<>();
+            for (String layer : data.getValues().keySet()) {
+                Texture texture = Images.getImage(path + "/" + layer + ".png");
+                if (layer.equals("back") || firstLoaded) {
+                    width = texture.getWidth();
+                    height = texture.getHeight();
+                }
+                layers.put(layer, texture);
+            }
+        } else {
+            throw new IllegalArgumentException("Action not supported");
+        }
+    }
 
     public ParallaxBackground(String background, InputStream metaFile) {
         SabData data;
@@ -100,8 +130,8 @@ public class ParallaxBackground {
         int screenWidth = LittleH.program.getWidth();
         int screenHeight = LittleH.program.getHeight();
         float backgroundScalar = Math.max((float) screenWidth / width, (float) screenHeight / height);
-        float cameraX = camera.getPosition().x;
-        float cameraY = camera.getPosition().y;
+        float cameraX = camera.getPosition().x * backgroundScalar / 12;
+        float cameraY = camera.getPosition().y * backgroundScalar / 12 + screenHeight / 2;
         Rectangle drawTo;
         for (int i = 0; i < drawOrder.length; i++) {
             String layer = drawOrder[i];

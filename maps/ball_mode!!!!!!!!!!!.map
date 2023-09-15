@@ -7,7 +7,7 @@
 @name BALL MODE!!!!!!!!!!!
 @double_jumping true
 @wall_sliding true
-@version 0.1
+@version 0.1.5
 8 0 tiles/sets/sandstone 16 
 7 0 tiles/sets/sandstone 18 
 6 0 tiles/sets/sandstone 18 

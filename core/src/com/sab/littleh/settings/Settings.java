@@ -71,6 +71,7 @@ public class Settings {
 
     // Misc
     public final StringSetting buildingSong = new StringSetting("building_song", "Building Song", "menu/building_song.ogg");
+    public final BoolSetting autoDialogue = new BoolSetting("auto_dialogue", "Auto Dialogue", false);
 
     public final Setting<?>[] settings = new Setting[] {
             // Gameplay
@@ -80,7 +81,7 @@ public class Settings {
             // Audio
             muteGame, masterVolume, musicVolume, sfxVolume,
             // Misc
-            buildingSong
+            buildingSong, autoDialogue
     };
 
     public static String getRandomName() {

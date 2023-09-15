@@ -93,7 +93,7 @@ public class TypingQuery {
             }
             // Delete
         } else if (character == 0x7F) {
-            if (!query.isEmpty() && headerPosition < length()) {
+            if (!query.toString().isEmpty() && headerPosition < length()) {
                 headerPosition++;
                 query = query.deleteCharAt(headerPosition - 1);
                 headerPosition--;

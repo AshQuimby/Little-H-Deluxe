@@ -76,7 +76,7 @@ public class LevelEditorMenu extends MainMenu {
             currentMenu = settingsButtons;
         });
 
-        severeConfirmationMenu = new Menu<>(new MenuButton[] {
+        severeConfirmationMenu = new Menu<>(new MenuButton[]{
                 new MenuButton("button", "Save & Exit", 0, 0, 256, 96,
                         () -> {
                             LevelLoader.saveLevel(file, level);
@@ -88,7 +88,7 @@ public class LevelEditorMenu extends MainMenu {
                         () -> currentMenu = null)
         }, 256, 96, 16);
 
-        severeSevereConfirmationMenu = new Menu<>(new MenuButton[] {
+        severeSevereConfirmationMenu = new Menu<>(new MenuButton[]{
                 new MenuButton("button", "Save & Close", 0, 0, 256, 96,
                         () -> {
                             LevelLoader.saveLevel(file, level);
@@ -107,7 +107,7 @@ public class LevelEditorMenu extends MainMenu {
         ImageButton imageButton = new ImageButton(null, "ui/buttons/icons/pencil.png", new Rectangle(0, 0, 64, 64), 0, 0, 64, 64, () -> setToolIndex(0));
         imageButton.setHoverText("Pencil");
 
-        toolButtons = new Menu<>(new ImageButton[] {
+        toolButtons = new Menu<>(new ImageButton[]{
                 imageButton,
                 imageButton.quickCreate("ui/buttons/icons/eraser.png", "Eraser", () -> setToolIndex(1)),
                 imageButton.quickCreate("ui/buttons/icons/pen.png", "Pen", () -> setToolIndex(2)),
@@ -117,7 +117,7 @@ public class LevelEditorMenu extends MainMenu {
                 imageButton.quickCreate("ui/buttons/icons/h.png", "H", () -> setToolIndex(6)),
         }, 64, 64, 8);
 
-        settingsButtons = new Menu<>(new ImageButton[] {
+        settingsButtons = new Menu<>(new ImageButton[]{
                 imageButton.quickCreate("ui/buttons/icons/background.png", "Change background", () -> {
                     currentMenu = backgroundMenu;
                 }),
@@ -196,7 +196,7 @@ public class LevelEditorMenu extends MainMenu {
                     0, 0, 64, 64, null);
         }
 
-        tileButtons = new Menu<>(buttons, 64, 64, 8) {
+        tileButtons = new Menu<MenuButton>(buttons, 64, 64, 8) {
             @Override
             public MenuButton setItemIndex(int i) {
                 if (i > 0) {
@@ -224,7 +224,7 @@ public class LevelEditorMenu extends MainMenu {
         level.init();
 
         tileSelections = new ArrayList<>();
-        String[] selections = new String[] {
+        String[] selections = new String[]{
                 "level_editor/ground.sab",
                 "level_editor/level.sab",
                 "level_editor/danger.sab",
@@ -274,7 +274,7 @@ public class LevelEditorMenu extends MainMenu {
 
         if (!level.inGame()) {
             if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                    float scalar = 1;
+                float scalar = 1;
                 if (ControlInputs.isPressed("drag_camera"))
                     scalar = 4;
                 else if (ControlInputs.isPressed("move_selection"))
@@ -378,7 +378,7 @@ public class LevelEditorMenu extends MainMenu {
         if (leftMouse) {
             switch (toolButtons.itemIndex) {
                 // Pencil
-                case 0 -> {
+                case 0:
                     Tile tileAt = editor.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
                     Tile newTile = getEditorTile();
                     if (Tile.imagesEqual(tileAt, newTile)) {
@@ -400,34 +400,34 @@ public class LevelEditorMenu extends MainMenu {
                     if (!Tile.imagesEqual(tileAt, newTile)) {
                         Point offset = editor.addTile(newTile, tiledMousePosition.x, tiledMousePosition.y, true);
                         Tile tile = editor.getTileAt(tiledMousePosition.x + offset.x, tiledMousePosition.y + offset.y);
-                        if (tile.hasTag("string_picker") && (tile.extra == null || tile.extra.isBlank())) {
+                        if (tile.hasTag("string_picker") && (tile.extra == null || tile.extra.isEmpty())) {
                             startExtraQuery(tile);
                         }
                     }
-                }
+                    break;
                 // Eraser (just simulates a right click (erases)
-                case 1 -> {
+                case 1:
                     useTool(false);
-                }
+                    break;
                 // Pen
-                case 2 -> {
+                case 2:
                     Point tiledPreviousMousePosition = new Point();
                     tiledPreviousMousePosition.x = (int) (previousMousePosition.x / 64);
                     tiledPreviousMousePosition.y = (int) (previousMousePosition.y / 64);
                     editor.drawLine(getEditorTile(), tiledMousePosition.x, tiledMousePosition.y,
                             tiledPreviousMousePosition.x, tiledPreviousMousePosition.y);
-                }
+                    break;
                 // Fill tool
-                case 3 -> {
+                case 3:
                     if (MouseUtil.leftMouseJustPressed()) {
                         Tile fillTile = getEditorTile();
                         if (!Tile.tilesEqual(editor.getTileAt(tiledMousePosition.x, tiledMousePosition.y), fillTile))
                             editor.fill(fillTile, tiledMousePosition.x, tiledMousePosition.y);
                     }
-                }
+                    break;
                 // Color picker
-                case 4 -> {
-                    Tile tileAt = editor.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
+                case 4:
+                    tileAt = editor.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
                     for (List<Tile> selection : tileSelections) {
                         for (Tile tile : selection) {
                             if (Tile.imagesEqual(tile, tileAt)) {
@@ -440,7 +440,7 @@ public class LevelEditorMenu extends MainMenu {
                                     MenuButton[] buttons = new MenuButton[tile.getPropertyCount() + 1];
                                     buttons[0] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64, 0, 0, 64, 64, null);
                                     for (int i = 1; i < buttons.length; i++) {
-                                        Tile newTile = tile.copy();
+                                        newTile = tile.copy();
                                         newTile.setTileType(i - 1);
                                         buttons[i] = new TileButton(newTile, 0, 0, false);
                                     }
@@ -454,15 +454,15 @@ public class LevelEditorMenu extends MainMenu {
                                 } else {
                                     tileButtons.subMenu = null;
                                 }
-                                if (tileAt.extra != null && !tileAt.extra.isBlank())
+                                if (tileAt.extra != null && !tileAt.extra.isEmpty())
                                     tile.extra = tileAt.extra;
                                 break;
                             }
                         }
                     }
-                }
+                    break;
                 // Selection tool
-                case 5 -> {
+                case 5:
                     if (ControlInputs.isPressed("move_selection") || editor.isMoving()) {
                         editor.setSelectionPosition(mouseWorldPosition);
                     } else if (ControlInputs.isPressed("drag_selection") || editor.isNudging()) {
@@ -470,29 +470,29 @@ public class LevelEditorMenu extends MainMenu {
                     } else {
                         editor.select(tiledMousePosition);
                     }
-                }
-                //
-                case 6 -> {
+                    break;
+                // Quick test
+                case 6:
                     level.startGame(new Point(tiledMousePosition));
                     lastPlayer = level.player;
                     canPlaceTiles = false;
-                }
+                    break;
             }
         } else {
             switch (toolButtons.itemIndex) {
-                case 2 -> {
+                case 2 :
                     Point tiledPreviousMousePosition = new Point();
                     tiledPreviousMousePosition.x = (int) (previousMousePosition.x / 64);
                     tiledPreviousMousePosition.y = (int) (previousMousePosition.y / 64);
                     editor.drawLine(new Tile("delete"), tiledMousePosition.x, tiledMousePosition.y,
                             tiledPreviousMousePosition.x, tiledPreviousMousePosition.y);
-                }
-                case 3 -> {
+                    break;
+                case 3:
                     editor.fill(new Tile("delete"), tiledMousePosition.x, tiledMousePosition.y);
-                }
-                default -> {
+                    break;
+                default:
                     editor.addTile(new Tile("delete"), tiledMousePosition.x, tiledMousePosition.y, true);
-                }
+                    break;
             }
         }
     }
@@ -534,27 +534,26 @@ public class LevelEditorMenu extends MainMenu {
     public void setToolIndex(int index) {
         toolButtons.setItemIndex(index);
         switch (index) {
-            case 0 -> {
+            case 0 :
                 Cursors.switchCursor("pencil");
-            }
-            case 1 -> {
+                break;
+            case 1 :
                 Cursors.switchCursor("eraser");
-            }
-            case 2 -> {
+                break;
+            case 2 :
                 Cursors.switchCursor("pen");
-            }
-            case 3 -> {
+                break;
+            case 3 :
                 Cursors.switchCursor("paint_can");
-            }
-            case 4 -> {
+                break;
+            case 4 :
                 Cursors.switchCursor("color_picker");
-            }
-            case 5 -> {
+                break;
+            case 5 :
                 Cursors.switchCursor("cursor");
-            }
-            case 6 -> {
+                break;
+            case 6 :
                 Cursors.switchCursor("h");
-            }
         }
     }
 
@@ -817,6 +816,10 @@ public class LevelEditorMenu extends MainMenu {
                 severeConfirmationMenu.forEach(MenuButton::mouseClicked);
             } else if (currentMenu == severeSevereConfirmationMenu) {
                 severeSevereConfirmationMenu.forEach(MenuButton::mouseClicked);
+            }
+
+            if (!level.inGame()) {
+                level.mouseUp();
             }
         }
     }

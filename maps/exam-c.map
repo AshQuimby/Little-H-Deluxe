@@ -7,7 +7,7 @@
 @name Exam-C
 @double_jumping false
 @wall_sliding false
-@version 0.1
+@version 0.1.5
 0 1 tiles/sets/rock 4 
 1 1 tiles/sets/sandstone 6 
 2 1 tiles/sets/rock 19 
@@ -1287,3 +1287,45 @@
 34 15 tiles/half_spike 1 
 34 14 tiles/half_spike 1 
 @background_tiles
+1 15 tiles/sets/water 2 
+1 14 tiles/sets/water 47 
+2 14 tiles/sets/water 49 
+3 14 tiles/sets/water 49 
+4 14 tiles/sets/water 49 
+5 14 tiles/sets/water 49 
+6 14 tiles/sets/water 49 
+7 14 tiles/sets/water 32 
+6 15 tiles/sets/water 19 
+5 15 tiles/sets/water 19 
+4 15 tiles/sets/water 19 
+3 15 tiles/sets/water 19 
+2 15 tiles/sets/water 19 
+7 15 tiles/sets/water 17 
+7 27 tiles/sets/water 17 
+6 27 tiles/sets/water 19 
+5 27 tiles/sets/water 19 
+4 27 tiles/sets/water 19 
+3 27 tiles/sets/water 19 
+2 27 tiles/sets/water 19 
+1 27 tiles/sets/water 2 
+1 26 tiles/sets/water 47 
+2 26 tiles/sets/water 49 
+3 26 tiles/sets/water 49 
+4 26 tiles/sets/water 49 
+5 26 tiles/sets/water 49 
+6 26 tiles/sets/water 49 
+7 26 tiles/sets/water 32 
+7 39 tiles/sets/water 17 
+6 39 tiles/sets/water 19 
+5 39 tiles/sets/water 19 
+4 39 tiles/sets/water 19 
+3 39 tiles/sets/water 19 
+2 39 tiles/sets/water 19 
+1 39 tiles/sets/water 2 
+1 38 tiles/sets/water 47 
+2 38 tiles/sets/water 49 
+3 38 tiles/sets/water 49 
+4 38 tiles/sets/water 49 
+5 38 tiles/sets/water 49 
+6 38 tiles/sets/water 49 
+7 38 tiles/sets/water 32 

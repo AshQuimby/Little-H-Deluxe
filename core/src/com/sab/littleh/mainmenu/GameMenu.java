@@ -64,6 +64,13 @@ public class GameMenu extends MainMenu {
     }
 
     @Override
+    public void mouseUp(int button) {
+        if (!level.inGame()) {
+            level.mouseUp();
+        }
+    }
+
+    @Override
     public void close() {
     }
 

@@ -58,6 +58,8 @@ public class SoundEngine {
         looping = true;
         try {
             String playFilePath = "sounds/music/" + filePath;
+            if (SoundEngine.currentMusic != null && SoundEngine.currentMusic == SoundEngine.getMusic(playFilePath))
+                return;
             if (musicCache.containsKey(playFilePath)) {
                 stopMusic();
                 currentMusic = musicCache.get(playFilePath);
@@ -139,5 +141,9 @@ public class SoundEngine {
 
     public static void setLooping(boolean looping) {
         currentMusic.setLooping(looping);
+    }
+
+    public static Music getMusic(String key) {
+        return musicCache.get("sounds/music/" + key);
     }
 }

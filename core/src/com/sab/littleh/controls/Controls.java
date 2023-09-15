@@ -79,6 +79,7 @@ public class Controls {
         controlMap.put("left", LEFT);
         controlMap.put("right", RIGHT);
         controlMap.put("jump", JUMP);
+        controlMap.put("sprint", new Control("Sprint (Campaign only)", false, SHIFT_LEFT));
         controlMap.put("suicide", new Control("To Checkpoint", false, K));
         controlMap.put("quick_restart", new Control("Quick Reset", false, R));
         controlMap.put("return", new Control("Return/Back", false, ESCAPE));

@@ -41,6 +41,14 @@ public class Images {
         return hColor;
     }
 
+    public static float getHHue() {
+        if (Settings.localSettings.hColor.value == -1) {
+            return LittleH.getTick() % 360;
+        } else {
+            return Settings.localSettings.hColor.asRelativeFloat() * 360f;
+        }
+    }
+
     public static Color getHColor(float hueShift, float addSat, float addValue) {
         if (Settings.localSettings.hColor.value == -1) {
             return new Color(1f, 1f, 1f, 1f).fromHsv(LittleH.getTick() % 360 + hueShift, 1f + addSat, 1f + addValue);

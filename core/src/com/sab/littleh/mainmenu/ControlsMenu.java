@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Control;
@@ -20,8 +21,9 @@ public class ControlsMenu extends MainMenu {
     private SettingsMenu settingsMenu;
     private List<ControlTypingBox> inputFields;
     private List<MenuButton> buttons;
+    private Vector2 previousMousePos;
     private float scroll;
-    private float maxScroll;
+    private float effectiveScroll;
     public ControlsMenu(SettingsMenu settingsMenu) {
         this.settingsMenu = settingsMenu;
         inputFields = new ArrayList<>();
@@ -32,7 +34,6 @@ public class ControlsMenu extends MainMenu {
             inputFields.add(typingBox);
             y -= 96;
         }
-        maxScroll = -y - 200;
         buttons.add(new MenuButton("square_button", "Save & Return", -420 / 2 - 256, -640 / 2 - 32, 420, 64, () -> {
             LittleH.program.switchMenu(settingsMenu);
             for (ControlTypingBox typingBox : inputFields) {
@@ -51,6 +52,7 @@ public class ControlsMenu extends MainMenu {
                 i -= 96;
             }
         }));
+        previousMousePos = new Vector2();
     }
 
     @Override
@@ -59,20 +61,33 @@ public class ControlsMenu extends MainMenu {
 
     @Override
     public void mouseScrolled(float amountY) {
-        if (scroll + amountY < 0)
+        if (scroll + amountY <= 0)
             amountY = -scroll;
 
         scroll += amountY * 32;
 
+        if (scroll < 0) {
+            amountY = 0;
+            scroll = 0;
+        }
+
+        int n = 0;
         for (TypingBox typingBox : inputFields) {
-            typingBox.rectangle.y += amountY * 32;
+            typingBox.rectangle.y = scroll - 96 * n + 96;
+            n++;
         }
     }
 
     @Override
     public void update() {
+        if (MouseUtil.isLeftMouseDown()) {
+            effectiveScroll += (MouseUtil.getMousePosition().y - previousMousePos.y) / 16;
+        }
+        mouseScrolled(effectiveScroll / 8f);
+        effectiveScroll *= 7/8f;
         inputFields.forEach(typingBox -> typingBox.update());
         buttons.forEach(typingBox -> typingBox.update());
+        previousMousePos = MouseUtil.getMousePosition();
     }
     @Override
     public void keyDown(int keycode) {

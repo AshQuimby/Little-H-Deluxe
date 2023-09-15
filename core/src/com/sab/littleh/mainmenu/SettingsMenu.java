@@ -17,28 +17,35 @@ public class SettingsMenu extends MainMenu {
     private List<MenuButton> gameSettings;
     private List<MenuButton> videoSettings;
     private List<MenuButton> audioSettings;
+    private List<MenuButton> miscSettings;
     private TypingQuery typingQuery;
     private MainMenu cameFrom;
 
     public SettingsMenu(MainMenu cameFrom) {
         this.cameFrom = cameFrom;
         menuButtons = new ArrayList<>();
-        menuButtons.add(new MenuButton("square_button", "Game Settings", -384 / 2, 576 / 2 - 32, 384, 64, () -> {
+        menuButtons.add(new MenuButton("square_button", "Game Settings", -360 / 2 - 360 / 2 - 8, 576 / 2 - 32, 360, 64, () -> {
             currentMenu = gameSettings;
             menuButtons.forEach(menuButton -> {
                 menuButton.setDisabled(menuButton.text.equals("Game Settings"));
             });
         }));
-        menuButtons.add(new MenuButton("square_button", "Video Settings", -384 / 2 - 384 - 16, 576 / 2 - 32, 384, 64, () -> {
+        menuButtons.add(new MenuButton("square_button", "Video Settings", -360 / 2 - 360 * 1.5f - 24, 576 / 2 - 32, 360, 64, () -> {
             currentMenu = videoSettings;
             menuButtons.forEach(menuButton -> {
                 menuButton.setDisabled(menuButton.text.equals("Video Settings"));
             });
         }));
-        menuButtons.add(new MenuButton("square_button", "Audio Settings", 384 / 2 + 16, 576 / 2 - 32, 384, 64, () -> {
+        menuButtons.add(new MenuButton("square_button", "Audio Settings", 360 / 2 - 360 / 2 + 8, 576 / 2 - 32, 360, 64, () -> {
             currentMenu = audioSettings;
             menuButtons.forEach(menuButton -> {
                 menuButton.setDisabled(menuButton.text.equals("Audio Settings"));
+            });
+        }));
+        menuButtons.add(new MenuButton("square_button", "Misc Settings", 360 / 2 + 24 + 360 / 2, 576 / 2 - 32, 360, 64, () -> {
+            currentMenu = miscSettings;
+            menuButtons.forEach(menuButton -> {
+                menuButton.setDisabled(menuButton.text.equals("Misc Settings"));
             });
         }));
         menuButtons.add(new MenuButton("square_button", "Save & Return", -384 / 2 - 384 - 16, -640 / 2 + 16, 384, 64, () -> {
@@ -58,6 +65,7 @@ public class SettingsMenu extends MainMenu {
         videoSettings = new ArrayList<>();
         audioSettings = new ArrayList<>();
         gameSettings = new ArrayList<>();
+        miscSettings = new ArrayList<>();
 
         audioSettings.add(new SettingButton(Settings.localSettings.muteGame, -72 / 2, 64));
         audioSettings.add(new SettingButton(Settings.localSettings.masterVolume, -152 / 2, -64));
@@ -66,22 +74,11 @@ public class SettingsMenu extends MainMenu {
         audioSettings.add(new MenuButton("square_button", "Test SFX", -272 / 2, -96 * 2, 272, 64, this::playTestSound));
 
         gameSettings.add(new SettingButton(Settings.localSettings.debugMode, -72 / 2 - 96 * 2 - 32, 96));
-        gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 128));
-        gameSettings.add(new SettingButton(Settings.localSettings.dividedTileSelection, -72 / 2 + 96 * 2 + 32, 32));
-        gameSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -64, 361));
-        gameSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -96 + 16, 64, 64)) {
-            @Override
-            public void render(Graphics g) {
-                super.render(g);
-                g.setColor(Images.getHColor());
-                g.draw(Images.getImage("pixel.png"), x + 16, y + 16, 32, 32);
-                g.resetColor();
-            }
-        });
+        gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 96));
+        gameSettings.add(new SettingButton(Settings.localSettings.dividedTileSelection, -72 / 2, -16));
         gameSettings.add(new MenuButton("square_button", "Change Name", -272 / 2 - 196, -128 - 64, 272, 64, this::askForRename));
         gameSettings.add(new MenuButton("square_button", "Controls", -272 / 2 + 196, -128 - 64, 272, 64,
                 () -> program.switchMenu(new ControlsMenu(this))));
-
 
         videoSettings.add(new SettingButton(Settings.localSettings.font, -280 / 2 + 256, -128 - 32));
         videoSettings.add(new SettingButton(Settings.localSettings.fullscreen, -280 / 2 - 256, -96,
@@ -94,6 +91,18 @@ public class SettingsMenu extends MainMenu {
         videoSettings.add(new SettingButton(Settings.localSettings.rainbowTitle, 824, -384));
         videoSettings.add(new SettingButton(Settings.localSettings.zoomScalar, -152 / 2 - 160, 128 - 16,
                 "Altering this could be considered cheating \n or make some levels more challenging"));
+
+        miscSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -64, 361));
+        miscSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -96 + 16, 64, 64)) {
+            @Override
+            public void render(Graphics g) {
+                super.render(g);
+                g.setColor(Images.getHColor());
+                g.draw(Images.getImage("pixel.png"), x + 16, y + 16, 32, 32);
+                g.resetColor();
+            }
+        });
+        miscSettings.add(new SettingButton(Settings.localSettings.autoDialogue, -72 / 2, 32));
 
         currentMenu = gameSettings;
         menuButtons.get(0).setDisabled(true);

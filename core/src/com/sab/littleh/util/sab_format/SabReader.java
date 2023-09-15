@@ -62,15 +62,16 @@ public class SabReader {
         for (int i = 0; i < tokens.size(); i++) {
             SabToken token = tokens.get(i);
             switch (token.getType()) {
-                case Ident -> {
+                case Ident :
                     SabToken next = tokens.get(i + 1);
                     switch (next.getType()) {
-                        case Ident, CloseParen -> {
+                        case Ident : case CloseParen :
                             scanner.close();
                             throw new SabParsingException(String.format("Unexpected token type %s", token.getType()));
-                        }
-                        case Val -> data.insertValue(token.getValue(), new SabValue(next.getValue()));
-                        case OpenParen -> {
+                        case Val :
+                            data.insertValue(token.getValue(), new SabValue(next.getValue()));
+                            break;
+                        case OpenParen :
                             int parens = 1;
                             List<String> elements = new ArrayList<>();
                             elements.add("[");
@@ -83,19 +84,19 @@ public class SabReader {
                                 }
                                 SabToken item = tokens.get(i);
                                 switch(item.getType()) {
-                                    case Ident -> {
+                                    case Ident :
                                         scanner.close();
                                         throw new SabParsingException(String.format("Unexpected token type: %s", item.getType()));
-                                    }
-                                    case OpenParen -> {
+                                    case OpenParen :
                                         parens++;
                                         elements.add("[");
-                                    }
-                                    case CloseParen -> {
+                                        break;
+                                    case CloseParen :
                                         parens--;
                                         elements.add("]");
-                                    }
-                                    case Val -> elements.add(item.getValue());
+                                        break;
+                                    case Val :
+                                        elements.add(item.getValue());
                                 }
 
                                 if (parens == 0) {
@@ -113,12 +114,10 @@ public class SabReader {
                                     break;
                                 }
                             }
-                        }
+                            break;
                     }
-                }
-                case OpenParen -> {
-
-                }
+                case OpenParen :
+                    break;
             }
         }
         try {
@@ -186,13 +185,13 @@ public class SabReader {
                 }
                 else parseArray(scanner, tokens);
             } else if (c == ']') {
-                if (!buffer.toString().isBlank())
-                    tokens.add(new SabToken(SabTokenType.Val, buffer.toString().strip()));
+                if (!buffer.toString().isEmpty())
+                    tokens.add(new SabToken(SabTokenType.Val, buffer.toString().trim()));
                 break;
             } else if (c == ',') {
-                if (!buffer.isEmpty()) {
+                if (!buffer.toString().isEmpty()) {
                     readingValue = false;
-                    tokens.add(new SabToken(SabTokenType.Val, buffer.toString().strip()));
+                    tokens.add(new SabToken(SabTokenType.Val, buffer.toString().trim()));
                     buffer = new StringBuilder();
                 }
             } else {

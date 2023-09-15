@@ -182,6 +182,12 @@ public class Level {
         }
     }
 
+    public void mouseUp() {
+        if (currentDialogue != null) {
+            currentDialogue.mouseUp();
+        }
+    }
+
     public void enterPressed() {
         if (currentDialogue != null) {
             if (currentDialogue.finished()) {
@@ -207,6 +213,7 @@ public class Level {
             gameTick++;
 
             if (currentDialogue != null) {
+                currentDialogue.update();
                 if (!currentDialogue.finishedBlock()) {
                     currentDialogue.next();
                 }
@@ -272,7 +279,7 @@ public class Level {
 
         for (Tile tile : updatableTiles) {
             Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
-            if (player.getCenter().dst2(tileCenter) < 1280 * 1280) {
+            if (player.getCenter().dst2(tileCenter) < 1420 * 1420) {
                 tile.update(this);
             }
         }
@@ -292,11 +299,6 @@ public class Level {
                 notifiableTiles.remove(tile);
             }
             if (tile.hasTag("updatable")) {
-                System.out.println(tile);
-                for (Tile other : updatableTiles) {
-                    if (other.x == tile.x && other.y == tile.y)
-                        System.out.println(other);
-                }
                 updatableTiles.remove(tile);
             }
             tileMap.get(tile.x).set(tile.y, null);
@@ -501,7 +503,7 @@ public class Level {
         List<Tile> visibleTiles = new ArrayList<>();
         List<Point> toDrawGrid = new ArrayList<>();
 
-        backgroundPostRenders = (drawPostRenders(g, backgroundPostRenders, true, true));
+        backgroundPostRenders = (drawPostRenders(g, backgroundPostRenders, true, true, false));
 
         // Draw in the front but behind players
         for (int i = startX; i < endX; i++) {
@@ -549,7 +551,7 @@ public class Level {
             }
         }
 
-        postRenders = drawPostRenders(g, postRenders, false, true);
+        postRenders = drawPostRenders(g, postRenders, false, true, false);
 
         enemies.forEach(enemy -> enemy.render(g, this));
         if (inGame())
@@ -576,8 +578,8 @@ public class Level {
             g.resetTint();
         }
 
-        drawPostRenders(g, postRenders, false, false);
-        drawPostRenders(g, backgroundPostRenders, true, false);
+        List<Tile> textRenders = drawPostRenders(g, postRenders, false, false, false);
+        textRenders.addAll(drawPostRenders(g, backgroundPostRenders, true, false, false));
 
         // Draw in the front
         for (Tile tile : visibleTiles) {
@@ -608,6 +610,8 @@ public class Level {
                 }
             }
         }
+
+        drawPostRenders(g, textRenders, false, false, true);
 
         g.resetTint();
 
@@ -697,7 +701,7 @@ public class Level {
         return neighbors;
     }
 
-    public List<Tile> drawPostRenders(Graphics g, List<Tile> postRenders, boolean background, boolean dontDrawForcedFront) {
+    public List<Tile> drawPostRenders(Graphics g, List<Tile> postRenders, boolean background, boolean dontDrawForcedFront, boolean drawText) {
         List<Tile> leftovers = new ArrayList<>();
         Shaders.waterShader.bind();
         Shaders.waterShader.setUniformf("u_time", gameTick / 60f);
@@ -773,7 +777,7 @@ public class Level {
             }
             if (tile.hasTag("text")) {
                 if (inGame()) {
-                    if (dontDrawForcedFront) {
+                    if (!drawText) {
                         leftovers.add(tile);
                     } else {
                         if (tile.extra == null) tile.extra = "";

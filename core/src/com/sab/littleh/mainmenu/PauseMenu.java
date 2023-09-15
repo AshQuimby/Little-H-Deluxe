@@ -29,13 +29,13 @@ public abstract class PauseMenu extends MainMenu {
     @Override
     public void start() {
         buttonMenu = new Menu<>(buttons.toArray(new MenuButton[0]), 512, 64, 32);
-        buttonMenu.setMenuRectangle(-256, 0, 96 * buttons.size(), false);
+        buttonMenu.setMenuRectangle(-256 - 32, 0, 96 * buttons.size(), false);
         Cursors.switchCursor("cursor");
     }
 
     @Override
     public void update() {
-        buttonMenu.setMenuRectangle(-256, (int) buttonMenu.getMenuRectangle().height / 2, 96 * buttons.size(), false);
+        buttonMenu.setMenuRectangle(-256 - 32, (int) buttonMenu.getMenuRectangle().height / 2, 96 * buttons.size(), false);
         Rectangle[] itemButtons = buttonMenu.getItemButtons();
         for (int i = 0; i < buttonMenu.items.length; i++) {
             buttonMenu.items[i].setPosition(itemButtons[i].x, itemButtons[i].y);

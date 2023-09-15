@@ -53,7 +53,7 @@ public class Particle extends Entity {
    
    public void render(Graphics g) {
       g.setColor(new Color(1, 1, 1, Math.max(0, opacity)));
-      g.drawImage(Images.getImage(image), new Rectangle( x, y, width, height), new Rectangle((direction == -1 ? imageWidth : 0), imageHeight * frame, direction * imageWidth, imageHeight));
+      g.drawImage(Images.getImage(image), new Rectangle( x, y, width, height), new Rectangle((direction == -1 ? imageWidth : 0), imageHeight * frame, direction * imageWidth, imageHeight), rotation);
       g.resetColor();
    }
 }

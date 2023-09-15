@@ -36,22 +36,22 @@ public class SettingButton extends MenuButton {
         this.bonusText = bonusText;
         type = getSettingType();
         switch (type) {
-            case BOOL -> {
+            case BOOL :
                 width = 72;
                 height = 36;
-            }
-            case LIST -> {
+                break;
+            case LIST :
                 width = 280;
                 height = 8;
-            }
-            case PERCENT -> {
+                break;
+            case PERCENT :
                 width = 128 + 24;
                 height = 32;
-            }
-            case STRING -> {
+                break;
+            case STRING :
                 width = 128;
                 height = 64;
-            }
+                break;
         }
     }
 
@@ -75,7 +75,7 @@ public class SettingButton extends MenuButton {
     public void update() {
         super.update();
         switch (type) {
-            case PERCENT -> {
+            case PERCENT :
                 if (held) {
                     PercentageSetting percentageSetting = (PercentageSetting) setting;
                     float original = percentageSetting.value;
@@ -86,7 +86,7 @@ public class SettingButton extends MenuButton {
                     if (dV != 0f)
                         SoundEngine.resetCurrentMusicVolume();
                 }
-            }
+                break;
         }
         if (!pressed)
             held = false;
@@ -122,7 +122,7 @@ public class SettingButton extends MenuButton {
     public void render(Graphics g) {
         LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
         switch (type) {
-            case BOOL -> {
+            case BOOL :
                 boolean value = ((BoolSetting) setting).value;
                 Rectangle bounds = new Rectangle(x - 16, y - 16, width + 32, height + 32);
                 g.drawPatch(Patch.get("menu_flat"), bounds, 8);
@@ -133,25 +133,25 @@ public class SettingButton extends MenuButton {
                 } else {
                     g.draw(Images.getImage("ui/buttons/slider_off.png"), x, y, width, height);
                 }
-            }
-            case PERCENT -> {
+                break;
+            case PERCENT :
                 PercentageSetting percentageSetting = (PercentageSetting) setting;
-                Rectangle bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
+                bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
                 g.drawPatch(Patch.get("menu_flat"), bounds, 8);
                 g.draw(Images.getImage("ui/buttons/slider_bar.png"), x + 12, y + 12, (width - 24), 12);
                 g.draw(Images.getImage("ui/buttons/slider_notch.png"), x + percentageSetting.asRelativeFloat() * (width - 24) - 18 + 12, y, 36, 36);
                 if (drawText)
                     g.drawString(percentageSetting.display(), LittleH.font, getCenterX(), getCenterY() - 32, LittleH.defaultFontScale * 0.67f, 0);
-            }
-            case LIST -> {
+                break;
+            case LIST :
                 ListSetting listSetting = (ListSetting) setting;
-                Rectangle bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
+                bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
                 g.drawPatch(Patch.get("menu_flat"), bounds, 8);
                 if (drawText)
                     g.drawString(listSetting.display(), LittleH.font, getCenterX(), getCenterY(), LittleH.defaultFontScale * 0.75f, 0);
                 g.drawImage(Images.getImage("ui/buttons/arrow.png"), x - 64, y - 14, 36, 36, new Rectangle(0, 0, 6, 6));
                 g.drawImage(Images.getImage("ui/buttons/arrow.png"), x + 64 - 36 + width, y - 14, 36, 36, new Rectangle(0, 0, 6, 6), 180);
-            }
+                break;
         }
         if (drawText)
             g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 32, LittleH.defaultFontScale * 0.75f, 0);

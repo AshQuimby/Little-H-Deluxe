@@ -396,6 +396,36 @@ public class LevelLoader {
         }
     }
 
+    public static void loadTerrainMap(String resourcePath, List<List<Tile>> foreground, List<List<Tile>> background) {
+        try {
+            Scanner scanner = new Scanner(LevelLoader.class.getResourceAsStream(resourcePath));
+            scanner.nextLine();
+            while (!scanner.hasNext("@background")) {
+                Tile tile = getTile(scanner.nextLine());
+                if (tile != null) {
+                    while (tile.x >= foreground.size())
+                        foreground.add(new ArrayList<>());
+                    while (tile.y >= foreground.get(tile.x).size())
+                        foreground.get(tile.x).add(null);
+                    foreground.get(tile.x).set(tile.y, tile);
+                }
+            }
+            scanner.nextLine();
+            while (scanner.hasNext()) {
+                Tile tile = getTile(scanner.nextLine());
+                if (tile != null) {
+                    while (tile.x >= background.size())
+                        background.add(new ArrayList<>());
+                    while (tile.y >= background.get(tile.x).size())
+                        background.get(tile.x).add(null);
+                    background.get(tile.x).set(tile.y, tile);
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Terrain map asset \"" + resourcePath + "\" does not exist or could not be loaded.");
+        }
+    }
+
     public static String[] getTileTags(String tileId) {
         return tagsByTile.getValue(tileId).asStringArray();
     }

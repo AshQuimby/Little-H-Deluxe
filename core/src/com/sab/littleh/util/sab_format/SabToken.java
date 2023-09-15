@@ -37,11 +37,12 @@ class SabToken {
 
     @Override
     public String toString() {
-        return switch (type) {
-            case OpenParen -> "[";
-            case CloseParen -> "]";
-            case Ident -> String.format("%s: ", value);
-            case Val -> value == null ? "null" : String.format("\"%s\"", value);
-        };
+        switch (type) {
+            case OpenParen : return "[";
+            case CloseParen : return "]";
+            case Ident : return String.format("%s: ", value);
+            case Val : return value == null ? "null" : String.format("\"%s\"", value);
+        }
+        return null;
     }
 }

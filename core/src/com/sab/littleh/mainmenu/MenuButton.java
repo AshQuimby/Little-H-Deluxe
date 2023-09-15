@@ -98,6 +98,22 @@ public class MenuButton extends Rectangle {
         return this;
     }
 
+    public void render(Graphics g, int patchScale, float fontScale) {
+        g.drawPatch(getPatch(), this, patchScale);
+        if (text != null && !text.isBlank()) {
+            LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
+            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? patchScale : 0), LittleH.defaultFontScale * fontScale, 0);
+        }
+    }
+
+    public void render(Graphics g, int patchScale) {
+        g.drawPatch(getPatch(), this, patchScale);
+        if (text != null && !text.isBlank()) {
+            LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
+            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? patchScale : 0), LittleH.defaultFontScale, 0);
+        }
+    }
+
     public void render(Graphics g) {
         g.drawPatch(getPatch(), this, 8);
         if (text != null && !text.isBlank()) {

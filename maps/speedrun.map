@@ -6,7 +6,7 @@
 @author AshQuimby
 @name Speedrun
 @double_jumping true
-@version 0.9
+@version 0.1.5
 @wall_sliding true
 23 24 tiles/sets/location_bricks 5 
 16 47 tiles/sets/location_bricks 34 

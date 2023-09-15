@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
+import com.sab.littleh.campaign.visual_novel.dialogue.VnDialogue;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.level.LevelEditor;
@@ -118,6 +119,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             controllersNotSupported = true;
         }
         Images.cacheHColor();
+        VnDialogue.load();
     }
 
     public void update() {
@@ -400,14 +402,13 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     public void resetWindow() {
         switch (Settings.localSettings.fullscreen.value) {
-            case 0 -> {
+            case 0 :
                 Gdx.graphics.setWindowedMode(1600, 900);
-            }
-            case 1 -> {
-            }
-            case 2 -> {
+                break;
+            case 1 :
+                break;
+            case 2 :
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-            }
         }
     }
 

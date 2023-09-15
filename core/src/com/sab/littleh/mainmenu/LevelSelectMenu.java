@@ -113,7 +113,7 @@ public class LevelSelectMenu extends MainMenu {
 
         this.mapButtons = new Menu<>(levelButtons, 256, 64, 16);
 
-        mapButtons.setMenuRectangle(relZeroX() + 32 + (int) levelScroll, program.getHeight() / 2 - 128 - 8, program.getHeight() - 128 - 32 - 64, false);
+        mapButtons.setMenuRectangle(relZeroX() + 32 + (int) levelScroll, program.getHeight() / 2 - 128 - 8, program.getHeight() - 128 - 32 - 96, false);
 
         if ((int) (mapButtons.getMenuRectangle().width - program.getWidth() + 64) > 0) {
             slider = new SettingButton(new PercentageSetting("slide", "Scroll bar :)", 0, 0,

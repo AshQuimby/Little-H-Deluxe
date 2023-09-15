@@ -1,0 +1,49 @@
+@1 campaign/visual_novel/portraits/player Little h
+@2 campaign/visual_novel/portraits/peter.png Peter
+@3 campaign/visual_novel/portraits/peter_alt.png Peter~
+@4 campaign/visual_novel/portraits/player_flustered Little h!
+@script
+@1 Woah...
+@2 Oi! What'chu lookin' at mate?
+@1 It's just, I've never been this har---\wF(20)\eB(true)
+@4 I mean I've never seen a goop creature before!
+@2 It's okay... I understand! OwO~
+@4 You do?
+@2 uwu! Of course I do...
+@1 Oh thank god\wF(20)\eB(true)
+@2 \aS(heart)Want me to show you? \gF(0.1f)>\pS(goop.ogg)W\pS(goop.ogg)<\pS(goop.ogg)\dT(Yes! | yes_whipped_cream
+| No. | no_whipped_cream | Something else... | something_else)
+@yes_whipped_cream
+@4 \aS(heart)o~o
+@2 Let me work my "magic..."~
+@4 \aS(heart)Nnng...\wF(10)Mmmphg...
+@4 \aS(heart)\gF(0.5)I can't hold-
+@4 \aS(heart)\gF(0.5)Much-\wF(10)Longer!
+@4 \gF(0.25)\sP(heart | 8)\pS(goop.ogg)AHH\sP(heart | 8)
+\pS(goop.ogg)HHH\sP(heart | 8)\pS(goop.ogg)HHH\sP(heart | 8)
+\pS(goop.ogg)HHH\sP(heart | 8)\pS(goop.ogg)HHH\sP(heart | 8)\pS(goop.ogg)HHH\sP(heart | 8)
+\pS(goop.ogg)\wF(10)\pS(goop.ogg)\sP(heart | 25)!
+@3 :devil_cat:
+@4 \gF(2)\aS(heart)Fuck fuck fuck, it's everywhere!
+@3 \gF(1)\aS(heart)\aS(heart)Don't worry, I like it this way!~ uWu!
+@1 Thank you for teaching me how to make whipped cream!
+@3 No problem :3
+@force_end
+@no_whipped_cream
+@1 No thank you- Wait, why am I saying thank you? that's creepy.
+@2 Oh... okay...
+@1 Anyways, uhhh, goodbye? I don't know what else to say.
+\wF(10)\nFuck this is awkward.
+@2 Yeah... bye.
+@force_end
+@something_else
+@4 Do you want to... y'know?
+@2 \gF(0.25)\aS(heart)oWo?
+@4 \aS(heart)Uhh- \gF(0.5)y-\wF(15)yeah...
+@2 \aS(heart)You're so cute when you're flustered!!! :3
+@4 \aS(heart)\aS(heart)\aS(heart)Stop~\wF(20) You're making me blush!
+@2 \aS(heart)It just makes you cuter uwu!
+\wF(30)\nOf course we can, come here!
+@2 \aS(heart)\gF(0.5)*wraps arms around and pats h on the head*
+@4 \gF(0.5)...\wF(60)
+\n\aS(heart)\aS(heart):3

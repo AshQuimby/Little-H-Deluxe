@@ -5,15 +5,20 @@ import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.mainmenu.MainMenu;
-import com.sab.littleh.util.Graphics;
-import com.sab.littleh.util.Images;
-import com.sab.littleh.util.Patch;
-import com.sab.littleh.util.SoundEngine;
+import com.sab.littleh.mainmenu.MenuButton;
+import com.sab.littleh.settings.Settings;
+import com.sab.littleh.util.*;
 import com.sun.tools.javac.Main;
 
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Dialogue {
+   protected Menu<MenuButton> dialogueOptions;
+   protected boolean started;
+   private Map<String, Integer> breakPoints;
    private String[] text;
    private int atPosition;
    private Font font;
@@ -23,25 +28,59 @@ public class Dialogue {
    private int atBlock;
    private int waitFor;
    private int blipTimer;
-   private boolean finished;
+   private boolean changedBlock;
+   private boolean stop;
    private float blockSpeed;
    private float characterFillup;
+   protected int autoTime;
 
-   public Dialogue(String[] text, String[] characterNames, String[] fileNames) {
+   public Dialogue(String[] text, String[] characterNames, String[] fileNames, Map<String, Integer> breakPoints) {
+      this.breakPoints = breakPoints;
       this.text = text;
       atPosition = 0;
       atBlock = 0;
       this.characterNames = characterNames;
       this.fileNames = fileNames;
       waitFor = 0;
-      finished = false;
       lastBlock = "";
       blockSpeed = 1f;
       blipTimer = 0;
+      autoTime = 0;
+      started = true;
    }
    
    public String getPortrait() {
       return fileNames[Integer.parseInt(text[atBlock].substring(0, 1)) - 1];
+   }
+
+   public void setDialogueOptions(String[] options, String[] breakPoints) {
+      MenuButton[] buttons = new MenuButton[options.length];
+      for (int i = 0; i < options.length; i++) {
+         final int finalI = i;
+         buttons[i] = new MenuButton("button", options[i], 0, 0, 512, 64, () -> {
+            runCommand("gB", breakPoints[finalI]);
+            dialogueOptions = null;
+         });
+      }
+      dialogueOptions = new Menu<MenuButton>(buttons, 512, 64, 8);
+      update();
+   }
+
+   public void update() {
+      if (dialogueOptions != null) {
+         dialogueOptions.setMenuRectangle(0, 0, 73 * 2, false);
+         dialogueOptions.setCenterX(0);
+         dialogueOptions.setCenterY(MainMenu.relZeroY() + 196 + 48 + dialogueOptions.items.length / 2 * 32);
+         dialogueOptions.forEach(MenuButton::update);
+      }
+   }
+
+   public boolean mouseUp() {
+      if (dialogueOptions != null)
+         dialogueOptions.forEach(MenuButton::mouseClicked);
+      else
+         return true;
+      return false;
    }
    
    public void toEnd() {
@@ -57,14 +96,20 @@ public class Dialogue {
    
    public void nextBlock() {
       if (atBlock + 1 >= text.length) {
-         finished = true;
          return;
       }
+      reset();
+   }
+
+   public void reset() {
+      changedBlock = true;
       lastBlock = "";
       blockSpeed = 1;
+      characterFillup = 0;
       atBlock++;
       atPosition = 0;
       blipTimer = 0;
+      autoTime = 0;
    }
    
    public boolean finishedBlock() {
@@ -84,6 +129,28 @@ public class Dialogue {
    }
 
    public String next(boolean playBlip) {
+      if (!started) {
+         autoTime++;
+         if (Settings.localSettings.autoDialogue.value) {
+            if (autoTime > 60) {
+               started = true;
+               autoTime = 0;
+            }
+         }
+         return lastBlock;
+      }
+      if (finishedBlock()) {
+         autoTime++;
+         if (Settings.localSettings.autoDialogue.value && dialogueOptions == null) {
+            if (!(atBlock + 1 >= text.length || text[atBlock + 1].trim().equals("1\\eD(true)"))) {
+               if (autoTime > 120) {
+                  nextBlock();
+               }
+            }
+         }
+         return lastBlock;
+      }
+      changedBlock = false;
       characterFillup += blockSpeed;
       while (characterFillup >= 1f) {
          characterFillup--;
@@ -96,8 +163,8 @@ public class Dialogue {
 
          String next = text[atBlock].substring(Math.max(atPosition, 1), atPosition + 1);
 
-         if (playBlip && !next.equals("\\") && !next.isBlank() && Character.isAlphabetic(next.charAt(0))) {
-            if (blipTimer % 4 == 0)
+         if (playBlip && !next.equals("\\") && !next.equals(" ")) {
+            if ((blipTimer % (int) (2 + 2 * blockSpeed)) == 0 || next.equals("."))
                SoundEngine.playSound("blip.ogg");
             blipTimer++;
          }
@@ -137,34 +204,38 @@ public class Dialogue {
    protected void runCommand(String command, String parameter) {
       switch (command) {
          // playSound (path)
-         case "pS" -> {
+         case "pS" :
             SoundEngine.playSound(parameter);
-         }
+            break;
          // playMusic (path)
-         case "pM" -> {
+         case "pM" :
             SoundEngine.playMusic(parameter);
-         }
+            break;
          // waitFor (ticks)
-         case "wF" -> {
+         case "wF" :
             waitFor = Integer.parseInt(parameter);
-         }
+            break;
          // endBlock (silent)
-         case "eB" -> {
+         case "eB" :
             if (!Boolean.parseBoolean(parameter))
                SoundEngine.playSound("blip.ogg");
             toEnd();
             nextBlock();
-         }
+            break;
+         // endDialogue (silent)
+         case "eD" :
+            stop = true;
+            break;
          // goFast (letters/tick)
-         case "gF" -> {
+         case "gF" :
             blockSpeed = Float.parseFloat(parameter);
-         }
+                 break;
          // characterName (id)
-         case "cN" -> {
+         case "cN" :
             lastBlock += characterNames[Integer.parseInt(parameter)] + ": ";
-         }
+                 break;
          // killPlayer (end dialogue)
-         case "kP" -> {
+         case "kP" :
             if (Boolean.parseBoolean(parameter)) {
                while (!finished()) {
                   toEnd();
@@ -174,15 +245,51 @@ public class Dialogue {
             if (Level.currentLevel != null && Level.currentLevel.inGame()) {
                Level.currentLevel.player.kill();
             }
-         }
+                 break;
          // crashGame (crash message)
-         case "cG" -> {
+         case "cG" :
             throw new RuntimeException(parameter);
-         }
-         default -> {
+
+         // dialogueTree (option1, breakPoint1, option2, breakPoint2...)
+         case "dT" :
+            String[] parameters = parameter.split("\\|");
+            for (int i = 0; i < parameters.length; i++) {
+               parameters[i] = parameters[i].trim();
+            }
+            if (parameters.length % 2 != 0)
+               malformedCommand(command, "dialogueTree command must have an even number of parameters");
+            int count = parameters.length / 2;
+            String[] options = new String[count];
+            String[] breakPointArray = new String[count];
+            for (int i = 0; i < count; i++) {
+               String text = parameters[i * 2];
+               options[i] = text;
+               String breakPoint = parameters[i * 2 + 1];
+               breakPointArray[i] = breakPoint;
+            }
+            setDialogueOptions(options, breakPointArray);
+            break;
+         // go(to)Breakpoint (breakPoint)
+         case "gB" :
+            atBlock = breakPoints.get(parameter);
+            reset();
+            break;
+         default :
             malformedCommand(command, "Command does not exist");
-         }
+            break;
       }
+   }
+
+   public void malformedCommand(String command, String reason) {
+      throw new RuntimeException("Malformed command at: " + lastBlock + "<. Command: " + command + ". " + reason + ".");
+   }
+
+   public boolean changedBlock() {
+      return changedBlock;
+   }
+
+   public boolean shouldEnd() {
+      return stop;
    }
 
    public void render(Graphics g) {
@@ -211,9 +318,27 @@ public class Dialogue {
       textArea.width -= 32;
       if (lastBlock != null)
          g.drawString(lastBlock, LittleH.font, textArea, 8, LittleH.defaultFontScale * 0.95f, -1, 1);
+
+      if (dialogueOptions != null) {
+         System.out.println("hewwo");
+         Rectangle[] buttons = dialogueOptions.getItemButtons();
+
+         for (int i = 0; i < dialogueOptions.items.length; i++) {
+            dialogueOptions.getItem(i).set(buttons[i]);
+         }
+         dialogueOptions.forEach(menuButton -> menuButton.render(g));
+      }
    }
 
-   public static void malformedCommand(String command, String reason) {
-      throw new RuntimeException("Malformed command: " + command + ". " + reason + ".");
+   public boolean started() {
+      return started;
+   }
+
+   public void start() {
+      started = true;
+   }
+
+   public void stop() {
+      started = false;
    }
 }
