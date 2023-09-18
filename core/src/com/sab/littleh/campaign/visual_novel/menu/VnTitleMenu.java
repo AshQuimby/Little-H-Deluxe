@@ -30,7 +30,7 @@ public class VnTitleMenu extends MainMenu {
         background = new ParallaxBackground("campaign/visual_novel/backgrounds/city", true);
         int i = 1;
         buttons.add(new MenuButton("vn_button", "Start Game", -384 / 2, -32 - 96 * i, 384, 64, () -> {
-            program.switchMenu(new VnDialogueMenu("city", "peepee.dlg", this));
+//            program.switchMenu(new VnDialogueMenu("city", "peepee.dlg", this));
 //            program.switchMenu(new VnOverworldMenu());
         }));
         i++;
