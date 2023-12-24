@@ -19,7 +19,6 @@ public class Settings {
     public final BoolSetting backgroundVisibility = new BoolSetting("background_visibility", "Default Background Visibility", true);
     public final BoolSetting dividedTileSelection = new BoolSetting("divided_tile_selection", "Divide Tile Selector", false);
     public final StringSetting authorName = new StringSetting("author_name", "Change Author Name", getRandomName());
-    public final PercentageSetting hColor = new PercentageSetting("h_color", "Player Color", 0, -1, 360, " hue");
 
     // Video
     public final ListSetting fullscreen = new ListSetting("fullscreen", "Default Display Mode", 1, new String[] {
@@ -71,17 +70,20 @@ public class Settings {
 
     // Misc
     public final StringSetting buildingSong = new StringSetting("building_song", "Building Song", "menu/building_song.ogg");
+    public final PercentageSetting hColor = new PercentageSetting("h_color", "Player Color", 0, -1, 360, " hue");
+    public final PercentageSetting dialogueSpeed = new PercentageSetting("dialogue_speed", "Dialogue Speed", 100, 50, 200);
+    public final BoolSetting controllerVibration = new BoolSetting("vibration", "Controller Vibration", true);
     public final BoolSetting autoDialogue = new BoolSetting("auto_dialogue", "Auto Dialogue", false);
 
     public final Setting<?>[] settings = new Setting[] {
             // Gameplay
-            debugMode, backgroundVisibility, authorName, hColor, rainbowTitle, dividedTileSelection,
+            debugMode, backgroundVisibility, authorName, rainbowTitle, dividedTileSelection,
             // Video
             fullscreen, grid, screenShake, zoomScalar, font, selectionContrast, useShaders,
             // Audio
             muteGame, masterVolume, musicVolume, sfxVolume,
             // Misc
-            buildingSong, autoDialogue
+            buildingSong, hColor, controllerVibration, autoDialogue
     };
 
     public static String getRandomName() {

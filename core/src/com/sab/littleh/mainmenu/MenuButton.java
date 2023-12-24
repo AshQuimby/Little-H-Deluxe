@@ -122,6 +122,10 @@ public class MenuButton extends Rectangle {
         }
     }
 
+    public void render(int i, Graphics g) {
+        render(g);
+    }
+
     public float getCenterX() {
         return getCenter().x;
     }

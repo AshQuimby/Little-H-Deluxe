@@ -26,6 +26,7 @@ import com.sab.littleh.util.sab_format.SabValue;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Level {
@@ -39,14 +40,16 @@ public class Level {
     };
     public static Level currentLevel;
     public final SabData mapData;
-    public List<Tile> backgroundTiles;
-    public List<Tile> allTiles;
-    public List<Tile> volatileTiles;
-    public List<Tile> notifiableTiles;
-    public List<Tile> checkpointState;
-    public List<Tile> updatableTiles;
-    public List<List<Tile>> tileMap;
-    public List<List<Tile>> backgroundMap;
+    public HashMap<String, MapLayer> mapLayers;
+//    public List<Tile> backgroundTiles;
+//    public List<Tile> allTiles;
+//    public List<Tile> volatileTiles;
+//    public List<Tile> notifiableTiles;
+//    public List<Tile> checkpointState;
+//    public List<Tile> updatableTiles;
+//    public List<List<Tile>> tileMap;
+//    public List<List<Tile>> backgroundMap;
+
     public Player player;
     public int timeLimit;
     public int gameTick;
@@ -64,12 +67,7 @@ public class Level {
     private Dialogue currentDialogue;
 
     public Level(SabData mapData) {
-        backgroundTiles = new ArrayList<>();
-        allTiles = new ArrayList<>();
-        volatileTiles = new ArrayList<>();
-        checkpointState = new ArrayList<>();
-        notifiableTiles = new ArrayList<>();
-        updatableTiles = new ArrayList<>();
+        mapLayers = new HashMap<>();
         particles = new ArrayList<>();
         enemies = new ArrayList<>();
         this.mapData = mapData;
@@ -112,19 +110,13 @@ public class Level {
         notify("notify_game_start", startPos.x, startPos.y);
     }
 
-    public void removeTile(int x, int y) {
-        Tile toRemove = getTileAt(x, y);
-        if (toRemove != null) {
-            while (allTiles.contains(toRemove))
-                allTiles.remove(toRemove);
-        }
-    }
 
-    public void removeBackgroundTile(int x, int y) {
-        Tile toRemove = getBackgroundTileAt(x, y);
+
+    public void removeTile(String layer, int x, int y) {
+        Tile toRemove = getTileAt(layer, x, y);
         if (toRemove != null) {
-            while (backgroundTiles.contains(toRemove))
-                backgroundTiles.remove(toRemove);
+            while (mapLayers.get(layer).allTiles.contains(toRemove))
+                mapLayers.get(layer).allTiles.remove(toRemove);
         }
     }
 
@@ -138,47 +130,43 @@ public class Level {
         popup = new Popup(text, length);
     }
 
-    public void addTile(Tile tile) {
-        allTiles.add(tile);
+    public void addTile(String layer, Tile tile) {
+        mapLayers.get(layer).allTiles.add(tile);
     }
 
-    public void addBackgroundTile(Tile tile) {
-        backgroundTiles.add(tile);
-    }
-
-    public void addTileToMap(Tile tile) {
-        tileMap.get(tile.x).set(tile.y, tile);
-    }
-
-    public void addTileToBackground(Tile tile) {
-        backgroundMap.get(tile.x).set(tile.y, tile);
+    public void addTileToMap(String layer, Tile tile) {
+        mapLayers.get(layer).tileMap.get(tile.x).set(tile.y, tile);
     }
 
     public void addTiles(List<Tile> tiles, int levelWidth, int levelHeight) {
-        tileMap = new ArrayList<>(levelWidth);
+        MapLayer newLayer = new MapLayer();
+        mapLayers.put("normal", newLayer);
+        newLayer.tileMap = new ArrayList<>(levelWidth);
         for (int i = 0; i < levelWidth; i++) {
-            tileMap.add(i, new ArrayList<>(levelHeight));
+            newLayer.tileMap.add(i, new ArrayList<>(levelHeight));
             for (int j = 0; j < levelHeight; j++) {
-                tileMap.get(i).add(null);
+                newLayer.tileMap.get(i).add(null);
             }
         }
-        allTiles.addAll(tiles);
-        for (Tile tile : allTiles) {
-            tileMap.get(tile.x).set(tile.y, tile);
+        newLayer.allTiles.addAll(tiles);
+        for (Tile tile : newLayer.allTiles) {
+            newLayer.tileMap.get(tile.x).set(tile.y, tile);
         }
     }
 
     public void addBackground(List<Tile> tiles) {
-        backgroundMap = new ArrayList<>(getWidth());
+        MapLayer newLayer = new MapLayer();
+        mapLayers.put("background", newLayer);
+        newLayer.tileMap = new ArrayList<>(getWidth());
         for (int i = 0; i < getWidth(); i++) {
-            backgroundMap.add(i, new ArrayList<>(getHeight()));
+            newLayer.tileMap.add(i, new ArrayList<>(getHeight()));
             for (int j = 0; j < getHeight(); j++) {
-                backgroundMap.get(i).add(null);
+                newLayer.tileMap.get(i).add(null);
             }
         }
-        backgroundTiles.addAll(tiles);
-        for (Tile tile : backgroundTiles) {
-            backgroundMap.get(tile.x).set(tile.y, tile);
+        newLayer.allTiles.addAll(tiles);
+        for (Tile tile : newLayer.allTiles) {
+            newLayer.tileMap.get(tile.x).set(tile.y, tile);
         }
     }
 
@@ -277,7 +265,7 @@ public class Level {
             return enemy.remove || enemy.despawn;
         });
 
-        for (Tile tile : updatableTiles) {
+        for (Tile tile : getBaseLayer().updatableTiles) {
             Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
             if (player.getCenter().dst2(tileCenter) < 1420 * 1420) {
                 tile.update(this);
@@ -286,22 +274,30 @@ public class Level {
         particles.removeIf(particle -> !particle.alive);
     }
 
+    public MapLayer getBaseLayer() {
+        return mapLayers.get("normal");
+    }
+
+    public MapLayer getBackgroundLayer() {
+        return mapLayers.get("background");
+    }
+
     public int getVolatileTileCount() {
-        return volatileTiles.size();
+        return getBaseLayer().volatileTiles.size();
     }
 
     public void inGameRemoveTile(Tile tile) {
         if (tilesDesynced) {
             if (tile.hasTag("volatile")) {
-                volatileTiles.remove(tile);
+                getBaseLayer().volatileTiles.remove(tile);
             }
             if (tile.hasTag("notifiable")) {
-                notifiableTiles.remove(tile);
+                getBaseLayer().notifiableTiles.remove(tile);
             }
             if (tile.hasTag("updatable")) {
-                updatableTiles.remove(tile);
+                getBaseLayer().updatableTiles.remove(tile);
             }
-            tileMap.get(tile.x).set(tile.y, null);
+            getBaseLayer().tileMap.get(tile.x).set(tile.y, null);
         } else {
             throw new IllegalStateException("The Level must be desynced before calling this to avoid the permanent deletion of tiles");
         }
@@ -313,7 +309,7 @@ public class Level {
 
     public int getVolatileTileCount(String tag, int tileType) {
         int count = 0;
-        for (Tile tile : volatileTiles) {
+        for (Tile tile : getBaseLayer().volatileTiles) {
             if (tile.hasTag(tag) && tile.tileType == tileType)
                 count++;
         }
@@ -321,7 +317,7 @@ public class Level {
     }
 
     public int getWidth() {
-        return tileMap.size();
+        return getBaseLayer().tileMap.size();
     }
 
     public void suicide() {
@@ -330,11 +326,11 @@ public class Level {
     }
 
     public int getHeight() {
-        return tileMap.get(0).size();
+        return getBaseLayer().tileMap.get(0).size();
     }
 
-    public Tile getTileAt(int x, int y) {
-        if (x >= 0 && y >= 0 && x < getWidth() && y < getHeight()) return tileMap.get(x).get(y);
+    public Tile getTileAt(String layer, int x, int y) {
+        if (x >= 0 && y >= 0 && x < getWidth() && y < getHeight()) return mapLayers.get(layer).tileMap.get(x).get(y);
         return null;
     }
 
@@ -355,36 +351,36 @@ public class Level {
     public void resetToCheckpointState() {
         GunMode.bullets.clear();
         enemies.clear();
-        volatileTiles.clear();
-        notifiableTiles.removeIf(tile -> tile.hasTag("volatile"));
-        updatableTiles.removeIf(tile -> tile.hasTag("volatile"));
-        for (Tile tile : checkpointState) {
+        getBaseLayer().volatileTiles.clear();
+        getBaseLayer().notifiableTiles.removeIf(tile -> tile.hasTag("volatile"));
+        getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag("volatile"));
+        for (Tile tile : getBaseLayer().checkpointState) {
             Tile copy = tile.copy();
             if (tile.hasTag("notifiable"))
-                notifiableTiles.add(copy);
+                getBaseLayer().notifiableTiles.add(copy);
             if (tile.hasTag("updatable")) {
-                updatableTiles.add(copy);
+                getBaseLayer().updatableTiles.add(copy);
             }
-            volatileTiles.add(copy);
-            addTileToMap(copy);
+            getBaseLayer().volatileTiles.add(copy);
+            addTileToMap("normal", copy);
         }
     }
 
     public void saveCheckpointState() {
-        checkpointState.clear();
-        for (Tile tile : volatileTiles) {
-            checkpointState.add(tile.copy());
+        getBaseLayer().checkpointState.clear();
+        for (Tile tile : getBaseLayer().volatileTiles) {
+            getBaseLayer().checkpointState.add(tile.copy());
         }
     }
 
     public void syncTiles() {
         enemies.clear();
-        volatileTiles.clear();
-        notifiableTiles.clear();
-        updatableTiles.clear();
-        for (Tile tile : allTiles) {
+        getBaseLayer().volatileTiles.clear();
+        getBaseLayer().notifiableTiles.clear();
+        getBaseLayer().updatableTiles.clear();
+        for (Tile tile : getBaseLayer().allTiles) {
             tile.setTags();
-            tileMap.get(tile.x).set(tile.y, tile);
+            getBaseLayer().tileMap.get(tile.x).set(tile.y, tile);
         }
         tilesDesynced = false;
     }
@@ -398,29 +394,29 @@ public class Level {
     }
 
     public void desyncTiles() {
-        volatileTiles.clear();
-        notifiableTiles.clear();
-        for (Tile tile : allTiles) {
+        getBaseLayer().volatileTiles.clear();
+        getBaseLayer().notifiableTiles.clear();
+        for (Tile tile : getBaseLayer().allTiles) {
             Tile copy = tile.copy();
-            tileMap.get(copy.x).set(copy.y, copy);
+            getBaseLayer().tileMap.get(copy.x).set(copy.y, copy);
             if (tile.hasTag("volatile")) {
-                volatileTiles.add(copy);
+                getBaseLayer().volatileTiles.add(copy);
             }
             if (tile.hasTag("notifiable")) {
-                notifiableTiles.add(copy);
+                getBaseLayer().notifiableTiles.add(copy);
             }
             if (tile.hasTag("updatable")) {
-                updatableTiles.add(tile);
+                getBaseLayer().updatableTiles.add(tile);
             }
         }
-        for (Tile tile : backgroundTiles) {
+        for (Tile tile : getBackgroundLayer().allTiles) {
             if (tile.hasTag("ignore_background")) {
                 Tile copy = tile.copy();
                 if (tile.hasTag("updatable")) {
-                    updatableTiles.add(copy);
+                    getBaseLayer().updatableTiles.add(copy);
                 }
                 if (tile.hasTag("notifiable")) {
-                    notifiableTiles.add(copy);
+                    getBaseLayer().notifiableTiles.add(copy);
                 }
             }
         }
@@ -471,10 +467,10 @@ public class Level {
                     Tile tile;
                     if (backgroundPriority) {
                         // Draw foreground behind
-                        tile = getTileAt(i, j);
+                        tile = getTileAt("normal", i, j);
                     } else {
                         // Draw background
-                        tile = getBackgroundTileAt(i, j);
+                        tile = getTileAt("background", i, j);
                     }
                     if (tile != null) {
                         tile.render(inGame(), g);
@@ -484,7 +480,7 @@ public class Level {
                 } else {
                     // Draw background
                     // Tint multiplies with graphics color to make a darker background
-                    Tile tile = getBackgroundTileAt(i, j);
+                    Tile tile = getTileAt("background", i, j);
                     if (tile != null) {
                         tile.render(inGame(), g);
                         if (tile.hasTag("post_render"))
@@ -513,7 +509,7 @@ public class Level {
                 if (!inGame()) {
                     // Draw background in front
                     if (backgroundPriority) {
-                        Tile tile = getBackgroundTileAt(i, j);
+                        Tile tile = getTileAt("background", i, j);
                         if (tile != null) {
                             if (!(tile.isSolid() && tile.hasTag("tileset"))) {
                                 tile.render(inGame(), g);
@@ -526,7 +522,7 @@ public class Level {
                         continue;
                     }
                     // Draw foreground
-                    Tile tile = getTileAt(i, j);
+                    Tile tile = getTileAt("normal", i, j);
                     if (tile != null) {
                         if (!(tile.isSolid() && tile.hasTag("tileset"))) {
                             tile.render(inGame(), g);
@@ -538,7 +534,7 @@ public class Level {
                     toDrawGrid.add(new Point(i * 64, j * 64));
                 } else {
                     // Draw foreground
-                    Tile tile = getTileAt(i, j);
+                    Tile tile = getTileAt("normal", i, j);
                     if (tile != null) {
                         if (!(tile.isSolid() && !tile.ignoreTiling)) tile.render(inGame(), g);
                         else visibleTiles.add(tile);
@@ -690,7 +686,7 @@ public class Level {
         Tile[][] neighbors = new Tile[3][3];
         for (int i = tileX - 1; i < tileX + 2; i++) {
             for (int j = tileY - 1; j < tileY + 2; j++) {
-                Tile tile = background ? getBackgroundTileAt(i, j) : getTileAt(i, j);
+                Tile tile = background ? getTileAt("background", i, j) : getTileAt("normal", i, j);
                 if (!(i < 0 || j < 0 || i >= getWidth() || j >= getHeight()) && tile != null) {
                     neighbors[tileX - i + 1][tileY - j + 1] = tile;
                 } else {
@@ -745,26 +741,29 @@ public class Level {
                     Shaders.vineShader.bind();
                     float length = -1;
                     float vinePosition = -1;
-                    if (getTileAt(tile.x, tile.y + 1) != null) {
-                        if (getTileAt(tile.x, tile.y + 1).isSolid()) {
+                    if (getTileAt("normal", tile.x, tile.y + 1) != null) {
+                        if (getTileAt("normal", tile.x, tile.y + 1).isSolid()) {
                             vinePosition = 0;
                         } else {
                             int i = 1;
-                            while (getTileAt(tile.x, tile.y + i) != null && getTileAt(tile.x, tile.y + i).hasTag("vines")) {
+                            while (getTileAt("normal", tile.x, tile.y + i) != null && getTileAt("normal", tile.x, tile.y + i).hasTag("vines")) {
                                 i++;
                             }
                             vinePosition = i;
                         }
                     }
-                    if (getTileAt(tile.x, tile.y - 1) != null) {
+                    if (getTileAt("normal", tile.x, tile.y - 1) != null) {
                         int i = 1;
-                        while (getTileAt(tile.x, tile.y - i) != null && getTileAt(tile.x, tile.y - i).hasTag("vines")) {
+                        while (getTileAt("normal", tile.x, tile.y - i) != null && getTileAt("normal", tile.x, tile.y - i).hasTag("vines")) {
                             i++;
                         }
                         length = i + vinePosition - 1;
                     } else {
                         length = vinePosition;
                     }
+
+                    length++;
+                    vinePosition++;
 
                     Shaders.vineShader.setUniformf("u_attached", vinePosition);
                     Shaders.vineShader.setUniformf("u_vineLength", length);
@@ -817,7 +816,7 @@ public class Level {
     }
 
     public Point getStartPos() {
-        for (Tile tile : allTiles) {
+        for (Tile tile : getBaseLayer().allTiles) {
             if (tile.hasTag("start")) {
                 return new Point(tile.x, tile.y);
             }
@@ -826,7 +825,7 @@ public class Level {
     }
 
     public void notify(String notification, int... data) {
-        for (Tile tile : notifiableTiles) {
+        for (Tile tile : getBaseLayer().notifiableTiles) {
             if (tile.hasTag(notification)) {
                 tile.notify(this, notification, data);
             }
@@ -872,11 +871,6 @@ public class Level {
 
     public boolean hasDialogue() {
         return currentDialogue != null;
-    }
-
-    public Tile getBackgroundTileAt(int x, int y) {
-        if (x >= 0 && y >= 0 && x < getWidth() && y < getHeight()) return backgroundMap.get(x).get(y);
-        return null;
     }
 
     private class Popup {

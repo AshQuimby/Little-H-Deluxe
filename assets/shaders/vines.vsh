@@ -32,7 +32,7 @@ void main()
 
     vec4 position = a_position;
     if (wave) {
-        float swing = cos((u_time * 20.0 + u_tilePosition.x) / u_vineLength) * 0.15 * ((u_attached + subY + 0.5) * (u_attached + subY + 0.5) - abs(u_tilePosition.y - a_position.y / 64.0));
+        float swing = cos((u_time * 20.0 + u_tilePosition.x) / (u_vineLength / 2)) * 0.15 * ((u_attached + subY + 0.5) * (u_attached + subY + 0.5) - abs(u_tilePosition.y - a_position.y / 64.0));
         position.x += swing;
     }
 

@@ -36,6 +36,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static final String TITLE = "The Little H Deluxe";
     public static final String VERSION = "0.1.5";
     public static MainMenu pendingMenu;
+    private static List<Controller> controllers = new ArrayList<>();
     private int tick;
     public static final File mapsFolder = new File(Images.inArchive ? "maps/" : "../maps/");
     public static BitmapFont font;
@@ -69,6 +70,10 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             Gdx.graphics.setTitle(TITLE + title);
     }
 
+    public static List<Controller> getControllers() {
+        return controllers;
+    }
+
     @Override
     public void create() {
         Shaders.load();
@@ -80,6 +85,12 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SoundEngine.load();
         Cursors.loadCursors();
         program = this;
+        try {
+            Controllers.addListener(program);
+        } catch (Exception e) {
+            System.out.println("gool");
+            controllersNotSupported = true;
+        }
         MainMenu.program = this;
         Patch.cacheButtonPatch("button", "ui/buttons/button");
         Patch.cacheButtonPatch("square_button", "ui/buttons/square_button");
@@ -113,11 +124,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         dontRender = false;
         SoundEngine.playMusic("menu/menu_theme.ogg");
         SoundEngine.update();
-        try {
-            Controllers.addListener(program);
-        } catch (Exception e) {
-            controllersNotSupported = true;
-        }
         Images.cacheHColor();
         VnDialogue.load();
     }
@@ -321,18 +327,21 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void connected(Controller controller) {
-
+        controllers.add(controller);
     }
 
     @Override
     public void disconnected(Controller controller) {
-
+        controllers.remove(controller);
     }
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
+        if (!controllers.contains(controller))
+            connected(controller);
         if (buttonCode < 2) {
             ControlInputs.pressControl(Controls.JUMP);
+            ControlInputs.pressControl(Controls.get("select"));
         } else if (buttonCode < 4) {
             ControlInputs.pressControl(Controls.DOWN);
         } else if (buttonCode == 11) {
@@ -344,14 +353,22 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             ControlInputs.pressControl(Controls.LEFT);
         } else if (buttonCode == 14) {
             ControlInputs.pressControl(Controls.RIGHT);
+        } else if (buttonCode == 6) {
+            ControlInputs.pressControl(Controls.get("return"));
+        } else if (buttonCode == 4) {
+            ControlInputs.pressControl(Controls.get("select"));
         }
+        keyDown(-1);
         return true;
     }
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
+        if (!controllers.contains(controller))
+            connected(controller);
         if (buttonCode < 2) {
             ControlInputs.releaseControl(Controls.JUMP);
+            ControlInputs.releaseControl(Controls.get("select"));
         } else if (buttonCode < 4) {
             ControlInputs.releaseControl(Controls.DOWN);
         } else if (buttonCode == 11) {
@@ -363,12 +380,19 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             ControlInputs.releaseControl(Controls.LEFT);
         } else if (buttonCode == 14) {
             ControlInputs.releaseControl(Controls.RIGHT);
+        } else if (buttonCode == 6) {
+            ControlInputs.releaseControl(Controls.get("return"));
+        } else if (buttonCode == 4) {
+            ControlInputs.releaseControl(Controls.get("select"));
         }
+        keyUp(-1);
         return true;
     }
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
+        if (!controllers.contains(controller))
+            connected(controller);
         if (axisCode == 0) {
             if (value > 0.5f) {
                 ControlInputs.pressControl(Controls.RIGHT);

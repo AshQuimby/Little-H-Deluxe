@@ -1,12 +1,13 @@
 @author_name AshQuimby
-@rainbow_title true
+@rainbow_title false
 @debug_mode true
 @grid_enabled false
-@h_color 348
-@master_volume 58
+@h_color 338
+@master_volume 14
 @screen_shake true
 @use_shaders true
 @high_contrast_selection true
+@vibration false
 @auto_dialogue true
 @divided_tile_selection false
 @background_visibility true
@@ -15,5 +16,5 @@
 @zoom_scalar 100
 @building_song menu/building_song.ogg
 @mute_game false
-@sfx_volume 74
+@sfx_volume 73
 @font minecraft

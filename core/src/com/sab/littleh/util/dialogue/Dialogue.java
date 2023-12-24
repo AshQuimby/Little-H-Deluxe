@@ -1,6 +1,7 @@
 package com.sab.littleh.util.dialogue;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.level.Level;
@@ -151,7 +152,7 @@ public class Dialogue {
          return lastBlock;
       }
       changedBlock = false;
-      characterFillup += blockSpeed;
+      characterFillup += blockSpeed * Settings.localSettings.dialogueSpeed.asFloat();
       while (characterFillup >= 1f) {
          characterFillup--;
          if (waitFor > 0 || finishedBlock()) {
@@ -328,6 +329,19 @@ public class Dialogue {
          }
          dialogueOptions.forEach(menuButton -> menuButton.render(g));
       }
+
+      if (finishedBlock() && autoTime > 120) {
+         LittleH.borderedFont.setColor(new Color(1, 1, 1, MathUtils.sinDeg(autoTime * 2) / 2f + 0.5f));
+         if (finished()) {
+            g.drawString("Press 'select' (enter) to end dialogue", LittleH.borderedFont, -MainMenu.relZeroX() - 4, MainMenu.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
+         } else {
+            g.drawString("Press 'select' (enter) to continue", LittleH.borderedFont, -MainMenu.relZeroX() - 4, MainMenu.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
+         }
+      } else if (!started) {
+         LittleH.borderedFont.setColor(new Color(1, 1, 1, MathUtils.sinDeg(LittleH.getTick() * 2) / 2f + 0.5f));
+         g.drawString("Press 'select' (enter) to start dialogue", LittleH.borderedFont, -MainMenu.relZeroX() - 4, MainMenu.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
+      }
+      LittleH.borderedFont.setColor(Color.WHITE);
    }
 
    public boolean started() {

@@ -198,8 +198,8 @@ public class LevelLoader {
         level.addBackground(background);
 
         if (updateTilesets) {
-            LevelEditor levelEditor = new LevelEditor(level);
-            BackgroundEditor backgroundEditor = new BackgroundEditor(level);
+            LevelEditor levelEditor = new LevelEditor(level, "normal");
+            LevelEditor backgroundEditor = new LevelEditor(level, "background");
             for (Tile tile : tiles) {
                 levelEditor.checkTiling(levelEditor.getNeighbors(tile.x, tile.y), tile);
             }
@@ -214,149 +214,154 @@ public class LevelLoader {
     }
 
     public static Level readLevel(SabData mapData, File file) throws IOException {
-        boolean invertY = false;
-        boolean updateTilesets = false;
-        // Updates for if the level was originally made in the Little H as opposed to the Little H Deluxe
-        // Basically just flips the y coordinates of every tile
+        try {
+            boolean invertY = false;
+            boolean updateTilesets = false;
+            // Updates for if the level was originally made in the Little H as opposed to the Little H Deluxe
+            // Basically just flips the y coordinates of every tile
 
-        if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
-            invertY = true;
-            mapData.insertValue("is_deluxe", new SabValue("true"));
-        }
-
-        if (!mapData.getValue("version").toString().trim().equals(LittleH.VERSION)) {
-            updateTilesets = true;
-        }
-
-        for (int i = 0; i < expectedProperties.length; i++) {
-            String string = expectedProperties[i];
-            if (!mapData.getValues().containsKey(string)) {
-                mapData.insertValue(string, defaultValues[i]);
+            if (mapData.getValue("is_deluxe") == null || !mapData.getValue("is_deluxe").asBool()) {
+                invertY = true;
+                mapData.insertValue("is_deluxe", new SabValue("true"));
             }
-        }
 
-        Level level = new Level(mapData);
-        Scanner scanner = SabReader.skipSabPreface(new Scanner(file));
+            if (!mapData.getValue("version").toString().trim().equals(LittleH.VERSION)) {
+                updateTilesets = true;
+            }
 
-        List<Tile> tiles = new ArrayList<>();
-        List<Tile> background = new ArrayList<>();
-
-        int levelWidth = 31;
-        int levelHeight = 31;
-
-        Set<Point> usedPositions = new HashSet<>();
-
-        while (scanner.hasNext()) {
-            String nextLine = scanner.nextLine();
-
-            // Load background
-            if (nextLine.startsWith("@background_tiles")) {
-                while (scanner.hasNext()) {
-                    nextLine = scanner.nextLine();
-                    Tile tile = getTile(nextLine);
-                    if (tile != null && !tile.image.equals("delete")) {
-                        Point tilePosition = new Point(tile.x, tile.y);
-                        levelWidth = Math.max(levelWidth, tile.x);
-                        levelHeight = Math.max(levelHeight, tile.y);
-                        if (tile.hasTag("start"))
-                            LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
-                        background.add(tile);
-                        usedPositions.add(tilePosition);
-                    }
+            for (int i = 0; i < expectedProperties.length; i++) {
+                String string = expectedProperties[i];
+                if (!mapData.getValues().containsKey(string)) {
+                    mapData.insertValue(string, defaultValues[i]);
                 }
-                break;
             }
 
-            Tile tile = getTile(nextLine);
-            if (tile != null && !tile.image.equals("delete")) {
-                Point tilePosition = new Point(tile.x, tile.y);
-                if (usedPositions.contains(tilePosition)) continue;
-                levelWidth = Math.max(levelWidth, tile.x);
-                levelHeight = Math.max(levelHeight, tile.y);
-                if (tile.hasTag("start"))
-                    LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
-                tiles.add(tile);
-                usedPositions.add(tilePosition);
-            }
-        }
+            Level level = new Level(mapData);
+            Scanner scanner = SabReader.skipSabPreface(new Scanner(file));
 
-        levelWidth += 1;
-        levelHeight += 1;
+            List<Tile> tiles = new ArrayList<>();
+            List<Tile> background = new ArrayList<>();
 
-        if (invertY) {
-            for (Tile tile : tiles) {
-                tile.y = levelHeight - tile.y - 1;
-                if (tile.hasTag("start"))
-                    LittleH.program.dynamicCamera.targetPosition = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
-            }
-        }
+            int levelWidth = 31;
+            int levelHeight = 31;
 
-        scanner.close();
+            Set<Point> usedPositions = new HashSet<>();
 
-        int minY;
-        int minX;
+            while (scanner.hasNext()) {
+                String nextLine = scanner.nextLine();
 
-        if (tiles.size() > 0) {
-            minX = tiles.get(0).x;
-            minY = tiles.get(0).y;
-        } else {
-            minX = 0;
-            minY = 0;
-        }
+                // Load background
+                if (nextLine.startsWith("@background_tiles")) {
+                    while (scanner.hasNext()) {
+                        nextLine = scanner.nextLine();
+                        Tile tile = getTile(nextLine);
+                        if (tile != null && !tile.image.equals("delete")) {
+                            Point tilePosition = new Point(tile.x, tile.y);
+                            levelWidth = Math.max(levelWidth, tile.x);
+                            levelHeight = Math.max(levelHeight, tile.y);
+                            if (tile.hasTag("start"))
+                                LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
+                            background.add(tile);
+                            usedPositions.add(tilePosition);
+                        }
+                    }
+                    break;
+                }
 
-        if (minY != 0 && minX != 0) {
-            for (Tile tile : tiles) {
-                minX = Math.min(tile.x, minX);
-                minY = Math.min(tile.y, minY);
-                if (minY == 0 && minX == 0) break;
-            }
-
-            for (Tile tile : background) {
-                minX = Math.min(tile.x, minX);
-                minY = Math.min(tile.y, minY);
-                if (minY == 0 && minX == 0) break;
-            }
-
-            if (minY != 0 || minX != 0) {
-                for (Tile tile : tiles) {
-                    tile.x -= minX;
-                    tile.y -= minY;
+                Tile tile = getTile(nextLine);
+                if (tile != null && !tile.image.equals("delete")) {
+                    Point tilePosition = new Point(tile.x, tile.y);
+                    if (usedPositions.contains(tilePosition)) continue;
+                    levelWidth = Math.max(levelWidth, tile.x);
+                    levelHeight = Math.max(levelHeight, tile.y);
                     if (tile.hasTag("start"))
                         LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
+                    tiles.add(tile);
+                    usedPositions.add(tilePosition);
+                }
+            }
+
+            levelWidth += 1;
+            levelHeight += 1;
+
+            if (invertY) {
+                for (Tile tile : tiles) {
+                    tile.y = levelHeight - tile.y - 1;
+                    if (tile.hasTag("start"))
+                        LittleH.program.dynamicCamera.targetPosition = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
+                }
+            }
+
+            scanner.close();
+
+            int minY;
+            int minX;
+
+            if (tiles.size() > 0) {
+                minX = tiles.get(0).x;
+                minY = tiles.get(0).y;
+            } else {
+                minX = 0;
+                minY = 0;
+            }
+
+            if (minY != 0 && minX != 0) {
+                for (Tile tile : tiles) {
+                    minX = Math.min(tile.x, minX);
+                    minY = Math.min(tile.y, minY);
+                    if (minY == 0 && minX == 0) break;
                 }
 
                 for (Tile tile : background) {
-                    tile.x -= minX;
-                    tile.y -= minY;
+                    minX = Math.min(tile.x, minX);
+                    minY = Math.min(tile.y, minY);
+                    if (minY == 0 && minX == 0) break;
+                }
+
+                if (minY != 0 || minX != 0) {
+                    for (Tile tile : tiles) {
+                        tile.x -= minX;
+                        tile.y -= minY;
+                        if (tile.hasTag("start"))
+                            LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
+                    }
+
+                    for (Tile tile : background) {
+                        tile.x -= minX;
+                        tile.y -= minY;
+                    }
                 }
             }
-        }
 
-        level.addTiles(tiles, levelWidth, levelHeight);
-        level.addBackground(background);
+            level.addTiles(tiles, levelWidth, levelHeight);
+            level.addBackground(background);
 
-        if (updateTilesets) {
-            LevelEditor levelEditor = new LevelEditor(level);
-            BackgroundEditor backgroundEditor = new BackgroundEditor(level);
-            for (Tile tile : tiles) {
-                levelEditor.checkTiling(levelEditor.getNeighbors(tile.x, tile.y), tile);
+            if (updateTilesets) {
+                LevelEditor levelEditor = new LevelEditor(level, "normal");
+                LevelEditor backgroundEditor = new LevelEditor(level, "background");
+                for (Tile tile : tiles) {
+                    levelEditor.checkTiling(levelEditor.getNeighbors(tile.x, tile.y), tile);
+                }
+                for (Tile tile : background) {
+                    backgroundEditor.checkTiling(backgroundEditor.getNeighbors(tile.x, tile.y), tile);
+                }
             }
-            for (Tile tile : background) {
-                backgroundEditor.checkTiling(backgroundEditor.getNeighbors(tile.x, tile.y), tile);
+
+            mapData.insertValue("version", LittleH.VERSION);
+
+            if (invertY) {
+                saveLevel(file, level);
             }
+
+            if (updateTilesets) {
+                saveLevel(file, level);
+            }
+
+            return level;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        mapData.insertValue("version", LittleH.VERSION);
-
-        if (invertY) {
-            saveLevel(file, level);
-        }
-
-        if (updateTilesets) {
-            saveLevel(file, level);
-        }
-
-        return level;
     }
 
     public static void trim(List<List<Tile>> tilemap) {
@@ -390,7 +395,10 @@ public class LevelLoader {
             // Generate the tile
             scanner.close();
             return new Tile(x, y, image, tileType, getTileTags(identifier), extra);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
+            if (scanner.hasNext()) {
+                System.out.println(scanner.next());
+            }
             scanner.close();
             return null;
         }
@@ -436,15 +444,15 @@ public class LevelLoader {
             file.createNewFile();
             SabWriter.write(file, level.mapData);
             FileWriter writer = new FileWriter(file, true);
-            for (Tile tile : level.allTiles) {
+            for (Tile tile : level.getBaseLayer().allTiles) {
                 writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
                 if (tile.extra != null)
                     writer.write(tile.extra + " ");
                 writer.write("\n");
             }
-            if (level.allTiles.size() > 0) {
+            if (level.getBaseLayer().allTiles.size() > 0) {
                 writer.write("@background_tiles\n");
-                for (Tile tile : level.backgroundTiles) {
+                for (Tile tile : level.getBackgroundLayer().allTiles) {
                     writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
                     if (tile.extra != null)
                         writer.write(tile.extra + " ");

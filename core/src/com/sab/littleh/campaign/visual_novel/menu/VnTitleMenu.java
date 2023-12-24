@@ -1,6 +1,8 @@
 package com.sab.littleh.campaign.visual_novel.menu;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.mainmenu.MainMenu;
 import com.sab.littleh.mainmenu.MenuButton;

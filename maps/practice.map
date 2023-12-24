@@ -7,7 +7,7 @@
 @name Tech Practice
 @double_jumping true
 @wall_sliding true
-@version 0.1
+@version 0.1.5
 8 4 tiles/sets/stone 5 
 7 4 tiles/sets/stone 5 
 6 4 tiles/sets/stone 5 

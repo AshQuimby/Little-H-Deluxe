@@ -584,7 +584,7 @@ public class Player extends Entity {
                 startUp--;
                 return;
             }
-            if (Math.random() > 0.98) {
+            if (Math.random() > 0.95) {
                 game.addParticle(new Particle(hitbox.x + hitbox.width / 2 - 24, hitbox.y + hitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -6), (float) ((Math.random() - 0.5) * -6), 32, 32, 4, 4, 1, 0.98f, 0f,
                         (int) (Math.random() * 4), 0, "particles/evil_smoke.png", 30, 0.02f));
             }

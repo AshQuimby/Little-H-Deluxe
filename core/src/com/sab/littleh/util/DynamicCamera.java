@@ -1,8 +1,12 @@
 package com.sab.littleh.util;
 
+import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.*;
+import com.sab.littleh.LittleH;
 import com.sab.littleh.settings.Settings;
+
+import java.util.List;
 
 public class DynamicCamera extends OrthographicCamera {
     public Vector2 targetPosition;
@@ -29,6 +33,8 @@ public class DynamicCamera extends OrthographicCamera {
         if (Settings.localSettings.screenShake.value) {
             screenShake += intensity;
             screenShake = Math.min(screenShake, 32);
+            if (Settings.localSettings.controllerVibration.value)
+                LittleH.getControllers().forEach(controller -> controller.startVibration(screenShake * 20, Math.min(screenShake / 20f, 1)));
         }
     }
 

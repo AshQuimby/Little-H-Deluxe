@@ -30,11 +30,11 @@ public class EnemyE extends Enemy {
          despawn = true;
       }
       if (touchingGround) {
-         Tile tileAhead = getTile(direction, 0, game.tileMap);
+         Tile tileAhead = getTile(direction, 0, game.getBaseLayer().tileMap);
          if (tileAhead != null && (tileAhead.hasTag("death") || (tileAhead.isSolid() && !tileAhead.hasTag("one_way")))) {
             direction *= -1;
          } else {
-            tileAhead = getTile(direction, -1, game.tileMap);
+            tileAhead = getTile(direction, -1, game.getBaseLayer().tileMap);
             if (tileAhead == null || (!tileAhead.isSolid() && !tileAhead.hasTag("enemy_walkable"))) {
                direction *= -1;
             }

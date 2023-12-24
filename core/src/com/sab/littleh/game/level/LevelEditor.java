@@ -13,10 +13,8 @@ import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class LevelEditor {
     protected static DynamicCamera camera = LittleH.program.dynamicCamera;
@@ -31,12 +29,14 @@ public class LevelEditor {
     protected static boolean nudgingSelection;
     protected List<UndoAction> undoQueue;
     protected int undoIndex;
+    protected String layer;
 
-    public LevelEditor(Level level) {
+    public LevelEditor(Level level, String layer) {
         this.level = level;
         setSaved(true);
         fillTiles = new HashSet<>();
         undoQueue = new ArrayList<>();
+        this.layer = layer;
     }
 
     public void setSaved(boolean value) {
@@ -59,10 +59,10 @@ public class LevelEditor {
         tile.x = Math.max(0, x);
         tile.y = Math.max(0, y);
 
-        level.removeTile(tile.x, tile.y);
+        level.removeTile(layer, tile.x, tile.y);
 
         if (!tileToCopy.image.equals("delete"))
-            level.addTile(tile);
+            level.addTile(layer, tile);
 
         if (amountNegativeResize.x > 0 || amountNegativeResize.y > 0) {
             undoQueue.forEach(undoAction -> {
@@ -71,7 +71,7 @@ public class LevelEditor {
         }
 
         if (addToUndoQueue) {
-            Tile tileAt = level.tileMap.get(tile.x).get(tile.y);
+            Tile tileAt = level.mapLayers.get(layer).tileMap.get(tile.x).get(tile.y);
             if (tileAt == null) {
                 tileAt = new Tile("delete");
                 tileAt.x = tile.x;
@@ -84,9 +84,9 @@ public class LevelEditor {
         }
 
         if (tile.image.equals("delete")) {
-            level.tileMap.get(tile.x).set(tile.y, null);
+            level.mapLayers.get(layer).tileMap.get(tile.x).set(tile.y, null);
         } else {
-            level.tileMap.get(tile.x).set(tile.y, tile);
+            level.mapLayers.get(layer).tileMap.get(tile.x).set(tile.y, tile);
         }
 
         Tile[][] neighbors = getNeighbors(tile.x, tile.y);
@@ -182,71 +182,66 @@ public class LevelEditor {
         if (x < 0) {
             widthToAdd = Math.abs(x);
             for (int i = 0; i < widthToAdd; i++) {
-                List<Tile> tiles = new ArrayList<>(level.getHeight());
-                for (int j = 0; j < level.getHeight(); j++)
-                    tiles.add(null);
-                level.tileMap.add(0, tiles);
-                tiles = new ArrayList<>(level.getHeight());
-                for (int j = 0; j < level.getHeight(); j++)
-                    tiles.add(null);
-                level.backgroundMap.add(0, tiles);
+                Collection<MapLayer> layers = level.mapLayers.values();
+                for (MapLayer mapLayer : layers) {
+                    List<Tile> tiles = new ArrayList<>(level.getHeight());
+                    for (int j = 0; j < level.getHeight(); j++)
+                        tiles.add(null);
+                    mapLayer.tileMap.add(0, tiles);
+                }
                 camera.targetPosition.x += 64;
                 camera.position.x += 64;
             }
         } else if (x >= level.getWidth()) {
             int expandX = x - level.getWidth() + 1;
             for (int i = 0; i < expandX; i++) {
-                List<Tile> tiles = new ArrayList<>(level.getHeight());
-                for (int j = 0; j < level.getHeight(); j++)
-                    tiles.add(null);
-                level.tileMap.add(tiles);
-                tiles = new ArrayList<>(level.getHeight());
-                for (int j = 0; j < level.getHeight(); j++)
-                    tiles.add(null);
-                level.backgroundMap.add(tiles);
+                Collection<MapLayer> layers = level.mapLayers.values();
+                for (MapLayer mapLayer : layers) {
+                    List<Tile> tiles = new ArrayList<>(level.getHeight());
+                    for (int j = 0; j < level.getHeight(); j++)
+                        tiles.add(null);
+                    mapLayer.tileMap.add(tiles);
+                }
             }
         }
 
         if (y < 0) {
             heightToAdd = Math.abs(y);
             boolean cameraShifted = false;
-            for (List<Tile> tiles : level.tileMap) {
-                for (int i = 0; i < heightToAdd; i++) {
-                    tiles.add(0, null);
-                    if (!cameraShifted) {
-                        camera.targetPosition.y += 64;
-                        camera.position.y += 64;
+
+            Collection<MapLayer> layers = level.mapLayers.values();
+            for (MapLayer mapLayer : layers) {
+                for (List<Tile> tiles : mapLayer.tileMap) {
+                    for (int i = 0; i < heightToAdd; i++) {
+                        tiles.add(0, null);
+                        if (!cameraShifted) {
+                            camera.targetPosition.y += 64;
+                            camera.position.y += 64;
+                        }
                     }
-                }
-                cameraShifted = true;
-            }
-            for (List<Tile> tiles : level.backgroundMap) {
-                for (int i = 0; i < heightToAdd; i++) {
-                    tiles.add(0, null);
+                    cameraShifted = true;
                 }
             }
         } else if (y >= level.getHeight()) {
             int expandY = y - level.getHeight() + 1;
-            for (List<Tile> tiles : level.tileMap) {
-                for (int i = 0; i < expandY; i++) {
-                    tiles.add(null);
-                }
-            }
-            for (List<Tile> tiles : level.backgroundMap) {
-                for (int i = 0; i < expandY; i++) {
-                    tiles.add(null);
+
+            Collection<MapLayer> layers = level.mapLayers.values();
+            for (MapLayer mapLayer : layers) {
+                for (List<Tile> tiles : mapLayer.tileMap) {
+                    for (int i = 0; i < expandY; i++) {
+                        tiles.add(null);
+                    }
                 }
             }
         }
 
         if (widthToAdd > 0 || heightToAdd > 0) {
-            for (Tile tile : level.allTiles) {
-                tile.x += widthToAdd;
-                tile.y += heightToAdd;
-            }
-            for (Tile tile : level.backgroundTiles) {
-                tile.x += widthToAdd;
-                tile.y += heightToAdd;
+            Collection<MapLayer> layers = level.mapLayers.values();
+            for (MapLayer mapLayer : layers) {
+                for (Tile tile : mapLayer.allTiles) {
+                    tile.x += widthToAdd;
+                    tile.y += heightToAdd;
+                }
             }
 
             if (selection != null) {
@@ -278,8 +273,8 @@ public class LevelEditor {
         Tile[][] neighbors = new Tile[3][3];
         for (int i = tileX - 1; i < tileX + 2; i++) {
             for (int j = tileY - 1; j < tileY + 2; j++) {
-                if (!(i < 0 || j < 0 || i >= level.getWidth() || j >= level.getHeight()) && level.getTileAt(i, j) != null && !level.getTileAt(i, j).ignoreTiling) {
-                    neighbors[tileX - i + 1][tileY - j + 1] = level.getTileAt(i, j);
+                if (!(i < 0 || j < 0 || i >= level.getWidth() || j >= level.getHeight()) && level.getTileAt(layer, i, j) != null && !level.getTileAt(layer, i, j).ignoreTiling) {
+                    neighbors[tileX - i + 1][tileY - j + 1] = level.getTileAt(layer, i, j);
                 } else {
                     neighbors[tileX - i + 1][tileY - j + 1] = null;
                 }
@@ -458,14 +453,14 @@ public class LevelEditor {
         // Don't let people fill out of bounds
         if (!(originX >= 0 && originY >= 0 && originX < level.getWidth() && originY < level.getHeight())) return;
         // Don't fill tiles of the same type
-        if (Tile.tilesEqual(fillTile, level.getTileAt(originX, originY)) || fillTile.image.equals("delete") && level.getTileAt(originX, originY) == null) return;
+        if (Tile.tilesEqual(fillTile, level.getTileAt(layer, originX, originY)) || fillTile.image.equals("delete") && level.getTileAt(layer, originX, originY) == null) return;
         fillTiles.clear();
 
         List<Point> open = new ArrayList<>();
         Set<Point> closed = new HashSet<>();
 
         Point origin = new Point(originX, originY);
-        Tile tileToFill = level.getTileAt(originX, originY);
+        Tile tileToFill = level.getTileAt(layer, originX, originY);
         open.add(origin);
         closed.add(origin);
 
@@ -480,23 +475,23 @@ public class LevelEditor {
             int x = current.x;
             int y = current.y;
 
-            if (x + 1 < level.getWidth() && !Tile.tilesEqual(level.getTileAt(x + 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x + 1, y), tileToFill)
-                    && !closed.contains(new Point(x + 1, y)) && Tile.extrasEqual(tileToFill, level.getTileAt(x + 1, y))) {
+            if (x + 1 < level.getWidth() && !Tile.tilesEqual(level.getTileAt(layer, x + 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(layer, x + 1, y), tileToFill)
+                    && !closed.contains(new Point(x + 1, y)) && Tile.extrasEqual(tileToFill, level.getTileAt(layer, x + 1, y))) {
                 open.add(new Point(x + 1, y));
                 closed.add(new Point(x + 1, y));
             }
-            if (x - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x - 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(x - 1, y), tileToFill)
-                    && !closed.contains(new Point(x - 1, y)) && Tile.extrasEqual(tileToFill, level.getTileAt(x - 1, y))) {
+            if (x - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(layer, x - 1, y), fillTile) && Tile.tilesEqual(level.getTileAt(layer, x - 1, y), tileToFill)
+                    && !closed.contains(new Point(x - 1, y)) && Tile.extrasEqual(tileToFill, level.getTileAt(layer, x - 1, y))) {
                 open.add(new Point(x - 1, y));
                 closed.add(new Point(x - 1, y));
             }
-            if (y + 1 < level.getHeight() && !Tile.tilesEqual(level.getTileAt(x, y + 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y + 1), tileToFill)
-                    && !closed.contains(new Point(x, y + 1)) && Tile.extrasEqual(tileToFill, level.getTileAt(x, y + 1))) {
+            if (y + 1 < level.getHeight() && !Tile.tilesEqual(level.getTileAt(layer, x, y + 1), fillTile) && Tile.tilesEqual(level.getTileAt(layer, x, y + 1), tileToFill)
+                    && !closed.contains(new Point(x, y + 1)) && Tile.extrasEqual(tileToFill, level.getTileAt(layer, x, y + 1))) {
                 open.add(new Point(x, y + 1));
                 closed.add(new Point(x, y + 1));
             }
-            if (y - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(x, y - 1), fillTile) && Tile.tilesEqual(level.getTileAt(x, y - 1), tileToFill)
-                    && !closed.contains(new Point(x, y - 1)) && Tile.extrasEqual(tileToFill, level.getTileAt(x, y - 1))) {
+            if (y - 1 >= 0 && !Tile.tilesEqual(level.getTileAt(layer, x, y - 1), fillTile) && Tile.tilesEqual(level.getTileAt(layer, x, y - 1), tileToFill)
+                    && !closed.contains(new Point(x, y - 1)) && Tile.extrasEqual(tileToFill, level.getTileAt(layer, x, y - 1))) {
                 open.add(new Point(x, y - 1));
                 closed.add(new Point(x, y - 1));
             }
@@ -573,7 +568,7 @@ public class LevelEditor {
             UndoSelection undoSelection = new UndoSelection();
             for (int i = 0; i < selection.width; i++) {
                 for (int j = 0; j < selection.height; j++) {
-                    Tile tileAt = level.getTileAt(selection.x + i, selection.y + j);
+                    Tile tileAt = level.getTileAt(layer, selection.x + i, selection.y + j);
                     if (tileAt != null) {
                         undoSelection.add(tileAt.copy(), new Tile("delete"));
                         addTile(new Tile("delete"), selection.x + i, selection.y + j, false);
@@ -635,6 +630,6 @@ public class LevelEditor {
     }
 
     public Tile getTileAt(int x, int y) {
-        return level.getTileAt(x, y);
+        return level.getTileAt(layer, x, y);
     }
 }

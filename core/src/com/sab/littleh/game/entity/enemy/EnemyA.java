@@ -36,7 +36,7 @@ public class EnemyA extends Enemy {
       if (playerDist > 1800 * 1800) {
          despawn = true;
       }
-      Tile tileAhead = getTile(direction, 0, game.tileMap);
+      Tile tileAhead = getTile(direction, 0, game.getBaseLayer().tileMap);
       boolean jump = touchingGround && tileAhead != null && (tileAhead.isSolid() || tileAhead.hasTag("death"));
       
       float testX = x;
@@ -51,7 +51,7 @@ public class EnemyA extends Enemy {
          testVX += 0.6f * direction;
          testVX *= 0.95f;
          testVY *= 0.98f;
-         Tile tile = game.getTileAt((int) (testX / 64), (int) (testY / 64));
+         Tile tile = game.getTileAt("normal", (int) (testX / 64), (int) (testY / 64));
          if (tile != null && tile.hasTag("death")) {
             jump = true;
             break;

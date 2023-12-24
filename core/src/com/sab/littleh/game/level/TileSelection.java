@@ -24,8 +24,8 @@ public class TileSelection {
         if (copyTiles) {
             for (int i = 0; i < rectangle.width; i++) {
                 for (int j = 0; j < rectangle.height; j++) {
-                    Tile tileAt = background ? level.getBackgroundTileAt(rectangle.x + i, rectangle.y + j)
-                            : level.getTileAt(rectangle.x + i, rectangle.y + j);
+                    Tile tileAt = background ? level.getTileAt("background", rectangle.x + i, rectangle.y + j)
+                            : level.getTileAt("normal", rectangle.x + i, rectangle.y + j);
                     if (tileAt != null) {
                         tiles.add(tileAt.copy());
                         tilePositions.add(new Point(tileAt.x - rectangle.x, tileAt.y - rectangle.y));
@@ -59,7 +59,7 @@ public class TileSelection {
         UndoSelection undoSelection = new UndoSelection();
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
-            Tile tileAt = editor.getLevel().getTileAt(tile.x, tile.y);
+            Tile tileAt = editor.getLevel().getTileAt(editor.layer, tile.x, tile.y);
             if (tileAt == null) {
                 tileAt = new Tile("delete");
                 tileAt.x = tile.x;

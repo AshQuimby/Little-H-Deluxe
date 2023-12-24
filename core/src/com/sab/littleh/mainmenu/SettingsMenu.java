@@ -92,8 +92,8 @@ public class SettingsMenu extends MainMenu {
         videoSettings.add(new SettingButton(Settings.localSettings.zoomScalar, -152 / 2 - 160, 128 - 16,
                 "Altering this could be considered cheating \n or make some levels more challenging"));
 
-        miscSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -64, 361));
-        miscSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -96 + 16, 64, 64)) {
+        miscSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -16, 361));
+        miscSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -48 + 16, 64, 64)) {
             @Override
             public void render(Graphics g) {
                 super.render(g);
@@ -102,7 +102,9 @@ public class SettingsMenu extends MainMenu {
                 g.resetColor();
             }
         });
-        miscSettings.add(new SettingButton(Settings.localSettings.autoDialogue, -72 / 2, 32));
+        miscSettings.add(new SettingButton(Settings.localSettings.dialogueSpeed, -100, -128, 200));
+        miscSettings.add(new SettingButton(Settings.localSettings.autoDialogue, -72 / 2 + 160, 96));
+        miscSettings.add(new SettingButton(Settings.localSettings.controllerVibration, -72 / 2 - 160, 96));
 
         currentMenu = gameSettings;
         menuButtons.get(0).setDisabled(true);

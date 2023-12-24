@@ -31,7 +31,7 @@ public class EnemyF extends Enemy {
       if (playerDist > 1800 * 1800) {
          despawn = true;
       } else {
-         Tile tileAhead = getTile(direction, 0, game.tileMap);
+         Tile tileAhead = getTile(direction, 0, game.getBaseLayer().tileMap);
          if (tileAhead != null && (tileAhead.hasTag("death") || (!tileAhead.hasTag("enemy_box") && tileAhead.isSolid()))) {
             direction *= -1;
          }

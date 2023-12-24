@@ -2,6 +2,8 @@ package com.sab.littleh.campaign.visual_novel.menu;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.campaign.visual_novel.dialogue.VnDialogue;
 import com.sab.littleh.game.entity.Particle;

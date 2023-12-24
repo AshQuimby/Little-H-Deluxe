@@ -41,8 +41,8 @@ public class Entity {
         lastTouchedTiles = new HashSet<>();
         collide(game);
         if (touchingWater) {
-            velocityX *= 0.98f;
-            velocityY *= 0.98f;
+            velocityX *= 0.96f;
+            velocityY *= 0.96f;
         }
     }
 
@@ -86,8 +86,8 @@ public class Entity {
         Rectangle entityHitbox = new Rectangle(x, y, width, height);
 
         solidInteractions(entityHitbox, collisions, game);
-        collisions = getNearbyTiles(game.tileMap);
-        List<Tile> backgroundTiles = getNearbyTiles(game.backgroundMap);
+        collisions = getNearbyTiles(game.getBaseLayer().tileMap);
+        List<Tile> backgroundTiles = getNearbyTiles(game.getBackgroundLayer().tileMap);
         backgroundTiles.removeIf(tile -> !tile.hasTag("ignore_background"));
         collisions.addAll(backgroundTiles);
         tileInteractions(entityHitbox, collisions, game);
@@ -115,7 +115,7 @@ public class Entity {
         boolean stopX = false;
         boolean stopY = false;
 
-        collisions = getNearbyTiles(game.tileMap);
+        collisions = getNearbyTiles(game.getBaseLayer().tileMap);
         for (Tile tile : collisions) {
             if (!tile.isSolid()) continue;
             Rectangle tileHitbox = tile.toRectangle();
@@ -128,7 +128,7 @@ public class Entity {
         entityHitbox.y += velocityY;
         y = entityHitbox.y;
 
-        collisions = getNearbyTiles(game.tileMap);
+        collisions = getNearbyTiles(game.getBaseLayer().tileMap);
         for (Tile tile : collisions) {
             if (!tile.isSolid()) continue;
             Rectangle tileHitbox = tile.toRectangle();
@@ -169,6 +169,7 @@ public class Entity {
                 for (Rectangle tileHitbox : tileHitboxes) {
                     if (entityHitbox.overlaps(tileHitbox)) {
                         touchingTile(game, tile);
+                        newLastTouchedTiles.add(tile);
                         break;
                     }
                 }
@@ -176,6 +177,7 @@ public class Entity {
                 Rectangle tileHitbox = tile.toRectangle();
                 if (entityHitbox.overlaps(tileHitbox)) {
                     touchingTile(game, tile);
+                    newLastTouchedTiles.add(tile);
                 }
             }
         }

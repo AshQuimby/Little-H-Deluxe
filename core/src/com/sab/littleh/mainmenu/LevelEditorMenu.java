@@ -8,7 +8,6 @@ import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.game.entity.player.Player;
-import com.sab.littleh.game.level.BackgroundEditor;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelEditor;
 import com.sab.littleh.game.level.LevelLoader;
@@ -46,7 +45,7 @@ public class LevelEditorMenu extends MainMenu {
     private Level level;
     private LevelEditor editor;
     private LevelEditor levelEditor;
-    private BackgroundEditor backgroundEditor;
+    private LevelEditor backgroundEditor;
     private Vector2 mousePosition;
     private Vector2 mouseWorldPosition;
     private Vector2 previousMousePosition;
@@ -61,8 +60,8 @@ public class LevelEditorMenu extends MainMenu {
         this.file = file;
         this.level = level;
         backgroundVisible = Settings.localSettings.backgroundVisibility.value;
-        levelEditor = new LevelEditor(level);
-        backgroundEditor = new BackgroundEditor(level);
+        levelEditor = new LevelEditor(level, "normal");
+        backgroundEditor = new LevelEditor(level, "background");
         editor = levelEditor;
         mousePosition = new Vector2();
         mouseWorldPosition = new Vector2();
@@ -794,7 +793,7 @@ public class LevelEditorMenu extends MainMenu {
 
     public void startTesting() {
         Point startPos = null;
-        for (Tile tile : level.allTiles) {
+        for (Tile tile : level.getBaseLayer().allTiles) {
             if (tile.hasTag("start")) {
                 startPos = new Point(tile.x, tile.y);
                 break;
@@ -876,7 +875,7 @@ public class LevelEditorMenu extends MainMenu {
                 }
             }
             if (canPlaceTiles && Cursors.cursorIsNot("move_arrow", "drag_hand")) {
-                Tile tileAt = level.getTileAt(tiledMousePosition.x, tiledMousePosition.y);
+                Tile tileAt = level.getTileAt("normal", tiledMousePosition.x, tiledMousePosition.y);
                 if (tileAt != null && tileAt.hasTag("string_picker")) {
                     if (tileAt.extra != null) {
                         g.drawString(tileAt.extra, LittleH.font, tileAt.x * 64 + 32, tileAt.y * 64 + 96, LittleH.defaultFontScale * 0.85f, 0);

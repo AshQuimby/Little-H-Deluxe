@@ -470,7 +470,7 @@ public class Tile {
                 setTileType(tileType % 2 == 0 ? tileType + 1 : tileType - 1);
         }
         if (hasTag("respawn_power_fruit")) {
-            Tile powerFruit = game.getTileAt(x, y);
+            Tile powerFruit = game.getTileAt("normal", x, y);
             if (powerFruit.hasTag("powerup")) {
                 arbDat = new Object[2];
                 ((Object[]) arbDat)[0] = powerFruit;
@@ -499,12 +499,12 @@ public class Tile {
         if (hasTag("respawn_power_fruit")) {
             if (arbDat != null) {
                 Object[] data = (Object[]) arbDat;
-                if (game.getTileAt(x, y) == null) {
+                if (game.getTileAt("normal", x, y) == null) {
                     int timer = (Integer) data[1];
                     if (timer <= 0) {
                         Tile powerFruit = ((Tile) data[0]).copy();
                         if (!toRectangle().overlaps(game.player.toRectangle())) {
-                            game.addTileToMap(powerFruit);
+                            game.addTileToMap("normal", powerFruit);
                             timer = 90;
                         }
                     }

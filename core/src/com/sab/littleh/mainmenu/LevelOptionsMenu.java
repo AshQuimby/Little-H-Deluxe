@@ -34,6 +34,10 @@ public class LevelOptionsMenu extends MainMenu {
             LoadingUtil.startLoading(() -> {
                 try {
                     Level level = LevelLoader.readLevel(mapData, file);
+                    if (level == null) {
+                        LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted!");
+                        return;
+                    }
                     GameMenu gameMenu = new GameMenu(file, level);
                     if (gameMenu.failedPlaying) {
                         LittleH.pendingMenu = new LevelErrorMenu("Cannot play a level without a spawn point!");
@@ -42,7 +46,7 @@ public class LevelOptionsMenu extends MainMenu {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted");
+                    LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted!");
                 }
             });
         });
@@ -50,11 +54,15 @@ public class LevelOptionsMenu extends MainMenu {
             LoadingUtil.startLoading(() -> {
                 try {
                     Level level = LevelLoader.readLevel(mapData, file);
+                    if (level == null) {
+                        LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted!");
+                        return;
+                    }
                     LevelEditorMenu editorMenu = new LevelEditorMenu(file, level);
                     LittleH.pendingMenu = editorMenu;
                 } catch (IOException e) {
                     e.printStackTrace();
-                    LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted");
+                    LittleH.pendingMenu = new LevelErrorMenu("Error reading level file. File is corrupted!");
                 }
             });
         });
