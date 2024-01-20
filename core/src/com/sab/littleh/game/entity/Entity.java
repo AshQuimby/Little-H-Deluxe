@@ -2,6 +2,7 @@ package com.sab.littleh.game.entity;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
@@ -82,15 +83,29 @@ public class Entity {
     }
 
     public void collide(Level game) {
-        List<Tile> collisions = new ArrayList<Tile>();
+        Set<Tile> oldCollisions = new HashSet<>();
+        List<Tile> allCollisions = new ArrayList<>();
+        List<Tile> collisions;
         Rectangle entityHitbox = new Rectangle(x, y, width, height);
 
-        solidInteractions(entityHitbox, collisions, game);
-        collisions = getNearbyTiles(game.getBaseLayer().tileMap);
+        Vector2 vel = new Vector2(velocityX, velocityY);
+
+        while (vel.len() > 0) {
+            Vector2 step = vel.cpy().limit(8);
+            collisions = getNearbyTiles(game.getBaseLayer().tileMap);
+            collisions.removeAll(oldCollisions);
+            allCollisions.addAll(collisions);
+            Vector2 stop = new Vector2(1, 1);
+            solidInteractions(step, stop, entityHitbox, collisions, game);
+            vel.scl(stop.x, stop.y);
+            step.scl(stop.x, stop.y);
+            oldCollisions.addAll(collisions);
+            vel.sub(step);
+        }
         List<Tile> backgroundTiles = getNearbyTiles(game.getBackgroundLayer().tileMap);
         backgroundTiles.removeIf(tile -> !tile.hasTag("ignore_background"));
-        collisions.addAll(backgroundTiles);
-        tileInteractions(entityHitbox, collisions, game);
+        allCollisions.addAll(backgroundTiles);
+        tileInteractions(entityHitbox, allCollisions, game);
 
         set(entityHitbox);
     }
@@ -108,8 +123,8 @@ public class Entity {
         return new Rectangle(x, y, width, height);
     }
 
-    public void solidInteractions(Rectangle entityHitbox, List<Tile> collisions, Level game) {
-        entityHitbox.x += velocityX;
+    public void solidInteractions(Vector2 step, Vector2 stop, Rectangle entityHitbox, List<Tile> collisions, Level game) {
+        entityHitbox.x += step.x;
         x = entityHitbox.x;
 
         boolean stopX = false;
@@ -120,12 +135,13 @@ public class Entity {
             if (!tile.isSolid()) continue;
             Rectangle tileHitbox = tile.toRectangle();
             if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 2) == Math.signum(velocityX) || velocityX == 0 || tile.tileType % 2 == 0) || lastTouchedTiles.contains(tile)) continue;
-            if (Collisions.resolveX(entityHitbox, tileHitbox, velocityX)) {
+            if (Collisions.resolveX(entityHitbox, tileHitbox, step.x)) {
                 if (onCollide(game, entityHitbox, tileHitbox, tile, false)) stopX = true;
+                stop.x = 0;
             }
         }
 
-        entityHitbox.y += velocityY;
+        entityHitbox.y += step.y;
         y = entityHitbox.y;
 
         collisions = getNearbyTiles(game.getBaseLayer().tileMap);
@@ -133,17 +149,22 @@ public class Entity {
             if (!tile.isSolid()) continue;
             Rectangle tileHitbox = tile.toRectangle();
             if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 1) == Math.signum(velocityY) || tile.tileType % 2 != 0) || lastTouchedTiles.contains(tile)) continue;
-            if (Collisions.resolveY(entityHitbox, tileHitbox, velocityY)) {
+            if (Collisions.resolveY(entityHitbox, tileHitbox, step.y)) {
                 if (onCollide(game, entityHitbox, tileHitbox, tile, true)) {
                     stopY = true;
-                    if (velocityY < 0) {
+                    if (step.y < 0 && !dontRefreshTouchingGround()) {
                         touchingGround = true;
                     }
                 }
+                stop.y = 0;
             }
         }
 
         if (stopX || stopY) onCollision(stopX, stopY);
+    }
+
+    protected boolean dontRefreshTouchingGround() {
+        return false;
     }
 
     public void kill() {

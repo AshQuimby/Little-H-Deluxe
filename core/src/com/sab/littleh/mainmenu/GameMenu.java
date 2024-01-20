@@ -1,15 +1,18 @@
 package com.sab.littleh.mainmenu;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.ControlInputs;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
+import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.*;
 
 import java.awt.*;
 import java.io.File;
+import java.util.Arrays;
 
 public class GameMenu extends MainMenu {
     private static DynamicCamera camera = LittleH.program.dynamicCamera;
@@ -45,7 +48,7 @@ public class GameMenu extends MainMenu {
         } else if (ControlInputs.isJustPressed("suicide")) {
             level.suicide();
         } else if (ControlInputs.isJustPressed("quick_restart")) {
-            level.reset();
+            level.player.trueKill();
         }
     }
 
@@ -74,23 +77,58 @@ public class GameMenu extends MainMenu {
     public void close() {
     }
 
+    public int getBackgroundIndex() {
+        String background = level.mapData.getRawValue("background");
+        for (int i = 0; i < Level.backgrounds.length; i++) {
+            if (background.equals(Level.backgrounds[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public void render(Graphics g) {
         LittleH.program.useDynamicCamera();
 
         camera.updateCamera();
 
-        level.renderBackground(g);
+        if (Settings.localSettings.useShaders.value) {
+            LittleH.program.beginTempBuffer();
 
-        LittleH.program.useDynamicCamera();
+            level.renderBackground(g);
 
-        level.render(g);
+            LittleH.program.useDynamicCamera();
 
-        LittleH.program.useStaticCamera();
+            level.render(g);
+
+            LittleH.program.endTempBuffer();
+
+            g.setPostTint(Level.themeTints[getBackgroundIndex()]);
+            g.setShader(Shaders.tintShader);
+
+            LittleH.program.useStaticCamera();
+
+            LittleH.program.drawTempBuffer();
+
+            g.resetShader();
+        } else {
+            level.renderBackground(g);
+
+            LittleH.program.useDynamicCamera();
+
+            level.render(g);
+
+            LittleH.program.endTempBuffer();
+
+            g.setPostTint(Level.themeTints[getBackgroundIndex()]);
+            g.setShader(Shaders.tintShader);
+
+            LittleH.program.useStaticCamera();
+        }
 
         if (level.inGame()) {
             level.renderHUD(g);
-            return;
         }
     }
 }

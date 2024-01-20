@@ -132,8 +132,13 @@ public class TypingQuery {
     public String getPrompt() {
         return prompt;
     }
+
     public void render(Graphics g) {
-        g.drawPatch(Patch.get("menu"), rectangle, 8);
+        render(g, 8);
+    }
+
+    public void render(Graphics g, int patchScale) {
+        g.drawPatch(Patch.get("menu"), rectangle, patchScale);
         Rectangle textRect = new Rectangle(rectangle);
         textRect.x += 16;
         textRect.y += 16;

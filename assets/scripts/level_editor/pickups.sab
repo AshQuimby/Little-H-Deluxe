@@ -2,7 +2,8 @@
 @1 tiles/coin_box
 @2 tiles/power_fruit
 @3 tiles/power_fruit_spawner
-@5 tiles/key
-@6 tiles/key_box
-@7 tiles/evil_key
-@8 tiles/evil_key_box
+@5 tiles/jump_pearl
+@6 tiles/key
+@7 tiles/key_box
+@8 tiles/evil_key
+@9 tiles/evil_key_box

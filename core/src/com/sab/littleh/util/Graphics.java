@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -16,12 +17,37 @@ import java.util.List;
 public class Graphics extends SpriteBatch {
     private final PolygonSpriteBatch polyBatch = new PolygonSpriteBatch();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private Color postProcessingTint = new Color(0, 0, 0, 0);
     private Color tint = Color.WHITE;
     private Color trueColor = Color.WHITE;
 
     public Graphics() {
         super();
         shapeRenderer.setAutoShapeType(true);
+    }
+
+    public void setShader(ShaderProgram shaderProgram) {
+        if (shaderProgram == Shaders.paletteShader)
+            Shaders.setupPaletteShader();
+        else if (shaderProgram == Shaders.tintShader)
+            Shaders.setScreenTint(postProcessingTint);
+        super.setShader(shaderProgram);
+    }
+
+    public void draw(Texture texture, Rectangle drawRect, int frame, int frameCount, float rotation, boolean flippedX, boolean flippedY) {
+        drawImage(texture, drawRect.x, drawRect.y, drawRect.width, drawRect.height, new Rectangle(0,
+                texture.getHeight() / frameCount * frame, texture.getWidth(), texture.getHeight() / frameCount), rotation, flippedX, flippedY);
+    }
+
+    public void draw(Texture texture, float x, float y, float width, float height, int frame, int frameCount, float rotation, boolean flippedX, boolean flippedY) {
+        drawImage(texture, x, y, width, height, new Rectangle(0,
+                texture.getHeight() / frameCount * frame, texture.getWidth(), texture.getHeight() / frameCount), rotation, flippedX, flippedY);
+    }
+
+    public void drawImage(Texture image, float x, float y, float width, float height, Rectangle drawFrom, float rotation, boolean flippedX, boolean flippedY) {
+        Vector2 origin = new Vector2(width / 2, height / 2);
+        draw(image, x, y, origin.x, origin.y, width, height, 1, 1, rotation,
+                (int) drawFrom.x, (int) drawFrom.y, (int) drawFrom.width, (int) drawFrom.height, flippedX, flippedY);
     }
 
     public void drawPatch(Patch patch, float x, float y, float width, float height, int patchScale) {
@@ -146,10 +172,14 @@ public class Graphics extends SpriteBatch {
     }
 
     public void drawMesh(float[] vertices) {
+        drawMesh(vertices, null);
+    }
+
+    public void drawMesh(float[] vertices, ShaderProgram shaderProgram) {
+        Matrix4 projMat = getProjectionMatrix();
         end();
         PolygonSprite poly;
-        polyBatch.begin();
-        polyBatch.setProjectionMatrix(getProjectionMatrix());
+        polyBatch.setProjectionMatrix(projMat);
         Texture textureSolid;
 
         // Creating the color filling (but textures would work the same way)
@@ -168,12 +198,33 @@ public class Graphics extends SpriteBatch {
                 6, 7, 2,
                 5, 6, 3
         });
-        poly = new PolygonSprite(polyReg);
-        poly.setOrigin(0, 0);
-        poly.draw(polyBatch);
-        polyBatch.end();
-        pix.dispose();
-        begin();
+        if (shaderProgram != null) {
+            LittleH.program.beginTempBuffer();
+            polyBatch.begin();
+            polyBatch.setShader(shaderProgram);
+            poly = new PolygonSprite(polyReg);
+            poly.setOrigin(0, 0);
+            poly.draw(polyBatch);
+            polyBatch.end();
+            polyBatch.setShader(null);
+            pix.dispose();
+            begin();
+            setProjectionMatrix(projMat);
+            LittleH.program.endTempBuffer();
+            setShader(shaderProgram);
+            LittleH.program.drawTempBuffer();
+            resetShader();
+            LittleH.program.getFrameBuffer().begin();
+        } else {
+            polyBatch.begin();
+            poly = new PolygonSprite(polyReg);
+            poly.setOrigin(0, 0);
+            poly.draw(polyBatch);
+            polyBatch.end();
+            pix.dispose();
+            begin();
+            setProjectionMatrix(projMat);
+        }
     }
 
     @Override
@@ -192,6 +243,14 @@ public class Graphics extends SpriteBatch {
     public void resetTint() {
         tint = Color.WHITE;
         setColor(trueColor);
+    }
+
+    public void resetPostTint() {
+        postProcessingTint = new Color(0, 0, 0, 0);
+    }
+
+    public void setPostTint(Color tint) {
+        postProcessingTint = tint;
     }
 
     public Vector2 getCameraPosition() {
@@ -226,7 +285,7 @@ public class Graphics extends SpriteBatch {
     }
 
     public void resetShader() {
-        setShader(null);
         getShader().bind();
+        setShader(null);
     }
 }

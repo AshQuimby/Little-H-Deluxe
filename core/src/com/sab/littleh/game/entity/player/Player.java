@@ -33,7 +33,7 @@ public class Player extends Entity {
     public static Animation jumpAnimation = new Animation(1, 7);
     public static Animation crouchAnimation = new Animation(1, 24);
     public static Animation slideAnimation = new Animation(4, 25, 26);
-    public static Animation winAnimation = new Animation(8, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 17, 18, 19, 20, 21, 22, 23);
+    public static Animation winAnimation = new Animation(8, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 17, 18, 19, 20, 21, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23);
 
     public boolean win;
     public boolean end;
@@ -59,6 +59,7 @@ public class Player extends Entity {
     public boolean savedEvilKey;
     public EvilKey evilKey;
     public int savedKeyCount;
+    public boolean savedGravity;
     public int[] totalCoinCounts;
     public int[] coinCounts;
     public boolean[] shouldRenderCoinCounts;
@@ -66,6 +67,7 @@ public class Player extends Entity {
     public java.util.List<Point> previousPositions;
     public java.util.List<Float> previousSpeeds;
     public boolean canCrouch;
+    public boolean flippedGravity;
     private Powerup powerup;
     private boolean speedrunning;
 
@@ -129,6 +131,7 @@ public class Player extends Entity {
         winAnimation.setAnimationSpeed(8);
         slippery = false;
         keyCount = savedKeyCount;
+        flippedGravity = savedGravity;
         hasEvilKey = savedEvilKey;
         if (hasEvilKey) {
             evilKey = new EvilKey((int) x / 64, (int) y / 64);
@@ -210,16 +213,15 @@ public class Player extends Entity {
             dead = false;
             currentAnimation = winAnimation;
             if (currentAnimation.getFrame() >= 21) {
-                currentAnimation.setAnimationSpeed(4);
                 velocityX = 0;
-                velocityY += 3f;
+                velocityY += -3.5f * getGravityMagnitude();
                 y += velocityY;
             } else if (warpingOut()) {
-                currentAnimation.setAnimationSpeed(2);
+                currentAnimation.setAnimationSpeed(4);
                 velocityX *= 0;
                 velocityY *= 0;
             } else {
-                deathAnimation.setAnimationSpeed(8);
+                currentAnimation.setAnimationSpeed(8);
                 updateVelocity();
                 collide(game);
             }
@@ -246,11 +248,12 @@ public class Player extends Entity {
 
         powerup.update(game);
 
-        if (y < -64)
+        if (!flippedGravity && y < -128)
             kill();
 
-        // Crouching
-//        if (game.mapSettings[Level.ALLOW_CROUCH]) {
+        if (flippedGravity && y > game.getHeight() * 64 + 256)
+            kill();
+
         if (canCrouch && game.mapData.getValue("crouching").asBool()) {
             if (ControlInputs.isJustPressed(Controls.LEFT) ^ ControlInputs.isJustPressed(Controls.RIGHT) || !ControlInputs.isPressed(Controls.DOWN) || !touchingGround) {
                 height = 48;
@@ -280,6 +283,19 @@ public class Player extends Entity {
             if (ticksAlive > 2)
                 ticksAlive = 2;
         }
+    }
+
+    @Override
+    protected boolean dontRefreshTouchingGround() {
+        return true;
+    }
+
+    public float getGravityMagnitude() {
+        return 1f * getGravityDirection();
+    }
+
+    public int getGravityDirection() {
+        return flippedGravity ? 1 : -1;
     }
 
     public Vector2 getCenter() {
@@ -367,16 +383,22 @@ public class Player extends Entity {
     }
 
     public void touchingTile(Level game, Rectangle playerHitbox, Tile tile, Rectangle tileHitbox, Set<Tile> newLastTouchedTiles) {
-        if (tile.hasTag("multi_hitbox")) {
-        }
+//        if (tile.hasTag("multi_hitbox")) {
+//        }
         boolean splash = true;
         touchingTile(game, tile);
         if (tile.hasTag("death")) {
             if (playerHitbox.overlaps(tileHitbox)) kill();
         } else if (tile.hasTag("bounce")) {
-            if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
-            if (velocityY < -36) velocityY *= -1.5f;
-            else if (velocityY < 36) velocityY = 36;
+            if (flippedGravity) {
+                if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
+                if (velocityY > 36) velocityY *= -1.5f;
+                else if (velocityY > -36) velocityY = -36;
+            } else {
+                if (velocityY < 30 && !lastTouchedTiles.contains(tile)) SoundEngine.playSound("bounce.ogg");
+                if (velocityY < -36) velocityY *= -1.5f;
+                else if (velocityY < 36) velocityY = 36;
+            }
         }
         if (tile.hasTag("water")) {
             for (Tile otherTile : lastTouchedTiles) {
@@ -397,6 +419,7 @@ public class Player extends Entity {
             game.notify("notify_checkpoint", null);
             tile.setTileType(1);
             game.saveCheckpointState();
+            savedGravity = flippedGravity;
             savedKeyCount = keyCount;
             savedEvilKey = hasEvilKey;
             savedPowerup = powerup;
@@ -410,65 +433,76 @@ public class Player extends Entity {
             win();
         }
         if (tile.hasTag("pickup")) {
-            if (playerHitbox.overlaps(tileHitbox)) {
-                game.inGameRemoveTile(tile);
-                if (tile.hasTag("dialogue")) {
-                    String key = tile.extra.trim();
-                    Dialogue dialogue = Dialogues.getDialogue(key);
-                    if (dialogue != null)
-                        game.setDialogue(dialogue);
-                    return;
-                }
-                if (tile.hasTag("coin")) {
-                    SoundEngine.playSound("coin.ogg");
-                    coinCounts[tile.tileType]++;
-                    if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
-                        SoundEngine.playSound("all_coins_collected.ogg");
-                        game.notify("notify_all_coins", tile.tileType);
-                    }
-                }
-                if (tile.hasTag("powerup")) {
-                    SoundEngine.playSound("powerup_get.ogg");
-                    if (tile.tileType == 0) powerup = new Powerup(this);
-                    else if (tile.tileType == 1) powerup = new BallMode(this);
-                    else if (tile.tileType == 2) powerup = new WingedMode(this);
-                    else if (tile.tileType == 3) powerup = new CelesteMode(this);
-                    else if (tile.tileType == 4) powerup = new GravityMode(this);
-                    else if (tile.tileType == 5) powerup = new StoneMode(this);
-                    else if (tile.tileType == 6) powerup = new GunMode(this);
-                }
-                if (tile.hasTag("key")) {
-                    SoundEngine.playSound("coin.ogg");
-                    if (tile.hasTag("evil")) {
-                        evilKey = new EvilKey(tile.x, tile.y);
-                        hasEvilKey = true;
+            boolean pickup = true;
+            if (tile.hasTag("even_pickup")) {
+                if (tile.tileType % 2 != 0)
+                    pickup = false;
+            }
+            if (pickup) {
+                if (playerHitbox.overlaps(tileHitbox)) {
+                    game.inGameRemoveTile(tile);
+                    if (tile.hasTag("dialogue")) {
+                        String key = tile.extra.trim();
+                        Dialogue dialogue = Dialogues.getDialogue(key);
+                        if (dialogue != null)
+                            game.setDialogue(dialogue);
                         return;
                     }
-                    keyCount++;
-                }
-                if (tile.hasTag("timer")) {
-                    SoundEngine.playSound("powerup_get.ogg");
-                    if (game.timeLimit > -1) {
-                        switch (tile.getPropertyIndex()) {
-                            case 0 :
-                                game.timeLimit += 10;
-                                game.startPopup("+10 seconds", 180);
-                                break;
-                            case 1 :
-                                game.timeLimit += 30;
-                                game.startPopup("+30 seconds", 180);
-                                break;
-                            case 2 :
-                                game.timeLimit += 60;
-                                game.startPopup("+60 seconds", 180);
-                                break;
-                            case 3 :
-                                game.timeLimit += 100;
-                                game.startPopup("+100 seconds", 180);
-                                break;
+                    if (tile.hasTag("coin")) {
+                        SoundEngine.playSound("coin.ogg");
+                        coinCounts[tile.tileType]++;
+                        if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
+                            SoundEngine.playSound("all_coins_collected.ogg");
+                            game.notify("notify_all_coins", tile.tileType);
                         }
                     }
-                    game.timeLimit = Math.min(9999, game.timeLimit);
+                    if (tile.hasTag("powerup")) {
+                        SoundEngine.playSound("powerup_get.ogg");
+                        if (tile.tileType == 0) powerup = new Powerup(this);
+                        else if (tile.tileType == 1) powerup = new BallMode(this);
+                        else if (tile.tileType == 2) powerup = new WingedMode(this);
+                        else if (tile.tileType == 3) powerup = new CelesteMode(this);
+                        else if (tile.tileType == 4) powerup = new GravityMode(this);
+                        else if (tile.tileType == 5) powerup = new StoneMode(this);
+                        else if (tile.tileType == 6) powerup = new GunMode(this);
+                    }
+                    if (tile.hasTag("key")) {
+                        SoundEngine.playSound("coin.ogg");
+                        if (tile.hasTag("evil")) {
+                            evilKey = new EvilKey(tile.x, tile.y);
+                            hasEvilKey = true;
+                            return;
+                        }
+                        keyCount++;
+                    }
+                    if (tile.hasTag("jump_refresh")) {
+                        SoundEngine.playSound("coin.ogg");
+                        doubleJump = true;
+                    }
+                    if (tile.hasTag("timer")) {
+                        SoundEngine.playSound("powerup_get.ogg");
+                        if (game.timeLimit > -1) {
+                            switch (tile.getPropertyIndex()) {
+                                case 0:
+                                    game.timeLimit += 10;
+                                    game.startPopup("+10 seconds", 180);
+                                    break;
+                                case 1:
+                                    game.timeLimit += 30;
+                                    game.startPopup("+30 seconds", 180);
+                                    break;
+                                case 2:
+                                    game.timeLimit += 60;
+                                    game.startPopup("+60 seconds", 180);
+                                    break;
+                                case 3:
+                                    game.timeLimit += 100;
+                                    game.startPopup("+100 seconds", 180);
+                                    break;
+                            }
+                        }
+                        game.timeLimit = Math.min(9999, game.timeLimit);
+                    }
                 }
             }
         }
@@ -540,7 +574,8 @@ public class Player extends Entity {
         if (evilKey != null) {
             evilKey.render(g, this, game);
         }
-        drawTrail(g);
+        if (!warpingOut())
+            drawTrail(g);
         powerup.preDrawPlayer(g, game);
         drawPlayer(g, game);
     }
@@ -563,6 +598,22 @@ public class Player extends Entity {
 
     public void touchingEnemy(Enemy enemy) {
         powerup.touchingEnemy(enemy);
+    }
+
+    public boolean falling() {
+        return velocityY * getGravityDirection() > 0;
+    }
+
+    public boolean fallingFasterThan(float speed) {
+        return velocityY * getGravityDirection() > speed;
+    }
+
+    public boolean risingFasterThan(float speed) {
+        return velocityY * -getGravityDirection() > speed;
+    }
+
+    public float getFeetY() {
+        return getCenterY() + height / 2f * getGravityDirection();
     }
 
     public class EvilKey {

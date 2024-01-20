@@ -43,10 +43,11 @@ public class GunMode extends Powerup {
             }
         }
         gunY = 0;
-        if (player.frame == 1) gunY = -8;
-        else if (player.frame > 24) gunY = -16;
-        else if (player.frame == 4 || player.frame == 5 || player.frame == 6) gunY = 8;
-        gunRotation = MouseUtil.getDynamicMousePosition().sub(player.getCenter().add(0, gunY + 8)).angleDeg();
+        if (player.frame == 1) gunY = 8 * player.getGravityDirection();
+        else if (player.frame > 24) gunY = 16 * player.getGravityDirection();
+        else if (player.frame == 4 || player.frame == 5 || player.frame == 6) gunY = 8 * -player.getGravityDirection();
+        gunY += 8 * -player.getGravityDirection();
+        gunRotation = MouseUtil.getDynamicMousePosition().sub(player.getCenter().add(0, gunY)).angleDeg();
         player.coolRoll = 0;
         super.update(game);
         player.coolRoll = 0;
@@ -93,11 +94,11 @@ public class GunMode extends Powerup {
         bullets.forEach(bullet -> bullet.render(g, game));
         if (!player.dead && !player.win) {
             g.drawImage(Images.getImage("player/gun_hand.png"),
-                    player.getCenterX() - 36 + MathUtils.cosDeg(gunRotation) * 44, player.getCenterY() - 12 + MathUtils.sinDeg(gunRotation) * 36 + 8 + gunY,
+                    player.getCenterX() - 36 + MathUtils.cosDeg(gunRotation) * 44, player.getCenterY() - 12 + MathUtils.sinDeg(gunRotation) * 36 + gunY,
                     72, 24, new Rectangle(getAdjustedGunRotation() > 180 ? 9 : 0, 0, getAdjustedGunRotation() > 180 ? -9 : 9, 3),
                     (getAdjustedGunRotation() % 180 - 90 + player.rotation * MathUtils.radiansToDegrees));
             g.drawImage(Images.getImage("player/revolver.png"),
-                    player.getCenterX() - 36 + MathUtils.cosDeg(gunRotation) * 44, player.getCenterY() - 12 + MathUtils.sinDeg(gunRotation) * 36 + 8 + gunY,
+                    player.getCenterX() - 36 + MathUtils.cosDeg(gunRotation) * 44, player.getCenterY() - 12 + MathUtils.sinDeg(gunRotation) * 36 + gunY,
                     72, 24, new Rectangle(getAdjustedGunRotation() > 180 ? 9 : 0, 0, getAdjustedGunRotation() > 180 ? -9 : 9, 3),
                     (getAdjustedGunRotation() % 180 - 90 + player.rotation * MathUtils.radiansToDegrees) + player.direction * (reloadTime * reloadTime / 8f));
         }
@@ -176,7 +177,7 @@ public class GunMode extends Powerup {
                 game.inGameRemoveTile(tile);
                 return false;
             }
-            return super.onCollide(game, entityHitbox, tileHitbox, tile, yCollision);
+            return true;
         }
 
         @Override

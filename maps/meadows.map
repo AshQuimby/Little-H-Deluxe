@@ -1910,6 +1910,7 @@
 203 58 tiles/end 0 
 203 55 tiles/grass_decor 4 
 189 50 tiles/grass_decor 3 
+4 12 tiles/power_fruit 3 
 @background_tiles
 133 26 tiles/sets/grass 36 
 132 26 tiles/sets/grass 49 

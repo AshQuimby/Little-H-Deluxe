@@ -28,27 +28,10 @@ public class StoneMode extends Powerup {
 
    @Override
    public void jump(Level game) {
-      if (player.crushed) return;
-      if (player.leftGroundFor < 6) {
-         SoundEngine.playSound("jump.ogg");
-         player.velocityY = 8;
-         player.leftGroundFor = 8;
-         player.jumpStrength++;
-         game.addParticle(new Particle(player.x - 24, player.y, 0f, 0f, 96, 16, 12, 2, 1, 0f, 0f, 0, 2, "particles/jump.png", 9));
-      } else if (player.jumpReleased && player.leftWallFor < 8) {
-         SoundEngine.playSound("double_jump.ogg");
-         player.velocityY = 26;
-         player.leftWallFor = 8;
-         player.x += -2 * player.wallDirection;
-         player.velocityX = -16 * player.wallDirection;
-      } else if (player.jumpReleased && player.doubleJump && game.mapData.getValue("double_jumping").asBool()) {
-         game.addParticle(new Particle(player.x, player.y, 0f, 0f, 48, 32, 6, 4, 1, 0f, 0f, 0, 2, "particles/double_jump.png", 9));
-         SoundEngine.playSound("double_jump.ogg");
-         if (player.velocityY < -16) player.coolRoll = (float) (Math.PI * 3);
-         if (player.velocityY < 16) player.velocityY = 16;
-         else player.velocityY += 7f;
-         player.doubleJump = false;
-      }
+      boolean grah = player.touchingWater;
+      player.touchingWater = false;
+      super.jump(game);
+      player.touchingWater = grah;
    }
 
    @Override
@@ -74,6 +57,7 @@ public class StoneMode extends Powerup {
             }
             SoundEngine.playSound("hit.ogg");
             game.inGameRemoveTile(tile);
+            player.doubleJump = true;
             return false;
          }
       }
@@ -87,7 +71,7 @@ public class StoneMode extends Powerup {
       } else {
          if (ControlInputs.isPressed(Controls.JUMP) || ControlInputs.isPressed(Controls.UP)) {
             player.velocityY = Math.abs(player.velocityY) * 0.9f;
-            player.velocityY += 4f;
+            player.velocityY += 4f * -player.getGravityMagnitude();
             LittleH.program.dynamicCamera.addScreenShake(6);
             SoundEngine.playSound("bounce.ogg");
          }
@@ -119,7 +103,7 @@ public class StoneMode extends Powerup {
                if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
                   groundSlam = 0;
                } else {
-                  player.velocityY -= 1;
+                  player.velocityY += 1 * player.getGravityMagnitude();
                }
             }
             player.currentAnimation = slamAnimation;
@@ -145,6 +129,6 @@ public class StoneMode extends Powerup {
       if (player.touchingWater)
          player.velocityY *= 0.99f;
       if (!noGravity)
-         player.velocityY -= 1.2f;
+         player.velocityY -= 1.2f * -player.getGravityMagnitude();
    }
 }

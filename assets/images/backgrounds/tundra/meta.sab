@@ -1,5 +1,5 @@
-@middle_ambient true
+@near_ambient true
 @back true
 @far true
-@front true
+@close true
 @middle true

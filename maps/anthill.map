@@ -7,7 +7,7 @@
 @name Anthill
 @double_jumping true
 @wall_sliding true
-@version 0.1
+@version 0.1.5
 686 143 tiles/sets/grass 19 
 685 143 tiles/sets/grass 19 
 684 143 tiles/sets/grass 6 

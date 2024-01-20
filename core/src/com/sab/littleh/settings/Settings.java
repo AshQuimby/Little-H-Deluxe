@@ -74,12 +74,14 @@ public class Settings {
     public final PercentageSetting dialogueSpeed = new PercentageSetting("dialogue_speed", "Dialogue Speed", 100, 50, 200);
     public final BoolSetting controllerVibration = new BoolSetting("vibration", "Controller Vibration", true);
     public final BoolSetting autoDialogue = new BoolSetting("auto_dialogue", "Auto Dialogue", false);
+    public final BoolSetting retroMode = new BoolSetting("retro_mode", "Retro Mode (Requires shaders)", false);
+    public final BoolSetting upEqualsJump = new BoolSetting("up_equals_jump", "Up Equals Jump", true);
 
     public final Setting<?>[] settings = new Setting[] {
             // Gameplay
-            debugMode, backgroundVisibility, authorName, rainbowTitle, dividedTileSelection,
+            debugMode, backgroundVisibility, authorName, rainbowTitle, dividedTileSelection, upEqualsJump,
             // Video
-            fullscreen, grid, screenShake, zoomScalar, font, selectionContrast, useShaders,
+            fullscreen, grid, screenShake, zoomScalar, font, selectionContrast, useShaders, retroMode,
             // Audio
             muteGame, masterVolume, musicVolume, sfxVolume,
             // Misc
@@ -89,7 +91,7 @@ public class Settings {
     public static String getRandomName() {
         Random random = new RandomXS128();
         String[] prefixes = new String[]{ "The Big", "The Little", "The Medium", "The Colossal", "The Microscopic", "The Minuscule" };
-        String[] bases = new String[]{ "EnemyA", "B", "C", "D", "EnemyE", "EnemyF", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+        String[] bases = new String[]{ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         String[] suffixes = new String[]{ "Fan", "Enjoyer", "Appreciator", "Stan", "Hater", "Critic", "Scorner", "Murderer", "Elater", "Skeptic", "Actualizer" };
         return prefixes[random.nextInt(prefixes.length)] + " " + bases[random.nextInt(bases.length)] + " " + suffixes[random.nextInt(suffixes.length)];
     }

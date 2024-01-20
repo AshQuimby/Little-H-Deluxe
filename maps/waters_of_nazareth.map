@@ -14188,6 +14188,9 @@
 17 71 tiles/sets/rock 5 
 17 76 tiles/sets/rock 4 
 17 40 tiles/half_spike 2 
+51 156 tiles/checkpoint 0 
+92 136 tiles/checkpoint 0 
+51 67 tiles/checkpoint 0 
 @background_tiles
 45 130 tiles/sets/water 2 
 46 130 tiles/sets/water 19 

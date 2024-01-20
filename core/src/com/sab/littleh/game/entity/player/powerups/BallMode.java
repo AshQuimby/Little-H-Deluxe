@@ -56,7 +56,7 @@ public class BallMode extends Powerup {
       if (!(player.slippery && player.crouched)) player.velocityX *= 0.975f;
       else player.velocityX *= 0.985f;
       player.velocityY *= 0.985f;
-      player.velocityY -= 1f;
+      player.velocityY += 1f * player.getGravityMagnitude();
    }
    
    @Override
@@ -79,7 +79,7 @@ public class BallMode extends Powerup {
       }
       // Makes the little H SLAM down with BIG BALL ENERGY
       if (superSlam) {
-         player.velocityY -= 2;
+         player.velocityY += 2 * player.getGravityMagnitude();
       }
 
       super.update(game);
@@ -92,6 +92,12 @@ public class BallMode extends Powerup {
       } else {
          ballRotation += rotationSpeed;
          rotationSpeed = player.velocityX / 32f;
+      }
+
+      if (player.fallingFasterThan(196f)) {
+         player.velocityY = 196f * player.getGravityMagnitude();
+      } else if (player.risingFasterThan(196f)) {
+         player.velocityY = 196f * -player.getGravityMagnitude();
       }
    }
    
@@ -120,10 +126,10 @@ public class BallMode extends Powerup {
    
    @Override
    public void touchingTile(Tile tile) {
+      super.touchingTile(tile);
       // Makes bouncy tiles LAUNCH the BALL
       if (tile.hasTag("bounce")) {
-         player.velocityY += 0.5f;
-         player.velocityY = Math.min(96f, player.velocityY);
+         player.velocityY += 2.5f * -player.getGravityMagnitude();
       }
    }
 

@@ -9,7 +9,9 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.campaign.visual_novel.dialogue.VnDialogue;
 import com.sab.littleh.controls.Controls;
@@ -49,11 +51,14 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Settings.localSettings.load();
     }
     private Graphics g;
-    private FrameBuffer buffer;
+    private NestedFrameBuffer buffer;
+    private NestedFrameBuffer tempBuffer;
+    private NestedFrameBuffer bufferHoldover;
     public OrthographicCamera staticCamera;
     public DynamicCamera dynamicCamera;
     private MainMenu mainMenu;
     private String hoverInfo;
+    private Stack<ShaderProgram> shaderStack = new Stack<>();
     private boolean dontRender, hardPause;
     private boolean controllersNotSupported;
 
@@ -126,6 +131,20 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SoundEngine.update();
         Images.cacheHColor();
         VnDialogue.load();
+        buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        tempBuffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        recheckShaderStack();
+    }
+
+    public void recheckShaderStack() {
+        shaderStack.clear();
+        if (Settings.localSettings.useShaders.value) {
+            if (Settings.localSettings.retroMode.value) {
+                shaderStack.add(Shaders.crushShader);
+                shaderStack.add(Shaders.paletteShader);
+            }
+        }
     }
 
     public void update() {
@@ -194,51 +213,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         dontRender = true;
     }
 
-    @Override
-    public void render() {
-//        buffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
-//        buffer.begin();
-//        buffer.bind();
-        if (hardPause)
-            return;
-        update();
-
-        if (dontRender) {
-            dontRender = false;
-            return;
-        }
-
-        ScreenUtils.clear(0, 0, 0, 1);
-
-        g.begin();
-
-        useStaticCamera();
-
-        mainMenu.render(g);
-
-        if (hoverInfo != null) {
-            Rectangle hoverInfoRect = Fonts.getStringBounds(hoverInfo, font, MouseUtil.getMouseX() + 32, MouseUtil.getMouseY(), defaultFontScale * 0.75f, -1);
-            if (hoverInfoRect.x + hoverInfoRect.width > getWidth() / 2) hoverInfoRect.x -= hoverInfoRect.width + 32;
-            if (hoverInfoRect.y - hoverInfoRect.height * 3 < -getHeight() / 2)
-                hoverInfoRect.y += hoverInfoRect.height * 5;
-            hoverInfoRect.y -= 16 + 48;
-            hoverInfoRect.width += 16;
-            hoverInfoRect.height += 24;
-            g.drawPatch(Patch.get("menu_globbed"), hoverInfoRect, 8);
-            g.drawString(hoverInfo, font, hoverInfoRect.x + 8, hoverInfoRect.y + hoverInfoRect.height / 2 + 4, defaultFontScale * 0.75f, -1);
-        }
-
-//        g.end();
-//        buffer.end();
-//        g.draw(buffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
-        g.end();
-
-        hoverInfo = null;
-        MouseUtil.update();
-        ControlInputs.update();
-        tick++;
-    }
-
     public static int getTick() {
         return program.tick;
     }
@@ -246,6 +220,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public void dispose() {
         g.dispose();
+        buffer.dispose();
         Shaders.dispose();
     }
 
@@ -301,6 +276,13 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         mainMenu.mouseUp(button);
         return true;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        tempBuffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
     }
 
     @Override
@@ -452,5 +434,89 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             }
         }
         return true;
+    }
+
+    @Override
+    public void render() {
+        if (hardPause)
+            return;
+        update();
+
+        if (dontRender) {
+            dontRender = false;
+            return;
+        }
+
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        g.begin();
+        buffer.begin();
+
+        useStaticCamera();
+
+        mainMenu.render(g);
+
+        if (hoverInfo != null) {
+            Rectangle hoverInfoRect = Fonts.getStringBounds(hoverInfo, font, MouseUtil.getMouseX() + 32, MouseUtil.getMouseY(), defaultFontScale * 0.75f, -1);
+            if (hoverInfoRect.x + hoverInfoRect.width > getWidth() / 2) hoverInfoRect.x -= hoverInfoRect.width + 32;
+            if (hoverInfoRect.y - hoverInfoRect.height * 3 < -getHeight() / 2)
+                hoverInfoRect.y += hoverInfoRect.height * 5;
+            hoverInfoRect.y -= 16 + 48;
+            hoverInfoRect.width += 16;
+            hoverInfoRect.height += 24;
+            g.drawPatch(Patch.get("menu_globbed"), hoverInfoRect, 8);
+            g.drawString(hoverInfo, font, hoverInfoRect.x + 8, hoverInfoRect.y + hoverInfoRect.height / 2 + 4, defaultFontScale * 0.75f, -1);
+        }
+
+        g.flush();
+        buffer.end();
+
+        // Run through the shader stack w/o blending for post-processing
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+        shaderStack.forEach(shaderProgram -> {
+            TextureRegion tex = new TextureRegion(buffer.getColorBufferTexture());
+            NestedFrameBuffer temp = buffer;
+            buffer = bufferHoldover;
+            bufferHoldover = temp;
+            buffer.begin();
+            shaderProgram.bind();
+            g.setShader(shaderProgram);
+            g.draw(tex, MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+            g.flush();
+            buffer.end();
+        });
+
+        g.resetShader();
+
+        g.flush();
+        g.draw(buffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+        g.end();
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+
+        hoverInfo = null;
+        MouseUtil.update();
+        ControlInputs.update();
+        tick++;
+    }
+
+    public void beginTempBuffer() {
+        g.flush();
+        tempBuffer.begin();
+    }
+
+    public void endTempBuffer() {
+        g.flush();
+        tempBuffer.end();
+    }
+
+    public void drawTempBuffer() {
+        g.draw(tempBuffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+    }
+
+    public NestedFrameBuffer getFrameBuffer() {
+        return buffer;
     }
 }

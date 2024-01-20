@@ -1,0 +1,58 @@
+@crouching true
+@look_around true
+@is_deluxe true
+@time_limit -1
+@author AshQuimby
+@background cave
+@name Testing
+@double_jumping true
+@wall_sliding true
+@version 0.1.5
+1 2 tiles/sets/rock 19 
+2 2 tiles/sets/rock 19 
+3 2 tiles/sets/rock 19 
+4 2 tiles/sets/rock 19 
+5 2 tiles/sets/rock 19 
+6 2 tiles/sets/rock 19 
+7 2 tiles/sets/rock 51 
+8 2 tiles/sets/rock 6 
+9 2 tiles/sets/rock 19 
+10 2 tiles/sets/rock 19 
+11 2 tiles/sets/rock 19 
+12 2 tiles/sets/rock 17 
+0 2 tiles/sets/rock 2 
+0 1 tiles/sets/rock 47 
+2 1 tiles/sets/rock 5 
+3 1 tiles/sets/rock 5 
+4 1 tiles/sets/rock 5 
+5 1 tiles/sets/rock 5 
+6 1 tiles/sets/rock 5 
+7 1 tiles/sets/rock 5 
+8 1 tiles/sets/rock 5 
+9 1 tiles/sets/rock 5 
+10 1 tiles/sets/rock 5 
+11 1 tiles/sets/rock 21 
+12 1 tiles/sets/rock 32 
+1 1 tiles/sets/rock 36 
+1 0 tiles/sets/rock 47 
+2 0 tiles/sets/rock 49 
+3 0 tiles/sets/rock 49 
+4 0 tiles/sets/rock 49 
+5 0 tiles/sets/rock 49 
+6 0 tiles/sets/rock 49 
+7 0 tiles/sets/rock 49 
+8 0 tiles/sets/rock 49 
+9 0 tiles/sets/rock 49 
+10 0 tiles/sets/rock 49 
+11 0 tiles/sets/rock 32 
+2 3 tiles/spawn 0 
+7 3 tiles/sets/bounce 2 
+8 3 tiles/sets/bounce 17 
+7 8 tiles/sets/bounce 47 
+8 8 tiles/sets/bounce 32 
+7 9 tiles/sets/bounce 2 
+8 9 tiles/sets/bounce 17 
+4 6 tiles/power_fruit 1 
+2 6 tiles/sets/rock 16 
+1 6 tiles/sets/rock 46 
+@background_tiles

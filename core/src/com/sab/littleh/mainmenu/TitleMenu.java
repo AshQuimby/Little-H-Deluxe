@@ -18,7 +18,7 @@ public class TitleMenu extends MainMenu {
         Rectangle buttonRect = new Rectangle(0, 0, 640, 80);;
         buttons = new ArrayList<>();
         buttons.add(new MenuButton("button", "Play Campaign", buttonRect, () -> {
-            program.switchMenu(new VibrationMenu());
+            program.switchMenu(new VnTitleMenu());
         }));
 //        buttons.get(0).setDisabled(true);
         buttons.add(new MenuButton("button", "Level Editor", buttonRect, () -> {
@@ -62,6 +62,6 @@ public class TitleMenu extends MainMenu {
     public void render(Graphics g) {
         super.render(g);
 
-        buttonMenu.forEach(button -> button.render(g));
+        buttonMenu.forEach(button -> button.render(g, 8 ));
     }
 }

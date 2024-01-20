@@ -38,6 +38,14 @@ public class Level {
             "tundra",
             "hyperspace"
     };
+    public static final Color[] themeTints = {
+            new Color(0.7f, 0.4f, 0.0f, 0.05f),
+            new Color(0.3f, 0.2f, 0.9f, 0.12f),
+            new Color(0.8f, 0.6f, 0.0f, 0.1f),
+            new Color(0.1f, 0.1f, 0.2f, 0.24f),
+            new Color(0.0f, 0.4f, 0.8f, 0.1f),
+            new Color(0.7f, 0.0f, 0.65f, 0.04f),
+    };
     public static Level currentLevel;
     public final SabData mapData;
     public HashMap<String, MapLayer> mapLayers;
@@ -95,6 +103,7 @@ public class Level {
 
     public void startGame(Point startPos) {
         GunMode.bullets.clear();
+        enemies.clear();
         levelEnded = true;
         Dialogues.resetDialogues();
         player = new Player(new Point(startPos.x, startPos.y));
@@ -109,8 +118,6 @@ public class Level {
         Cursors.switchCursor("none");
         notify("notify_game_start", startPos.x, startPos.y);
     }
-
-
 
     public void removeTile(String layer, int x, int y) {
         Tile toRemove = getTileAt(layer, x, y);
@@ -258,6 +265,7 @@ public class Level {
         for (Enemy enemy : enemies) {
             enemy.update(this);
         }
+
         enemies.removeIf(enemy -> {
             if (enemy.remove) {
                 enemy.getParent().removeTag("enemy");
@@ -396,6 +404,7 @@ public class Level {
     public void desyncTiles() {
         getBaseLayer().volatileTiles.clear();
         getBaseLayer().notifiableTiles.clear();
+        getBaseLayer().updatableTiles.clear();
         for (Tile tile : getBaseLayer().allTiles) {
             Tile copy = tile.copy();
             getBaseLayer().tileMap.get(copy.x).set(copy.y, copy);
@@ -406,7 +415,7 @@ public class Level {
                 getBaseLayer().notifiableTiles.add(copy);
             }
             if (tile.hasTag("updatable")) {
-                getBaseLayer().updatableTiles.add(tile);
+                getBaseLayer().updatableTiles.add(copy);
             }
         }
         for (Tile tile : getBackgroundLayer().allTiles) {
@@ -802,6 +811,9 @@ public class Level {
     }
 
     public void renderHUD(Graphics g) {
+        g.resetColor();
+        g.resetTint();
+        g.resetShader();
         if (timeLimit > -1) {
             g.draw(Images.getImage("ui/buttons/icons/clock.png"), -MainMenu.relZeroX() - 72, -MainMenu.relZeroY() - 72, 64, 64);
             g.drawString("" + timeLimit, LittleH.borderedFont, -MainMenu.relZeroX() - 80, -MainMenu.relZeroY() - 28 - 14, LittleH.defaultFontScale, 1);
@@ -810,6 +822,7 @@ public class Level {
     }
 
     public void reset() {
+        resetToCheckpointState();
         GunMode.bullets.clear();
         player = null;
         startGame(startPos);

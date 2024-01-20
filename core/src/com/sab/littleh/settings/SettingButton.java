@@ -5,8 +5,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.mainmenu.MenuButton;
 import com.sab.littleh.util.*;
+import com.sab.littleh.util.Graphics;
 
-import java.util.List;
+import java.awt.*;
 
 public class SettingButton extends MenuButton {
     private static final int BOOL = 0;
@@ -45,7 +46,7 @@ public class SettingButton extends MenuButton {
                 height = 8;
                 break;
             case PERCENT :
-                width = 128 + 24;
+                width = 256;
                 height = 32;
                 break;
             case STRING :
@@ -124,8 +125,8 @@ public class SettingButton extends MenuButton {
         switch (type) {
             case BOOL :
                 boolean value = ((BoolSetting) setting).value;
-                Rectangle bounds = new Rectangle(x - 16, y - 16, width + 32, height + 32);
-                g.drawPatch(Patch.get("menu_flat"), bounds, 8);
+                Rectangle bounds = new Rectangle(x - 6, y - 6, width + 12, height + 12);
+                g.drawPatch(Patch.get("menu_flat"), bounds, 3);
                 if (pressed && hovered) {
                     g.draw(Images.getImage("ui/buttons/slider_pressed.png"), x, y, width, height);
                 } else if (value) {
@@ -136,8 +137,8 @@ public class SettingButton extends MenuButton {
                 break;
             case PERCENT :
                 PercentageSetting percentageSetting = (PercentageSetting) setting;
-                bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
-                g.drawPatch(Patch.get("menu_flat"), bounds, 8);
+                bounds = new Rectangle(x - 3, y, width + 6, height + 3);
+                g.drawPatch(Patch.get("menu_flat"), bounds, 3);
                 g.draw(Images.getImage("ui/buttons/slider_bar.png"), x + 12, y + 12, (width - 24), 12);
                 g.draw(Images.getImage("ui/buttons/slider_notch.png"), x + percentageSetting.asRelativeFloat() * (width - 24) - 18 + 12, y, 36, 36);
                 if (drawText)
@@ -145,18 +146,25 @@ public class SettingButton extends MenuButton {
                 break;
             case LIST :
                 ListSetting listSetting = (ListSetting) setting;
-                bounds = new Rectangle(x - 32, y - 16, width + 64, height + 32);
-                g.drawPatch(Patch.get("menu_flat"), bounds, 8);
+                bounds = new Rectangle(x - 24, y - 12, width + 48, height + 24);
+                g.drawPatch(Patch.get("menu_flat"), bounds, 3);
                 if (drawText)
-                    g.drawString(listSetting.display(), LittleH.font, getCenterX(), getCenterY(), LittleH.defaultFontScale * 0.75f, 0);
-                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x - 64, y - 14, 36, 36, new Rectangle(0, 0, 6, 6));
-                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x + 64 - 36 + width, y - 14, 36, 36, new Rectangle(0, 0, 6, 6), 180);
+                    g.drawString(listSetting.display(), LittleH.font, getCenterX(), getCenterY(), LittleH.defaultFontScale * 0.67f, 0);
+                g.drawImage(Images.getImage("ui/buttons/arrow.png"), x - 64, y - 14, 36, 36, new Rectangle(0, 0, 12, 12));
+                g.draw(Images.getImage("ui/buttons/arrow.png"), x + 64 - 36 + width, y - 14, 36, 36, 0 , 1, 0, true, false);
                 break;
         }
         if (drawText)
-            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 32, LittleH.defaultFontScale * 0.75f, 0);
+            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 32, LittleH.defaultFontScale * 0.7f, 0);
         if (bonusText != null)
             if (drawText)
-                g.drawString(bonusText, LittleH.font, getCenterX(), y - 48, LittleH.defaultFontScale * 0.6f, 0);
+                g.drawString(getBonusText(), LittleH.font, getCenterX(), y - 48, LittleH.defaultFontScale * 0.6f, 0);
+    }
+    public void render(Graphics g, int patchScale) {
+        render(g);
+    }
+
+    public String getBonusText() {
+        return bonusText;
     }
 }

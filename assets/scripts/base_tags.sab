@@ -38,3 +38,5 @@
 @grass_decor [ property_set, 12_set, windy, post_render_in_game, render_normal, invisible ]
 @rocks_decor [ property_set, 16_set ]
 @vines_decor [ property_set, 8_set, vines, post_render_in_game, render_normal, invisible ]
+@gravity_swapper [ property_set, 6_set, pickup, volatile, even_pickup, gravity_swapper ]
+@jump_pearl [ pickup, jump_refresh, ambient_particles, updatable, volatile, sinusoid, invisible, post_render_in_game ]

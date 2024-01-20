@@ -643,7 +643,6 @@ public class LevelEditorMenu extends MainMenu {
 
         } else if (ControlInputs.isJustPressed("copy")) {
             editor.copySelection();
-
         } else if (ControlInputs.isJustPressed("paste")) {
             editor.pasteSelection();
 

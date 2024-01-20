@@ -151,7 +151,7 @@ public class LevelEditor {
         selectionAnchor.x = selection.x * 64 - relativeTo.x;
         selectionAnchor.y = selection.y * 64 - relativeTo.y;
         if (tileSelection == null)
-            tileSelection = new TileSelection(selection, level, false, false);
+            tileSelection = new TileSelection(selection, level, false, layer);
     }
 
     public void updateSelectionPosition(Vector2 mousePosition) {
@@ -614,7 +614,7 @@ public class LevelEditor {
     }
 
     public void copySelection() {
-        tileSelection = new TileSelection(selection, level);
+        tileSelection = new TileSelection(selection, level, layer);
     }
 
     public boolean hasSelection() {

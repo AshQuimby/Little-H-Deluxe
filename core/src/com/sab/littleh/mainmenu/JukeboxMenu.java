@@ -229,6 +229,7 @@ public class JukeboxMenu extends MainMenu {
 
         if (pop)
             ScissorStack.popScissors();
+        g.flush();
 
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 

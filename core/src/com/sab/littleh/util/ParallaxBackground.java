@@ -130,8 +130,8 @@ public class ParallaxBackground {
         int screenWidth = LittleH.program.getWidth();
         int screenHeight = LittleH.program.getHeight();
         float backgroundScalar = Math.max((float) screenWidth / width, (float) screenHeight / height);
-        float cameraX = camera.getPosition().x * backgroundScalar / 12;
-        float cameraY = camera.getPosition().y * backgroundScalar / 12 + screenHeight / 2;
+        float cameraX = camera.getPosition().x;
+        float cameraY = camera.getPosition().y + screenHeight / 2f;
         Rectangle drawTo;
         for (int i = 0; i < drawOrder.length; i++) {
             String layer = drawOrder[i];

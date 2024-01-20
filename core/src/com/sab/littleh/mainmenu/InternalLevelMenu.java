@@ -25,7 +25,7 @@ public class InternalLevelMenu extends GameMenu {
         } else if (ControlInputs.isJustPressed("suicide")) {
             level.suicide();
         } else if (ControlInputs.isJustPressed("quick_restart")) {
-            level.reset();
+            level.player.trueKill();
         }
     }
 
