@@ -7,7 +7,8 @@ uniform vec2 u_offset;
 
 void main()
 {
-    vec2 texSize = 1.0 / textureSize(u_texture, 0);
+    //vec2 texSize = 1.0 / textureSize(u_texture, 0);
+    vec2 texSize = vec2(1.0); // FIXME: Fix this
     vec2 quantizedCoords = floor(gl_FragCoord.xy / u_amount);
     quantizedCoords *= u_amount;
     quantizedCoords += 0.5 * u_amount;

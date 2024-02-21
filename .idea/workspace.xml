@@ -9,10 +9,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5ded004-22a9-481a-9a2a-b40c1a1f3aae" name="Changes" comment=".idea updated">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_17_2024_4_23_PM__Changes_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_17_2024_4_23_PM__Changes_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_9_17_2023_7_32_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_9_17_2023_7_32_PM__Changes_.xml" afterDir="false" />
+    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Fixed water shader issues with corners">
+      <change afterPath="$PROJECT_DIR$/assets/resources/controls.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/resources/settings.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/crt.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/crt.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/crush.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/crush.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/palette.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/palette.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/vines.vsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/vines.vsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/SaveFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/SaveFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +33,38 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/desktop">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Little-H-Deluxe" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Little-H-Deluxe" type="f1a62948:ProjectNode" />
+                <item name="desktop" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Little-H-Deluxe" type="f1a62948:ProjectNode" />
+                <item name="desktop" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Little-H-Deluxe" type="f1a62948:ProjectNode" />
+                <item name="desktop" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -52,11 +87,6 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;
-  }
-}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -64,6 +94,9 @@
         <option name="url" value="https://github.com/AshQuimby/Little-H-Deluxe.git" />
       </UrlAndAccount>
     </option>
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="gr0up0vx" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -76,21 +109,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;com.google.cloudcode.ide_session_index&quot;: &quot;20240221_0003&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ianaa/Documents/The Little H Rebake/little_h/assets/maps/summit&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.19885057&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.fileTypes&quot;
-  }
-}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.sab.littleh.mainmenu" />
@@ -125,7 +143,7 @@
       <recent name="com.sab.littleh.game.entity.player.powerups" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.DesktopLauncher">
+  <component name="RunManager" selected="Gradle.Little-H-Deluxe:desktop [run]">
     <configuration name="DesktopLauncher" type="Application" factoryName="Application" singleton="false" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.sab.littleh.DesktopLauncher" />
       <module name="little_h.desktop.main" />
@@ -152,13 +170,58 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Little-H-Deluxe [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="Little-H-Deluxe:desktop [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/desktop" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Application.LittleHServer" />
       <item itemvalue="Application.DesktopLauncher" />
+      <item itemvalue="Gradle.Little-H-Deluxe [run]" />
+      <item itemvalue="Gradle.Little-H-Deluxe:desktop [run]" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Gradle.Little-H-Deluxe:desktop [run]" />
+        <item itemvalue="Gradle.Little-H-Deluxe [run]" />
         <item itemvalue="Application.DesktopLauncher" />
         <item itemvalue="Application.DesktopLauncher" />
         <item itemvalue="Application.DesktopLauncher" />
