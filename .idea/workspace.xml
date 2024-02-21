@@ -9,10 +9,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5ded004-22a9-481a-9a2a-b40c1a1f3aae" name="Changes" comment=".idea updated">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_17_2024_4_23_PM__Changes_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_17_2024_4_23_PM__Changes_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_9_17_2023_7_32_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_9_17_2023_7_32_PM__Changes_.xml" afterDir="false" />
+    <list default="true" id="f5ded004-22a9-481a-9a2a-b40c1a1f3aae" name="Changes" comment="Campaign merged onto main branch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/crt.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/crt.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/palette.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/palette.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music/areas/a ccor dion.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music/areas/bw2sf fbz crr.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/OverworldMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/OverworldMenu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -405,7 +408,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705735610732</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Campaign merged onto main branch">
+      <created>1708545618151</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1708545618151</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -424,7 +434,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="campaign" />
+                        <option value="origin/main" />
                       </list>
                     </value>
                   </entry>
@@ -458,7 +468,8 @@
     <MESSAGE value="Campaign stuff" />
     <MESSAGE value="Reworked Layer System" />
     <MESSAGE value="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated." />
-    <option name="LAST_COMMIT_MESSAGE" value="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated." />
+    <MESSAGE value="Campaign merged onto main branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="Campaign merged onto main branch" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

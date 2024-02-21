@@ -60,7 +60,7 @@ public class OverworldMenu extends MainMenu {
 
     @Override
     public void update() {
-        if (ControlInput.localControls.isJustPressed("pause")) {
+        if (ControlInput.localControls.isJustPressed("return")) {
             LittleH.program.switchMenu(new OverworldPauseMenu(this));
             return;
         }

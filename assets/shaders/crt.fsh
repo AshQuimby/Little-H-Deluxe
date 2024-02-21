@@ -1,7 +1,14 @@
+uniform mat4 u_projTrans;
+
+varying vec4 v_color;
+varying vec2 v_texCoords;
+
+uniform sampler2D u_texture;
+
 vec2 curve(vec2 uv)
 {
-    float amount = 1;
-    uv = (uv - 0.5) * (2.0 - amount / 12);
+    float amount = 1.0;
+    uv = (uv - 0.5) * (2.0 - amount / 12.0);
     uv *= 1.1;
     uv.x *= 1.0 + pow((abs(uv.y) / 5.0 * amount), 2.0);
     uv.y *= 1.0 + pow((abs(uv.x) / 4.0 * amount), 2.0);
@@ -9,13 +16,6 @@ vec2 curve(vec2 uv)
     uv = uv * 0.92 + 0.04;
     return uv;
 }
-
-uniform mat4 u_projTrans;
-
-varying vec4 v_color;
-varying vec2 v_texCoords;
-
-uniform sampler2D u_texture;
 
 void main()
 {

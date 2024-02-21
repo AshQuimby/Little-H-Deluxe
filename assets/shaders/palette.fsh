@@ -1,8 +1,8 @@
 #version 130
 
-uniform float u_hueBias = 2;
-uniform float u_satBias = 1;
-uniform float u_valBias = 2;
+uniform float u_hueBias = 2.0;
+uniform float u_satBias = 1.0;
+uniform float u_valBias = 2.0;
 
 vec3 rgb2hsv(vec3 c)
 {
