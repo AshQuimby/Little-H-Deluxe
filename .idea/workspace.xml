@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="little_h:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f5ded004-22a9-481a-9a2a-b40c1a1f3aae" name="Changes" comment="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated.">
+      <change afterPath="$PROJECT_DIR$/META-INF/MANIFEST.MF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/backgrounds/bonus/big_tree/meta.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/backgrounds/bonus/big_tree/middle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/backgrounds/bonus/spruce_tree/meta.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/backgrounds/bonus/spruce_tree/middle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_indicator.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_indicator_complete.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_indicator_hovered.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_indicator_incomplete.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_indicator_not_unlocked.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_indicator_p_rank.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/level_locations.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/overworld_map.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/p_rank.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/campaign/overworld/thumbaba.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/enemies/o.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/tiles/sets/grass_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/tiles/slope.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/title new.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/title.piskel" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/title.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/title_color.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/title_full.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/hi-res/title_rainbow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/player/celeste_h_hair.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/player/celeste_h_hair_ball.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/player/cube_h.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/player/cube_h_color.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/slope.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/spring.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/local/dialogues/en/cold_cavern.dlg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/caverns/running.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/desert/temple.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/hyperspace/pinball.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/hyperspace/ricochet.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/hyperspace/snake.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/meadows.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/summit/cold_cavern.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/summit/infection.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/woodlands/forest.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/woodlands/meadows.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/cold_cavern.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/forest.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/infection.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/manifest.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/meadows.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/pinball.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/ricochet.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/running.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/snake.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/campaign/overworld/levels/temple.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/SaveFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/LevelIndicator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/OverworldMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/OverworldPauseMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/WorldMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/CubeMode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Connection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/ConnectionState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Encryption.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/LittleHServer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/NetPlayer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/OnlineLevelMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/OnlinePauseMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/VirtualSabValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/infection.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/pinball.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/pinball_2.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/ricochet.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/slick_cave.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/snake.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/temple.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/test.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maps/tutorial.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/saves/clear_times.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/saves/unlocked_levels.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/cold_mountains/close_ambient.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/cold_mountains/close_ambient.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/hyperspace/close.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/hyperspace/close.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/mountains/back_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/mountains/front_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/mountains/meta.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/mountains/meta.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/mountains/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/mountains/near_ambient.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/mountains/near_ambient.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/tundra/close.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/tundra/close.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/backgrounds/tundra/near_ambient.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/tundra/near_ambient.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/close.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/distant.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/near.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/outmost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/backgrounds/city/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/big_h_dialogue_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_full.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_full_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_full_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_full_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/button/button_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/dialogue_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/menu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/menu_globbed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/menu_hollow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/menu_indented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/player_dialogue_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/player_dialogue_box_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/menu/player_dialogue_box_color_aa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/npc/q.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/particle/heart.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/player/player.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/player/player_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/big_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/peter.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/peter_alt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/player.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/player_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/player_flustered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/player_flustered_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/portraits/q.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/tiles/grass_temp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/tiles/path.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/tiles/rocks_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/tiles/soft_grass.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/tiles/stone_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/title.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/title_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/title_color_aa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/title_color_aa_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/campaign/visual_novel/title_color_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/jump_pearl.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/jump_pearl.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/power_fruit.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/power_fruit.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/ui/level_setting_off.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/ui/level_setting_off.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/ui/level_setting_on.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/ui/level_setting_on.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/ui/selected_property.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/ui/selected_property.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/ui/selected_tile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/ui/selected_tile.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/local/dialogues/en/vn/peepee.dlg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/local/dialogues/en/vn/peepee.dlg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/local/dialogues/en/vn/test.dlg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/local/dialogues/en/vn/test.dlg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/tutorial.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/tutorial.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/back_arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/middle_ambient.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/outmost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/super_front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cave/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cold_mountains/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cold_mountains/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cold_mountains/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cold_mountains/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cold_mountains/middle_ambient.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/cold_mountains/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/close.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/near.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/outmost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/desert/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/hyperspace/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/hyperspace/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/hyperspace/front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/hyperspace/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/hyperspace/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/hyperspace/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/front_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/middle.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/backgrounds/mountains/far.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/middle_ambient.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/mountains/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/middle_ambient.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/test.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/backgrounds/tundra/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/close.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/distant.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/far.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/front.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/meta.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/middle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/near.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/outmost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/backgrounds/city/whole.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/big_h_dialogue_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_full.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_full_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_full_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_full_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/button/button_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/dialogue_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/menu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/menu_globbed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/menu_hollow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/menu_indented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/player_dialogue_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/player_dialogue_box_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/menu/player_dialogue_box_color_aa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/npc/q.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/particle/heart.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/player/player.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/player/player_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/big_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/peter.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/peter_alt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/player.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/player_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/player_flustered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/player_flustered_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/portraits/q.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/tiles/grass_temp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/tiles/path.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/tiles/rocks_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/tiles/soft_grass.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/tiles/stone_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/title.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/title_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/title_color_aa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/title_color_aa_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/campaign/visual_novel/title_color_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/enemies/a.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/enemies/c.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/enemies/e.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/enemies/f.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/forward_arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/h_trace.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/loading.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/missing.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/double_jump.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/evil_key_box_rubble.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/evil_smoke.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/evil_smoke_big.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/jump.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/key_box_rubble.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/mud_rubble.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/shine.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/particles/twinkle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/pixel.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/ball_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/ball_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/bullet.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/celeste_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/celeste_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/gun_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/gun_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/gun_hand.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/h_trail.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/limbless_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/limbless_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/revolver.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/stone_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/stone_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/v_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/v_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/wing_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/player/wing_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/settings_dots.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/checkpoint.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/coin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/coin_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/color_cube.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/dialogue_trigger.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/dynamic_color_cube.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/end.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/enemy_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/evil_key.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/evil_key_awake.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/evil_key_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/grass_decor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/h_fragment.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/h_tile.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/half_spike.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/invisible_death.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/invisiblock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/key.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/key_box.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/mud.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/one_way.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/power_fruit.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/power_fruit_spawner.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/rocks_decor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/selector.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/bounce_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/bounce_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/bounce_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/bounce_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/grass_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/grass_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/grass_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/grass_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/guide_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/guide_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/guide_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/guide_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/ice_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/ice_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/ice_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/ice_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/location_bricks_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/location_bricks_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/location_bricks_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/location_bricks_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/malice_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/malice_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/malice_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/malice_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/rock_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/rock_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/rock_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/rock_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/sandstone_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/sandstone_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/sandstone_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/sandstone_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/slick_block_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/slick_block_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/slick_block_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/slick_block_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/snowy_turf_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/snowy_turf_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/snowy_turf_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/snowy_turf_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/stone_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/stone_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/stone_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/stone_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/tileset_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/tileset_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/tileset_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/tileset_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/water.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/water_rotation_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/water_rotation_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/water_rotation_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/sets/water_rotation_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/spawn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/statues.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/strong_checkpoint.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/strong_checkpoint_on.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/text.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/timer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/tiles/vines_decor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/title.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/title_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/title_full.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/title_rainbow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/big_button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/button_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/button_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/button_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/background_visible.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/clock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/color_picker.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/create.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/double_jump.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/edit_background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/eraser.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/floppy_disc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/floppy_disc_alt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/folder.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/gear.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/help.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/jukebox_note.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/loading.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/magnifying_glass.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/paint_can.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/pen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/pencil.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/prompt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/selector.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/settings_gear.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/slide.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/icons/wall_jump.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/slider_bar.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/slider_notch.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/slider_off.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/slider_on.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/slider_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/square_button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/square_button_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/square_button_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/square_button_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/tile_button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/tile_button_disabled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/tile_button_hovered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/buttons/tile_button_pressed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cobweb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/coins.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/copy_paper.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/color_picker.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/cursor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/drag_hand.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/eraser.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/magnifier.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/move_arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/none.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/paint_can.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/pen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/pencil.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/cursor/reticle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/checkpoints.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/death.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/decoration.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/little_h_slide.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/playtest.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/tiles.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/help/tools.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/back_arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/building_song.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_big_h.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_big_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_h.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_h_full.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/dancing_jukebox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/folder_old.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/idling_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/idling_h_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/idling_jukebox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/loop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/no_loop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/pause.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/play.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/jukebox/stop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/level_setting_off.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/level_setting_on.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/loading_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_flat.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_flat_dark.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_globbed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_hollow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_indented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_light_globbed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/menu/menu_rounded.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/big_h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/big_h_distorted.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/big_h_ghost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/player.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/player_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/q.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/q_hidden.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/small_player.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/small_player_color.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/portraits/sussy_boy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/properties_gear.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/selected_property.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/selected_tile.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/selection.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/ui/selection_high_con.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/new_images/usable_title.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/base_tags.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/base_tags.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/level_editor/developer.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/level_editor/developer.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/level_editor/special.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/level_editor/special.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/visual_novel/overworld/features.sab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/visual_novel/overworld/terrain.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/shaders/crush.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/crush.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/effects/goop.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/effects/goop.ogg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music/areas/a ccor dion.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music/areas/a ccor dion.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music/areas/bw2sf fbz crr.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music/areas/bw2sf fbz crr.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music/themes/battle_h.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music/themes/battle_h.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music/themes/dating_theme.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music/themes/dating_theme.ogg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controls.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/controls.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/LittleH.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/LittleH.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/visual_novel/dialogue/VnDialogue.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/visual_novel/menu/VnDialogueMenu.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/visual_novel/menu/VnOverworldMenu.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/visual_novel/menu/VnTitleMenu.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/visual_novel/overworld/OverworldObject.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/visual_novel/particle/HeartParticle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/ControlInputs.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/ControlInput.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/Controls.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/Controls.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/Enemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyA.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyC.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyE.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyE.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyF.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/enemy/EnemyF.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/CelesteMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/CelesteMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GravityMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GravityMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/StoneMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/StoneMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/WingedMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/WingedMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelEditor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/TileSelection.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/TileSelection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/ControlsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/ControlsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/FakeLoadingMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/FakeLoadingMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/GameMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/GameMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/HelpMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/HelpMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/InternalLevelMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/InternalLevelMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/JukeboxMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/JukeboxMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelOptionsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelOptionsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelSelectMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelSelectMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/MenuButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/MenuButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/PauseMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/PauseMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/SettingsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/SettingsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/TitleMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/TitleMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/VibrationMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/VibrationMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/settings/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Cursors.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Cursors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Graphics.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Graphics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/NestedFrameBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/NestedFrameBuffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/ParallaxBackground.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/ParallaxBackground.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/TypingQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/TypingQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/dialogue/Dialogues.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/dialogue/Dialogues.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabData.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src/com/sab/littleh/DesktopLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop/src/com/sab/littleh/DesktopLauncher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/challenge.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/challenge_practice.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/exam-c.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/forest.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/gates.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/gg.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/hills.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/infection.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/practice.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/speedrun.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/khum/testing.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/cold_cavern.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/cold_cavern.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/forest.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/forest.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/meadows.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/meadows.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/mudstone_mine.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/mudstone_mine.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/ricochet_heaven.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/super_hot.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/super_hot.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/testing.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/settings.sab" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="GLSL Shader" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="1a0a8d7a-7c9b-4bce-8a8d-7f4f15a23c48" />
+        <option name="url" value="https://github.com/AshQuimby/Little-H-Deluxe.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2SSJdCFaG7qveJnuslte7kF3uE1" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.google.cloudcode.ide_session_index": "20240221_0003",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "C:/Users/ianaa/Documents/The Little H Rebake/little_h/assets/maps/summit",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.19885057",
+    "settings.editor.selected.configurable": "preferences.fileTypes"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.sab.littleh.mainmenu" />
+      <recent name="com.sab.littleh.game.level" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\maps\summit" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\scripts\campaign\overworld\levels" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\maps\desert" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\local\dialogues\en" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\maps\hyperspace" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\resources" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\shaders" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\images\campaign\visual_novel\portraits" />
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\local\texts\en" />
+    </key>
+    <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="com.sab.littleh.util.sab_format" />
+      <recent name="com.sab.littleh.util" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.sab.littleh.campaign" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.sab.littleh.campaign.overworld" />
+      <recent name="com.sab.littleh.net" />
+      <recent name="com.sab.littleh.mainmenu" />
+      <recent name="com.sab.littleh.game.entity.enemy" />
+      <recent name="com.sab.littleh.game.entity.player.powerups" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.DesktopLauncher">
+    <configuration name="DesktopLauncher" type="Application" factoryName="Application" singleton="false" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="com.sab.littleh.DesktopLauncher" />
+      <module name="little_h.desktop.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sab.littleh.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LittleHServer" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sab.littleh.net.LittleHServer" />
+      <module name="little_h.core.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sab.littleh.net.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.LittleHServer" />
+      <item itemvalue="Application.DesktopLauncher" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f5ded004-22a9-481a-9a2a-b40c1a1f3aae" name="Changes" comment="" />
+      <created>1689134133824</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1689134133824</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Initial Commit">
+      <created>1691388722702</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1691388722702</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Push from United Kingdom">
+      <created>1692470606635</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1692470606635</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Back in the states">
+      <created>1692897740581</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1692897740581</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Back in the states">
+      <created>1692897755496</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1692897755496</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Back in the states">
+      <created>1692921631860</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1692921631860</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Updates with background implementation">
+      <created>1692922031819</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1692922031819</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Updates with background implementation">
+      <created>1692923258379</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1692923258379</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Attempting to fix issues with .idea">
+      <created>1692923282341</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1692923282341</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Attempting to fix issues with .idea">
+      <created>1692923419205</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1692923419205</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Attempting to fix issues with .idea">
+      <created>1692924234254</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1692924234254</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Attempting to fix issues with .idea">
+      <created>1692924899833</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1692924899833</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Fixing crash on MacOS">
+      <created>1692925076253</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1692925076253</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Fixing crash on MacOS">
+      <created>1692925942565</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1692925942565</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Fixing crash on MacOS">
+      <created>1692926164299</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1692926164300</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Fixing crash on MacOS">
+      <created>1692926325325</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1692926325325</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Fixing crash on MacOS">
+      <created>1692926349892</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1692926349892</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Fixing crash on MacOS">
+      <created>1692929105784</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1692929105784</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Map settings are shown when level starts or when Shift is held. Splish sound effect added. TileSelections fixed.">
+      <created>1692934842721</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1692934842721</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Map settings are shown when level starts or when Shift is held. Splish sound effect added. TileSelections fixed.">
+      <created>1692939566784</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1692939566784</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Bug Squashing">
+      <created>1692988273888</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1692988273888</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Glitch causing enemies to not respawn fixed. More hotkeys added for tools.">
+      <created>1692990277245</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1692990277245</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Enemy updates">
+      <created>1693003651026</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1693003651026</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Fixed bugs, added stone mode. Updated music tracks.">
+      <created>1693343531477</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1693343531477</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Added pause menus">
+      <created>1693349961043</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1693349961043</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Completely overhauled controls">
+      <created>1693375699030</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1693375699030</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Completely overhauled controls">
+      <created>1693375733042</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1693375733042</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added decor">
+      <created>1693449837790</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1693449837790</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Big Updates">
+      <created>1693519680639</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1693519680639</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Big Updates">
+      <created>1693539086566</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1693539086566</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Campaign stuff">
+      <created>1694756765305</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1694756765305</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Campaign stuff">
+      <created>1695004421024</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1695004421024</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Reworked Layer System">
+      <created>1703451422040</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1703451422040</updated>
+    </task>
+    <task id="LOCAL-00033" summary="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated.">
+      <created>1705735610732</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1705735610732</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="campaign" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Initial Commit" />
+    <MESSAGE value="Push from United Kingdom" />
+    <MESSAGE value="Back in the states" />
+    <MESSAGE value="Updates with background implementation" />
+    <MESSAGE value="Attempting to fix issues with .idea" />
+    <MESSAGE value="Fixing crash on MacOS" />
+    <MESSAGE value="Map settings are shown when level starts or when Shift is held. Splish sound effect added. TileSelections fixed." />
+    <MESSAGE value="Bug Squashing" />
+    <MESSAGE value="Glitch causing enemies to not respawn fixed. More hotkeys added for tools." />
+    <MESSAGE value="Enemy updates" />
+    <MESSAGE value="Grid shows up when editing background" />
+    <MESSAGE value="Fixed regex issue" />
+    <MESSAGE value="Fixed bugs, added stone mode. Updated music tracks." />
+    <MESSAGE value="Added pause menus" />
+    <MESSAGE value="Completely overhauled controls" />
+    <MESSAGE value="Added decor" />
+    <MESSAGE value="Big Updates" />
+    <MESSAGE value="Campaign stuff" />
+    <MESSAGE value="Reworked Layer System" />
+    <MESSAGE value="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated." />
+    <option name="LAST_COMMIT_MESSAGE" value="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.sab.littleh.*</FILTER>
+    </SUITE>
+  </component>
+</project>
