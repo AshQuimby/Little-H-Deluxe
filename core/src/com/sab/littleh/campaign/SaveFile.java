@@ -19,11 +19,14 @@ public class SaveFile {
             validateFiles();
             saveGame();
         } catch (IOException e) {
-            throw new RuntimeException("An error occurred while trying to create save files.");
+            throw new RuntimeException("An error occurred while trying to create save files.", e);
         }
     }
 
     private static void validateFiles() throws IOException {
+        if (!LittleH.getFileResource("saves").exists()) {
+            LittleH.getFileResource("saves").mkdir();
+        }
         checkForFile("unlocked_levels", new VirtualSabValue("meadows", "true"), new VirtualSabValue("forest", "false"));
         checkForFile("clear_times");
     }

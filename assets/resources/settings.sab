@@ -1,0 +1,22 @@
+@author_name The Minuscule M Murderer
+@rainbow_title false
+@debug_mode false
+@grid_enabled true
+@h_color 0
+@master_volume 50
+@screen_shake true
+@use_shaders true
+@high_contrast_selection false
+@vibration true
+@auto_dialogue false
+@up_equals_jump true
+@divided_tile_selection false
+@background_visibility true
+@music_volume 100
+@fullscreen windowed_fullscreen
+@zoom_scalar 100
+@building_song menu/building_song.ogg
+@mute_game false
+@sfx_volume 100
+@retro_mode false
+@font minecraft

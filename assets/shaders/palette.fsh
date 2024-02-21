@@ -1,8 +1,16 @@
-#version 130
+uniform float u_hueBias;
+uniform float u_satBias;
+uniform float u_valBias;
 
-uniform float u_hueBias = 2.0;
-uniform float u_satBias = 1.0;
-uniform float u_valBias = 2.0;
+// Allowed colors in the palette
+uniform vec3 u_allowedPalette[128];
+uniform int u_paletteSize;
+uniform mat4 u_projTrans;
+
+varying vec4 v_color;
+varying vec2 v_texCoords;
+
+uniform sampler2D u_texture;
 
 vec3 rgb2hsv(vec3 c)
 {
@@ -24,18 +32,8 @@ vec3 hsv2rgb(vec3 c)
 
 float calcFitness(vec3 color, vec3 hsv)
 {
-    return min(abs(color.x - hsv.x), 1 - abs(color.x - hsv.x)) * u_hueBias + abs(color.y - hsv.y) * u_satBias + abs(color.z - hsv.z) * u_valBias;
+    return min(abs(color.x - hsv.x), 1.0 - abs(color.x - hsv.x)) * u_hueBias + abs(color.y - hsv.y) * u_satBias + abs(color.z - hsv.z) * u_valBias;
 }
-
-// Allowed colors in the palette
-uniform vec3 u_allowedPalette[128];
-uniform int u_paletteSize;
-uniform mat4 u_projTrans;
-
-in vec4 v_color;
-in vec2 v_texCoords;
-
-uniform sampler2D u_texture;
 
 void main()
 {
@@ -47,7 +45,7 @@ void main()
     vec3 secondBestFit = u_allowedPalette[0];
 
     // Arbitrarily big number
-    float fitness = 10000;
+    float fitness = 10000.0;
     for (int i = 0; i < u_paletteSize; i++) {
         vec3 color = u_allowedPalette[i];
         float fit = calcFitness(color, hsv);
@@ -60,16 +58,16 @@ void main()
 
     bool dither = false;
 
-    if (calcFitness((bestFit + secondBestFit) / 2, hsv) < (fitness -0.05)) {
+    if (calcFitness((bestFit + secondBestFit) / 2.0, hsv) < (fitness -0.05)) {
         dither = true;
     }
 
-    float ditherSize = 4;
+    float ditherSize = 4.0;
 
-    if (dither && mod(floor(gl_FragCoord.x / ditherSize) + floor(gl_FragCoord.y / ditherSize), 2) == 0) {
-        color = vec4(hsv2rgb(secondBestFit), 1);
+    if (dither && mod(floor(gl_FragCoord.x / ditherSize) + floor(gl_FragCoord.y / ditherSize), 2.0) == 0.0) {
+        color = vec4(hsv2rgb(secondBestFit), 1.0);
     } else {
-        color = vec4(hsv2rgb(bestFit), 1);
+        color = vec4(hsv2rgb(bestFit), 1.0);
     }
     gl_FragColor = color;
 }
