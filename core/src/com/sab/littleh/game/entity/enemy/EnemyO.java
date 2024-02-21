@@ -1,0 +1,63 @@
+package com.sab.littleh.game.entity.enemy;
+
+import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.game.entity.player.Player;
+import com.sab.littleh.game.level.Level;
+import com.sab.littleh.game.tile.Tile;
+
+public class EnemyO extends Enemy {
+   public EnemyO(int x, int y, Player player, Tile parent) {
+      super(x, y, player, parent);
+      image = "enemies/o.png";
+   }
+   @Override
+   public void update(Level game) {
+      if (dead) {
+         frame = deathAnimation.step();
+         if (deathAnimation.getFinished()) remove = true;
+         return;
+      }
+      frame = runAnimation.stepLooping();
+      super.update(game);
+      if (!touchingGround) {
+         if (velocityY < 0) {
+            frame = 5;
+         } else {
+            frame = 6;
+         }
+      }
+      float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
+      if (playerDist > 2000 * 2000) {
+         despawn = true;
+      }
+      if (touchingGround) {
+         Tile tileAhead = getTile(direction * 0.5f, 0, game.getBaseLayer().tileMap);
+         if (tileAhead != null && (tileAhead.hasTag("death") || (tileAhead.isSolid() && !tileAhead.hasTag("one_way")))) {
+            direction *= -1;
+         }
+      }
+      velocityY -= 1f;
+      if (touchingGround) {
+         velocityX += 0.7f * direction;
+         velocityX *= 0.9f;
+      }
+      velocityY *= 0.98f;
+      if (toRectangle().overlaps(game.player.toRectangle())) game.player.touchingEnemy(this);
+      touchingGround = false;
+   }
+
+   public int getEnemyType() {
+      return 5;
+   }
+
+   @Override
+   public void onCollision(boolean horizontal, boolean vertical) {
+      if (horizontal && touchingGround) {
+         velocityX *= -1;
+         direction *= -1;
+      }
+      if (vertical) {
+         velocityY = 0;
+      }
+   }
+}

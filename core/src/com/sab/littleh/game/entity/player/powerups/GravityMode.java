@@ -1,12 +1,9 @@
 package com.sab.littleh.game.entity.player.powerups;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
-import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.*;
 
 public class GravityMode extends Powerup {
@@ -29,7 +26,7 @@ public class GravityMode extends Powerup {
     @Override
     public void jump(Level game) {
         if (player.leftGroundFor < 6)
-            if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP))
+            if (player.controller.isJustPressed(Controls.JUMP) || player.controller.isJustPressed(Controls.UP))
                 flipGravity();
     }
 
@@ -57,6 +54,7 @@ public class GravityMode extends Powerup {
         if (player.touchingGround) {
             player.maxGroundSpeed = Math.abs(player.velocityX);
         }
+
         if (!(player.slippery && player.crouched)) {
             if (player.touchingGround || player.maxGroundSpeed < Math.abs(player.velocityX)) {
                 player.velocityX *= 0.92f;
@@ -69,5 +67,9 @@ public class GravityMode extends Powerup {
         player.velocityY *= 0.98f;
         if (!noGravity)
             player.velocityY += 1f * (player.flippedGravity ? 1 : -1);
+
+        if (player.touchingGround && player.controller.isPressed(Controls.RIGHT) == player.controller.isPressed(Controls.LEFT)) {
+            if (!player.slippery && !player.crouched) player.velocityX *= 0.5f;
+        }
     }
 }

@@ -1,0 +1,7 @@
+@location summit
+@local_index 1
+@id infection
+@x 460
+@y 48
+@p_time 34000
+@unlocks [ cold_cavern ]

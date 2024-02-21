@@ -370,11 +370,12 @@ public class LevelLoader {
 
     public static Tile getTile(String string) {
         Scanner scanner = new Scanner(string + " ");
+        String image = "";
         try {
             // Position & image
             int x = scanner.nextInt();
             int y = scanner.nextInt();
-            String image = scanner.next();
+            image = scanner.next();
 
             // Set up identifier for tags
             String identifier = image;
@@ -396,6 +397,7 @@ public class LevelLoader {
             scanner.close();
             return new Tile(x, y, image, tileType, getTileTags(identifier), extra);
         } catch (Exception e) {
+            System.out.println(image);
             if (scanner.hasNext()) {
                 System.out.println(scanner.next());
             }

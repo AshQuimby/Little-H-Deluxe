@@ -1,30 +1,28 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.Input;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.controls.ControlInputs;
-import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.util.Cursors;
 import com.sab.littleh.util.SoundEngine;
 
 public class InternalLevelMenu extends GameMenu {
     private MainMenu menuToReturnTo;
-    public InternalLevelMenu(MainMenu menuToReturnTo, Level level) {
-        super(null, level);
+    public InternalLevelMenu(MainMenu menuToReturnTo, Level level, boolean ignoreDialogue) {
+        super(null, level, ignoreDialogue);
         this.menuToReturnTo = menuToReturnTo;
     }
 
     @Override
     public void keyDown(int keycode) {
-        if (ControlInputs.isJustPressed("return")) {
+        if (ControlInput.localControls.isJustPressed("return")) {
             if (level.escapePressed())
                 program.switchMenu(new InternalLevelPauseMenu(this));
-        } else if (ControlInputs.isJustPressed("select")) {
+        } else if (ControlInput.localControls.isJustPressed("select")) {
             level.enterPressed();
-        } else if (ControlInputs.isJustPressed("suicide")) {
+        } else if (ControlInput.localControls.isJustPressed("suicide")) {
             level.suicide();
-        } else if (ControlInputs.isJustPressed("quick_restart")) {
+        } else if (ControlInput.localControls.isJustPressed("quick_restart")) {
             level.player.trueKill();
         }
     }

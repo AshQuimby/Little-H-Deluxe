@@ -5,7 +5,7 @@ import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.Animation;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.SoundEngine;
 
@@ -35,7 +35,7 @@ public class BallMode extends Powerup {
    @Override
    public void jump(Level game) {
       if (player.touchingWater) {
-         if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
+         if (player.controller.isJustPressed(Controls.JUMP) || player.controller.isJustPressed(Controls.UP)) {
             player.velocityY = -12;
             SoundEngine.playSound("swim.ogg");
          }
@@ -72,7 +72,7 @@ public class BallMode extends Powerup {
          }
       }
       if (player.touchingGround) superSlam = false;
-      if (ControlInputs.isJustPressed(Controls.DOWN) && game.mapData.getValue("crouching").asBool()) {
+      if (player.controller.isJustPressed(Controls.DOWN) && game.mapData.getValue("crouching").asBool()) {
          if (!player.touchingGround && !superSlam) {
             superSlam = true;
          }
@@ -130,6 +130,53 @@ public class BallMode extends Powerup {
       // Makes bouncy tiles LAUNCH the BALL
       if (tile.hasTag("bounce")) {
          player.velocityY += 2.5f * -player.getGravityMagnitude();
+      }
+      if (tile.hasTag("slope") && tile.hasTag("normal_slope") && !player.lastTouchedTiles.contains(tile)) {
+         float xSpeed = Math.abs(player.velocityX);
+         float ySpeed = Math.abs(player.velocityY);
+         float speedForBounce = 24;
+         if (tile.tileType == 0) {
+            if (xSpeed > ySpeed && xSpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityX *= 0;
+               player.velocityY += xSpeed * 1.2f;
+            } else if (ySpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityY *= 0;
+               player.velocityX -= ySpeed * 1.2f;
+            }
+         } else if (tile.tileType == 1) {
+            if (xSpeed > ySpeed && xSpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityX *= 0;
+               player.velocityY += xSpeed * 1.2f;
+            } else if (ySpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityY *= 0;
+               player.velocityX += ySpeed * 1.2f;
+            }
+         } else if (tile.tileType == 2) {
+            if (xSpeed > ySpeed && xSpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               System.out.println(player.velocityX + ", " + xSpeed);
+               player.velocityX *= 0;
+               player.velocityY -= xSpeed * 1.2f;
+            } else if (ySpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityY *= 0;
+               player.velocityX -= ySpeed * 1.2f;
+            }
+         } else if (tile.tileType == 3) {
+            if (xSpeed > ySpeed && xSpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityX *= 0;
+               player.velocityY += xSpeed * 1.2f;
+            } else if (ySpeed > speedForBounce) {
+               SoundEngine.playSound("ball_bounce.ogg");
+               player.velocityY *= 0;
+               player.velocityX -= ySpeed * 1.2f;
+            }
+         }
       }
    }
 

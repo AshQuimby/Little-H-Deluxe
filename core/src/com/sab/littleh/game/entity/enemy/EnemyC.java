@@ -5,10 +5,11 @@ import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.util.SoundEngine;
 
 public class EnemyC extends Enemy {
+   private int leftGroundFor = 0;
    public EnemyC(int x, int y, Player player, Tile parent) {
       super(x, y, player, parent);
       image = "enemies/c.png";
@@ -27,8 +28,8 @@ public class EnemyC extends Enemy {
       }
       super.update(game);
       direction = (int) Math.signum(velocityX) == 0 ? direction : (int) Math.signum(velocityX);
-      if (touchingGround) {
-         if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
+      if (leftGroundFor < 4) {
+         if (ControlInput.localControls.isJustPressed(Controls.JUMP) || ControlInput.localControls.isJustPressed(Controls.UP)) {
             velocityY = 25;
             SoundEngine.playSound("jump.ogg");
          }
@@ -45,19 +46,25 @@ public class EnemyC extends Enemy {
          }
       }
       float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
-      if (playerDist > 1800 * 1800) {
+      if (playerDist > 2000 * 2000) {
          despawn = true;
       }
-      if (ControlInputs.isPressed(Controls.LEFT) ^ ControlInputs.isPressed(Controls.RIGHT)) {
-         if (ControlInputs.isPressed(Controls.LEFT)) {
+      if (ControlInput.localControls.isPressed(Controls.LEFT) ^ ControlInput.localControls.isPressed(Controls.RIGHT)) {
+         if (ControlInput.localControls.isPressed(Controls.LEFT)) {
             velocityX -= 1f;
          }
-         if (ControlInputs.isPressed(Controls.RIGHT)) {
+         if (ControlInput.localControls.isPressed(Controls.RIGHT)) {
             velocityX += 1f;
          }
       } else if (touchingGround) {
          velocityX *= 0.8f;
       }
+
+      if (touchingGround)
+         leftGroundFor = 0;
+      else
+         leftGroundFor++;
+
       velocityX *= 0.94f;
       velocityY *= 0.98f;
       velocityY -= 1f;

@@ -16,6 +16,7 @@ public class TileSelection {
     float x;
     float y;
     public TileSelection(Rectangle rectangle, Level level, boolean copyTiles, String layer) {
+        if (rectangle == null) rectangle = new Rectangle(0, 0, 1, 1);
         this.rectangle = rectangle;
         x = rectangle.x * 64;
         y = rectangle.y * 64;

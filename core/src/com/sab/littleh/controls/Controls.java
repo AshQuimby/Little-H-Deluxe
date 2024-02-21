@@ -2,6 +2,7 @@ package com.sab.littleh.controls;
 
 import static com.badlogic.gdx.Input.Keys.*;
 import com.badlogic.gdx.Input;
+import com.sab.littleh.LittleH;
 import com.sab.littleh.util.Images;
 import com.sab.littleh.util.sab_format.*;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Controls {
+    public static List<String> controlList = new ArrayList<>();
     public static final Map<String, Control> controlMap = new LinkedHashMap<>();
     public static final Control UP = new Control("Up", false, Input.Keys.UP, Input.Keys.W);
     public static final Control DOWN = new Control("Down", false, Input.Keys.DOWN, Input.Keys.S);
@@ -21,7 +23,7 @@ public class Controls {
         // Set defaults
         resetControls();
 
-        File settingsFile = new File((Images.inArchive ? "controls.sab" : "../controls.sab"));
+        File settingsFile = LittleH.getFileResource("controls.sab");
         if (!settingsFile.exists()) {
             try {
                 settingsFile.createNewFile();
@@ -43,13 +45,17 @@ public class Controls {
             SabValue[] values = data.getValue(key).asArray();
             int[] keys = new int[values.length];
             for (int i = 0; i < values.length; i++) keys[i] = values[i].asInt();
-            controlMap.get(key).replaceKeys(keys);
+            if (controlMap.containsKey(key)) {
+                controlMap.get(key).replaceKeys(keys);
+            }
         }
+        controlList = new ArrayList<>();
+        controlList.addAll(controlMap.keySet());
     }
 
     public static void save() {
         try {
-            SabWriter.write(new File((Images.inArchive ? "controls.sab" : "../controls.sab")), toSabData());
+            SabWriter.write(LittleH.getFileResource("controls.sab"), toSabData());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,7 +85,7 @@ public class Controls {
         controlMap.put("left", LEFT);
         controlMap.put("right", RIGHT);
         controlMap.put("jump", JUMP);
-        controlMap.put("sprint", new Control("Sprint (Campaign only)", false, SHIFT_LEFT));
+        controlMap.put("shift", new Control("Playtest w/o dialogue", false, SHIFT_LEFT));
         controlMap.put("suicide", new Control("To Checkpoint", false, K));
         controlMap.put("quick_restart", new Control("Quick Reset", false, R));
         controlMap.put("return", new Control("Return/Back", false, ESCAPE));
@@ -87,10 +93,11 @@ public class Controls {
         controlMap.put("pencil", new Control("Pencil", false, NUM_1, R));
         controlMap.put("eraser", new Control("Eraser", false, NUM_2, X));
         controlMap.put("pen", new Control("Pen", false, NUM_3, G));
-        controlMap.put("fill", new Control("Fill", false, NUM_4, F));
-        controlMap.put("eyedropper", new Control("Tile Picker", false, NUM_5, C));
-        controlMap.put("selection", new Control("Selection", false, NUM_6, V));
-        controlMap.put("quick_test", new Control("Quick Test", false, NUM_7, T));
+        controlMap.put("fill", new Control("Fill Tool", false, NUM_4, F));
+        controlMap.put("line", new Control("Line Tool", false, NUM_5, L));
+        controlMap.put("eyedropper", new Control("Tile Picker", false, NUM_6, C));
+        controlMap.put("selection", new Control("Selection", false, NUM_7, V));
+        controlMap.put("quick_test", new Control("Quick Test", false, NUM_8, T));
         controlMap.put("playtest", new Control("Quick Test", false, ENTER));
         controlMap.put("toggle_layer", new Control("Toggle Edit Background", false, TAB));
         controlMap.put("prev_selection", new Control("Previous Tile Menu", false, Q));
@@ -110,5 +117,9 @@ public class Controls {
 
     public static Control get(String key) {
         return controlMap.get(key);
+    }
+
+    public static Control get(int index) {
+        return controlMap.get(controlList.get(index));
     }
 }

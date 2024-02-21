@@ -1,10 +1,7 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.controls.ControlInputs;
-import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.Graphics;
@@ -12,16 +9,17 @@ import com.sab.littleh.util.*;
 
 import java.awt.*;
 import java.io.File;
-import java.util.Arrays;
 
 public class GameMenu extends MainMenu {
     private static DynamicCamera camera = LittleH.program.dynamicCamera;
-    protected File file;
-    protected Level level;
+    public File file;
+    public Level level;
     public boolean failedPlaying = false;
 
-    public GameMenu(File file, Level level) {
+    public GameMenu(File file, Level level, boolean ignoreDialogue) {
         this.level = level;
+        if (ignoreDialogue)
+            level.ignoreDialogue();
         this.file = file;
         LittleH.setTitle(" | Playing level: " + level.mapData.getValue("name"));
         Point startPos = level.getStartPos();
@@ -40,14 +38,14 @@ public class GameMenu extends MainMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (ControlInputs.isJustPressed("return")) {
+        if (ControlInput.localControls.isJustPressed("return")) {
             if (level.escapePressed())
                 program.switchMenu(new GamePauseMenu(this));
-        } else if (ControlInputs.isJustPressed("select")) {
+        } else if (ControlInput.localControls.isJustPressed("select")) {
             level.enterPressed();
-        } else if (ControlInputs.isJustPressed("suicide")) {
+        } else if (ControlInput.localControls.isJustPressed("suicide")) {
             level.suicide();
-        } else if (ControlInputs.isJustPressed("quick_restart")) {
+        } else if (ControlInput.localControls.isJustPressed("quick_restart")) {
             level.player.trueKill();
         }
     }
@@ -118,11 +116,6 @@ public class GameMenu extends MainMenu {
             LittleH.program.useDynamicCamera();
 
             level.render(g);
-
-            LittleH.program.endTempBuffer();
-
-            g.setPostTint(Level.themeTints[getBackgroundIndex()]);
-            g.setShader(Shaders.tintShader);
 
             LittleH.program.useStaticCamera();
         }

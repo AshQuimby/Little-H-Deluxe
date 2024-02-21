@@ -1,0 +1,7 @@
+@location woodlands
+@local_index 0
+@id meadows
+@x 168
+@y 92
+@p_time 20000
+@unlocks [ forest, snake ]

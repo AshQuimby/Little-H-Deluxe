@@ -1,5 +1,7 @@
 package com.sab.littleh.util.sab_format;
 
+import com.sab.littleh.net.Encryption;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +18,12 @@ public class SabReader {
      * Creates a com.sab_format.SabData object from a File containing all the properties in the specified file.
      * @param file
      * The stream to be scanned and read
+     * @param encryptionKey
+     * The key used to decrypt an encrypted .sab file (currently does nothing)
      * @return
      * The created com.sab_format.SabData object
      */
-    public static SabData read(File file) {
+    public static SabData read(File file, String encryptionKey) {
         FileInputStream stream = null;
         try {
             stream = new FileInputStream(file);
@@ -29,14 +33,20 @@ public class SabReader {
         return read(stream);
     }
 
+    public static SabData read(File file) {
+        return read(file, null);
+    }
+
     /**
      * Creates a com.sab_format.SabData object from an InputStream containing all the properties in the specified stream.
      * @param stream
      * The stream to be scanned and read
+     * @param encryptionKey
+     * The key used to decrypt an encrypted .sab file (currently does nothing)
      * @return
      * The created com.sab_format.SabData object
      */
-    public static SabData read(InputStream stream) {
+    public static SabData read(InputStream stream, String encryptionKey) {
         Scanner scanner = new Scanner(stream);
         scanner.useDelimiter(""); // Consume one character at a time
 
@@ -126,6 +136,10 @@ public class SabReader {
             throw new RuntimeException(e);
         }
         return data;
+    }
+
+    public static SabData read(InputStream stream) {
+        return read(stream, null);
     }
 
     public static Scanner skipSabPreface(Scanner scanner) {

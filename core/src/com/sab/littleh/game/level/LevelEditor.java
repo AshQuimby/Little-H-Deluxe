@@ -429,24 +429,13 @@ public class LevelEditor {
     }
 
     public void drawLine(Tile tile, int endX, int endY, int startX, int startY) {
-        int dX = endX - startX;
-        int dY = endY - startY;
-
-        Vector2 delta = new Vector2(dX, dY);
-        Vector2 point = new Vector2(startX, startY);
-
-        while (delta.len() > 0) {
-            Vector2 step = delta.cpy().limit(1);
-
-            Point resize = addTile(tile, (int) point.x, (int) point.y, true);
-
-            point.x += resize.x;
-            point.y += resize.y;
-
-            point.add(step);
-            delta.sub(step);
+        Point resize = new Point();
+        for (Point point : getLinePoints(endX, endY, startX, startY)) {
+            Point tileResize = addTile(tile, point.x + resize.x, point.y + resize.y, true);
+            resize.x += tileResize.x;
+            resize.y += tileResize.y;
         }
-        addTile(tile, (int) point.x, (int) point.y, true);
+        addTile(tile, endX + resize.x, endY + resize.y, true);
     }
 
     public void fill(Tile fillTile, int originX, int originY) {
@@ -631,5 +620,46 @@ public class LevelEditor {
 
     public Tile getTileAt(int x, int y) {
         return level.getTileAt(layer, x, y);
+    }
+
+    public List<Point> getLinePoints(int endX, int endY, int startX, int startY) {
+        List<Point> points = new ArrayList<>();
+        int dX = endX - startX;
+        int dY = endY - startY;
+
+        dX *= 64;
+        dY *= 64;
+
+        float dLen = (float) Math.sqrt(dX * dX + dY * dY);
+        float sclX = ((float) dX / dLen);
+        float sclY = ((float) dY / dLen);
+        System.out.println(sclX + ", " + sclY);
+
+        int[] delta = new int[]{ dX, dY };
+        int[] point = new int[]{ startX * 64 + 32, startY * 64 + 32 };
+        Vector2 spillover = new Vector2();
+
+        int len = 0;
+        while (true) {
+            Vector2 vec = new Vector2(sclX * 64, sclY * 64);
+            Point step = new Point((int) (sclX * 64 + spillover.x), (int) (sclY * 64 + spillover.y));
+            vec.x -= step.x;
+            vec.y -= step.y;
+            spillover.add(vec);
+
+            Point linePoint = new Point((point[0]) / 64, (point[1]) / 64);
+            points.add(linePoint);
+            if (linePoint.x == endX && linePoint.y == endY || Math.abs(delta[0]) < 64 && Math.abs(delta[1]) < 64)
+                break;
+
+            point[0] += step.x;
+            point[1] += step.y;
+            delta[0] -= step.x;
+            delta[1] -= step.y;
+            len++;
+            if (len > 512)
+                break;
+        }
+        return points;
     }
 }

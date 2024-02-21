@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
+import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
@@ -58,6 +59,7 @@ public class Level {
 //    public List<List<Tile>> tileMap;
 //    public List<List<Tile>> backgroundMap;
 
+    public Player playerBackup;
     public Player player;
     public int timeLimit;
     public int gameTick;
@@ -66,6 +68,7 @@ public class Level {
     private boolean tilesDesynced;
     private List<Particle> particles;
     private List<Enemy> enemies;
+    private List<Entity> entities;
     private String background;
     private Point startPos;
     private Popup popup;
@@ -73,11 +76,13 @@ public class Level {
     private long currentTime;
     private long checkedTime;
     private Dialogue currentDialogue;
+    private boolean ignoreDialogue;
 
     public Level(SabData mapData) {
         mapLayers = new HashMap<>();
         particles = new ArrayList<>();
         enemies = new ArrayList<>();
+        entities = new ArrayList<>();
         this.mapData = mapData;
         background = mapData.getRawValue("background");
         timeLimit = mapData.getValue("time_limit").asInt();
@@ -98,7 +103,7 @@ public class Level {
     }
 
     public void init() {
-        parallaxBackground = new ParallaxBackground(background);
+        parallaxBackground = new ParallaxBackground(background, mapData.getValue("bonus_background"));
     }
 
     public void startGame(Point startPos) {
@@ -107,6 +112,7 @@ public class Level {
         levelEnded = true;
         Dialogues.resetDialogues();
         player = new Player(new Point(startPos.x, startPos.y));
+        playerBackup = player;
         LittleH.program.dynamicCamera.setPosition(player.getCenter());
         desyncTiles();
         SoundEngine.playMusic("areas/" + mapData.getRawValue("background") + "_song.ogg");
@@ -212,11 +218,11 @@ public class Level {
                 if (!currentDialogue.finishedBlock()) {
                     currentDialogue.next();
                 }
-                ControlInputs.releaseControl(Controls.UP);
-                ControlInputs.releaseControl(Controls.DOWN);
-                ControlInputs.releaseControl(Controls.LEFT);
-                ControlInputs.releaseControl(Controls.RIGHT);
-                ControlInputs.releaseControl(Controls.JUMP);
+                ControlInput.localControls.releaseControl(Controls.UP);
+                ControlInput.localControls.releaseControl(Controls.DOWN);
+                ControlInput.localControls.releaseControl(Controls.LEFT);
+                ControlInput.localControls.releaseControl(Controls.RIGHT);
+                ControlInput.localControls.releaseControl(Controls.JUMP);
                 player.update(this);
                 particles.forEach(Particle::update);
                 particles.removeIf(particle -> !particle.alive);
@@ -258,6 +264,10 @@ public class Level {
             player.update(this);
         }
 
+        for (Entity entity : entities) {
+            entity.update(this);
+        }
+
         for (Particle particle : particles) {
             particle.update();
         }
@@ -272,6 +282,7 @@ public class Level {
             }
             return enemy.remove || enemy.despawn;
         });
+        entities.removeIf(entity -> entity.remove);
 
         for (Tile tile : getBaseLayer().updatableTiles) {
             Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
@@ -399,6 +410,10 @@ public class Level {
 
     public void addEnemy(Enemy enemy) {
         enemies.add(enemy);
+    }
+
+    public void addMiscEntity(Entity entity) {
+        entities.add(entity);
     }
 
     public void desyncTiles() {
@@ -559,6 +574,7 @@ public class Level {
         postRenders = drawPostRenders(g, postRenders, false, true, false);
 
         enemies.forEach(enemy -> enemy.render(g, this));
+        entities.forEach(entity -> entity.render(g, this));
         if (inGame())
             player.render(g, this);
         particles.forEach(particle -> particle.render(g));
@@ -852,38 +868,40 @@ public class Level {
     public String getSplit() {
         long time = currentTime - checkedTime;
         checkedTime = currentTime;
-        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
-                getTimeWithZeros(time / 1000 % 60, 2),
-                getTimeWithZeros(time % 1000, 3));
-    }
-
-    public String getTimeWithZeros(long time, int minChars) {
-        String str = String.valueOf(time);
-
-        while (str.length() < minChars) {
-            str = 0 + str;
-        }
-
-        return str;
+        return LittleH.formatTime(time);
     }
 
     public String getTime() {
         long time = currentTime;
-        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
-                getTimeWithZeros(time / 1000 % 60, 2),
-                getTimeWithZeros(time % 1000, 3));
+        return LittleH.formatTime(time);
     }
 
     public List<Enemy> getEnemies() {
         return enemies;
     }
+    public List<Entity> getEntities() {
+        return entities;
+    }
 
     public void setDialogue(Dialogue dialogue) {
-        this.currentDialogue = dialogue;
+        if (!ignoreDialogue)
+            this.currentDialogue = dialogue;
     }
 
     public boolean hasDialogue() {
         return currentDialogue != null;
+    }
+
+    public void ignoreDialogue() {
+        ignoreDialogue = true;
+    }
+
+    public void resumeDialogue() {
+        ignoreDialogue = false;
+    }
+
+    public long getTimeMillis() {
+        return currentTime;
     }
 
     private class Popup {

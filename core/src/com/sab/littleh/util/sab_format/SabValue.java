@@ -88,6 +88,15 @@ public class SabValue {
     }
 
     /**
+     * Gets the parsed long value of this com.sab_format.SabValue
+     * @return
+     * The parsed value of this com.sab_format.SabValue
+     */
+    public long asLong() throws NumberFormatException {
+        return Long.parseLong(rawValue);
+    }
+
+    /**
      * Gets the parsed float value of this com.sab_format.SabValue
      * @return
      * The parsed value of this com.sab_format.SabValue

@@ -1,9 +1,9 @@
 package com.sab.littleh.mainmenu;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
-import com.sab.littleh.campaign.visual_novel.menu.VnTitleMenu;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.campaign.overworld.OverworldMenu;
+import com.sab.littleh.net.Client;
+import com.sab.littleh.net.OnlineLevelMenu;
 import com.sab.littleh.util.*;
 
 import java.util.ArrayList;
@@ -18,7 +18,9 @@ public class TitleMenu extends MainMenu {
         Rectangle buttonRect = new Rectangle(0, 0, 640, 80);;
         buttons = new ArrayList<>();
         buttons.add(new MenuButton("button", "Play Campaign", buttonRect, () -> {
-            program.switchMenu(new VnTitleMenu());
+//            Client client = new Client();
+//            program.switchMenu(client.getMenu());
+            program.switchMenu(new OverworldMenu());
         }));
 //        buttons.get(0).setDisabled(true);
         buttons.add(new MenuButton("button", "Level Editor", buttonRect, () -> {

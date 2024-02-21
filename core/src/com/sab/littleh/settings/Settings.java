@@ -1,6 +1,7 @@
 package com.sab.littleh.settings;
 
 import com.badlogic.gdx.math.RandomXS128;
+import com.sab.littleh.LittleH;
 import com.sab.littleh.util.Images;
 import com.sab.littleh.util.SoundEngine;
 import com.sab.littleh.util.sab_format.*;
@@ -49,7 +50,7 @@ public class Settings {
             "Arial",
             "Comic Sans"
     }, new float[] {
-            0.3f,
+            0.24f,
             0.2f,
             0.2f,
             0.36f,
@@ -104,14 +105,21 @@ public class Settings {
 
     public void save() {
         try {
-            SabWriter.write(new File((Images.inArchive ? "settings.sab" : "../settings.sab")), toSabData());
+            SabWriter.write(LittleH.getFileResource("settings.sab"), toSabData());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void load() {
-        File settingsFile = new File((Images.inArchive ? "settings.sab" : "../settings.sab"));
+    public static void loadSettings() {
+        localSettings.load();
+    }
+
+    private void load() {
+        File resourcesFolder = new File("resources");
+        if (!resourcesFolder.exists())
+            resourcesFolder.mkdir();
+        File settingsFile = LittleH.getFileResource("settings.sab");
         if (!settingsFile.exists()) {
             try {
                 settingsFile.createNewFile();

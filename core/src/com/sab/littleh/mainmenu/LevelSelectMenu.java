@@ -1,13 +1,12 @@
 package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.settings.PercentageSetting;
 import com.sab.littleh.settings.SettingButton;
@@ -21,8 +20,6 @@ import com.sab.littleh.util.sab_format.SabReader;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 public class LevelSelectMenu extends MainMenu {
     private SettingButton slider;
@@ -186,7 +183,7 @@ public class LevelSelectMenu extends MainMenu {
     public void keyDown(int keycode) {
         if (createLevelQuery != null)
             createLevelQuery.updateQueryKey(keycode, 20, false);
-        else if (ControlInputs.isJustPressed(Controls.get("return")))
+        else if (ControlInput.localControls.isJustPressed(Controls.get("return")))
             program.switchMenu(TitleMenu.titleScreen);
     }
 

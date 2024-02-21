@@ -80,4 +80,14 @@ public class SabData {
     public void remove(String identifier) {
         values.remove(identifier);
     }
+
+    public void addVirtualValue(VirtualSabValue virtualSabValue) {
+        insertValue(virtualSabValue.key, virtualSabValue.value);
+    }
+
+    public void add(SabData bonusData) {
+        for (String string : bonusData.getValues().keySet()) {
+            insertValue(string, bonusData.getValue(string));
+        }
+    }
 }

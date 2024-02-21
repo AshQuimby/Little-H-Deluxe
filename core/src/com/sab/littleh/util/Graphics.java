@@ -171,23 +171,22 @@ public class Graphics extends SpriteBatch {
         return fitTo;
     }
 
-    public void drawMesh(float[] vertices) {
-        drawMesh(vertices, null);
-    }
-
-    public void drawMesh(float[] vertices, ShaderProgram shaderProgram) {
+    public void drawMesh(Texture texture, float[] vertices) {
+        int blendSrc = getBlendSrcFunc();
+        int blendDst = getBlendDstFunc();
         Matrix4 projMat = getProjectionMatrix();
         end();
         PolygonSprite poly;
         polyBatch.setProjectionMatrix(projMat);
-        Texture textureSolid;
 
         // Creating the color filling (but textures would work the same way)
-        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pix.setColor(getColor());
-        pix.fill();
-        textureSolid = new Texture(pix);
-        PolygonRegion polyReg = new PolygonRegion(new TextureRegion(textureSolid),
+        if (texture == null) {
+            Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pix.setColor(getColor());
+            pix.fill();
+            texture = new Texture(pix);
+        }
+        PolygonRegion polyReg = new PolygonRegion(new TextureRegion(texture, texture.getWidth(), texture.getHeight()),
                 vertices,
                 new short[] {
                 3, 4, 5,
@@ -198,33 +197,22 @@ public class Graphics extends SpriteBatch {
                 6, 7, 2,
                 5, 6, 3
         });
-        if (shaderProgram != null) {
-            LittleH.program.beginTempBuffer();
-            polyBatch.begin();
-            polyBatch.setShader(shaderProgram);
-            poly = new PolygonSprite(polyReg);
-            poly.setOrigin(0, 0);
-            poly.draw(polyBatch);
-            polyBatch.end();
-            polyBatch.setShader(null);
-            pix.dispose();
-            begin();
-            setProjectionMatrix(projMat);
-            LittleH.program.endTempBuffer();
-            setShader(shaderProgram);
-            LittleH.program.drawTempBuffer();
-            resetShader();
-            LittleH.program.getFrameBuffer().begin();
-        } else {
-            polyBatch.begin();
-            poly = new PolygonSprite(polyReg);
-            poly.setOrigin(0, 0);
-            poly.draw(polyBatch);
-            polyBatch.end();
-            pix.dispose();
-            begin();
-            setProjectionMatrix(projMat);
-        }
+        polyBatch.begin();
+        Gdx.gl20.glBlendFuncSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        polyBatch.setBlendFunction(blendSrc, blendDst);
+        poly = new PolygonSprite(polyReg);
+        poly.setOrigin(0, 0);
+//        if (applyColorToBatch)
+//            polyBatch.setColor(getColor());
+//        else
+//            polyBatch.setColor(Color.WHITE);
+        poly.draw(polyBatch);
+        polyBatch.end();
+//        pix.dispose();
+        begin();
+        setProjectionMatrix(projMat);
+        Gdx.gl20.glBlendFuncSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        setBlendFunction(blendSrc, blendDst);
     }
 
     @Override

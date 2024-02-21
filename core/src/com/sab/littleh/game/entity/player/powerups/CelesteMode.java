@@ -2,8 +2,9 @@ package com.sab.littleh.game.entity.player.powerups;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
@@ -11,9 +12,9 @@ import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 
 public class CelesteMode extends Powerup {
-    private static Animation climbAnimation = new Animation(12, 8, 27);
-    private static Animation clingAnimation = new Animation(1, 8);
-    private static Animation dashAnimation = new Animation(1, 28);
+    private Animation climbAnimation = new Animation(12, 8, 27);
+    private Animation clingAnimation = new Animation(1, 8);
+    private Animation dashAnimation = new Animation(1, 28);
     private int stamina;
     private int dashTime;
     private Vector2 dash;
@@ -33,7 +34,7 @@ public class CelesteMode extends Powerup {
     @Override
     public void jump(Level game) {
         if (player.touchingWater) {
-            if (ControlInputs.isJustPressed(Controls.JUMP) || (Settings.localSettings.upEqualsJump.value && ControlInputs.isPressed(Controls.UP))) {
+            if (player.controller.isJustPressed(Controls.JUMP) || (Settings.localSettings.upEqualsJump.value && player.controller.isPressed(Controls.UP))) {
                 player.velocityY = 14 * -player.getGravityMagnitude();
                 SoundEngine.playSound("swim.ogg");
             }
@@ -51,13 +52,13 @@ public class CelesteMode extends Powerup {
             player.leftGroundFor = 8;
             player.jumpStrength++;
             game.addParticle(new Particle(player.x - 24, player.getFeetY() - (player.flippedGravity ? 8 : 0), 0f, 0f, 96, 16, 12, 2, 1, 0f, 0f, 0, 2, "particles/jump.png", 9));
-        } else if (player.leftWallFor < 8 && ControlInputs.isJustPressed(Controls.JUMP)) {
+        } else if (player.leftWallFor < 6 && player.controller.isJustPressed(Controls.JUMP)) {
             SoundEngine.playSound("double_jump.ogg");
             player.velocityY = 13 * -player.getGravityMagnitude();
-            player.leftWallFor = 8;
+            player.leftWallFor = 6;
             player.x += -2 * player.wallDirection;
             player.velocityX = -24 * player.wallDirection;
-        } else if (player.doubleJump && game.mapData.getValue("double_jumping").asBool() && ControlInputs.isJustPressed(Controls.JUMP)) {
+        } else if (player.doubleJump && (player.bonusDoubleJump || game.mapData.getValue("double_jumping").asBool()) && player.controller.isJustPressed(Controls.JUMP)) {
             SoundEngine.playSound("dash.ogg");
             player.doubleJump = false;
             dash = new Vector2(28, 0);
@@ -69,26 +70,26 @@ public class CelesteMode extends Powerup {
 
     public float getDashRotation() {
         float rotation = 90f;
-        if (player.flippedGravity && !(ControlInputs.isPressed(Controls.RIGHT) || ControlInputs.isPressed(Controls.LEFT)))
+        if (player.flippedGravity && !(player.controller.isPressed(Controls.RIGHT) || player.controller.isPressed(Controls.LEFT)))
             rotation = 270f;
-        if (ControlInputs.isPressed(Controls.UP)) {
+        if (player.controller.isPressed(Controls.UP)) {
             rotation = 90f;
-        } else if (ControlInputs.isPressed(Controls.DOWN)) {
+        } else if (player.controller.isPressed(Controls.DOWN)) {
             rotation = 270f;
         }
 
-        if (ControlInputs.isPressed(Controls.RIGHT) ^ ControlInputs.isPressed(Controls.LEFT)) {
+        if (player.controller.isPressed(Controls.RIGHT) ^ player.controller.isPressed(Controls.LEFT)) {
             float x = 90f;
-            if (ControlInputs.isPressed(Controls.DOWN) ^ ControlInputs.isPressed(Controls.UP)) {
+            if (player.controller.isPressed(Controls.DOWN) ^ player.controller.isPressed(Controls.UP)) {
                 x *= 0.5f;
-                if (ControlInputs.isPressed(Controls.DOWN)) {
+                if (player.controller.isPressed(Controls.DOWN)) {
                     x *= -1f;
                 }
             }
-            if (ControlInputs.isPressed(Controls.RIGHT)) {
+            if (player.controller.isPressed(Controls.RIGHT)) {
                 rotation -= x;
             }
-            if (ControlInputs.isPressed(Controls.LEFT)) {
+            if (player.controller.isPressed(Controls.LEFT)) {
                 rotation += x;
             }
         }
@@ -98,7 +99,7 @@ public class CelesteMode extends Powerup {
 
     @Override
     public void update(Level game) {
-        if (!player.jumpReleased && (ControlInputs.isPressed(Controls.JUMP) || (Settings.localSettings.upEqualsJump.value && ControlInputs.isPressed(Controls.UP))) && player.jumpStrength > 0 && player.jumpStrength < 8 || player.jumpStrength > 0 && player.jumpStrength < 5) {
+        if (!player.jumpReleased && (player.controller.isPressed(Controls.JUMP) || (Settings.localSettings.upEqualsJump.value && player.controller.isPressed(Controls.UP))) && player.jumpStrength > 0 && player.jumpStrength < 8 || player.jumpStrength > 0 && player.jumpStrength < 5) {
             player.jumpStrength++;
             player.velocityY += 3.5f * -player.getGravityMagnitude();
         } else {
@@ -108,46 +109,46 @@ public class CelesteMode extends Powerup {
         if (player.touchingGround) {
             player.leftGroundFor = 0;
             if (dashTime > 0) {
-                if (ControlInputs.isPressed(Controls.JUMP))
+                if (player.controller.isPressed(Controls.JUMP))
                     player.jump(game);
                 dashTime = 0;
             }
             stamina = 240;
 //            if (game.mapSettings[Level.ALLOW_AIR_JUMP]) doubleJump = true;
-            if (game.mapData.getValue("double_jumping").asBool())
+            if ((player.bonusDoubleJump || game.mapData.getValue("double_jumping").asBool()))
                 player.doubleJump = true;
-            if (ControlInputs.isPressed(Controls.LEFT) ^ ControlInputs.isPressed(Controls.RIGHT)) {
-                player.currentAnimation = Player.runAnimation;
+            if (player.controller.isPressed(Controls.LEFT) ^ player.controller.isPressed(Controls.RIGHT)) {
+                player.currentAnimation = player.runAnimation;
             } else {
                 if (!player.slippery && !player.crouched) player.velocityX *= 0.5f;
-                player.currentAnimation = Player.idleAnimation;
+                player.currentAnimation = player.idleAnimation;
             }
             if (player.crouched) {
                 if (Math.abs(player.velocityX) > 2f) {
-                    player.currentAnimation = Player.slideAnimation;
+                    player.currentAnimation = player.slideAnimation;
                 } else {
-                    player.currentAnimation = Player.crouchAnimation;
+                    player.currentAnimation = player.crouchAnimation;
                 }
             }
         } else {
             player.leftGroundFor++;
             if (player.velocityY < 0) {
-                player.currentAnimation = Player.fallAnimation;
+                player.currentAnimation = player.fallAnimation;
             } else {
-                player.currentAnimation = Player.jumpAnimation;
+                player.currentAnimation = player.jumpAnimation;
             }
-            if (player.touchingWall && !(ControlInputs.isPressed(Controls.JUMP) && player.velocityY > 0 && (player.currentAnimation != climbAnimation || player.currentAnimation != clingAnimation))) {
+            if (player.touchingWall && !(player.controller.isPressed(Controls.JUMP) && player.velocityY > 0 && (player.currentAnimation != climbAnimation || player.currentAnimation != clingAnimation))) {
                 player.currentAnimation = clingAnimation;
                 dashTime = 0;
                 if (stamina > 0) {
-                    if (ControlInputs.isPressed(Controls.LEFT) ^ ControlInputs.isPressed(Controls.RIGHT)) {
+                    if (player.controller.isPressed(Controls.LEFT) ^ player.controller.isPressed(Controls.RIGHT)) {
                         stamina--;
                         if (player.flippedGravity) {
                             if (player.wallDirection == player.direction) {
-                                if (ControlInputs.isPressed(Controls.UP)) {
+                                if (player.controller.isPressed(Controls.UP)) {
                                     player.currentAnimation = climbAnimation;
                                     player.velocityY = 0;
-                                } else if (ControlInputs.isPressed(Controls.DOWN)) {
+                                } else if (player.controller.isPressed(Controls.DOWN)) {
                                     player.currentAnimation = climbAnimation;
                                     player.velocityY = 2.8f;
                                 } else {
@@ -159,10 +160,10 @@ public class CelesteMode extends Powerup {
 
                         } else {
                             if (player.wallDirection == player.direction) {
-                                if (ControlInputs.isPressed(Controls.DOWN)) {
+                                if (player.controller.isPressed(Controls.DOWN)) {
                                     player.currentAnimation = climbAnimation;
                                     player.velocityY = 0;
-                                } else if (ControlInputs.isPressed(Controls.UP)) {
+                                } else if (player.controller.isPressed(Controls.UP)) {
                                     player.currentAnimation = climbAnimation;
                                     player.velocityY = 2.8f;
                                 } else {
@@ -187,8 +188,8 @@ public class CelesteMode extends Powerup {
         if (player.coolRoll > 0.025f) player.coolRoll -= 0.025f;
         if (Math.abs(player.velocityX) < 2f) player.coolRoll = 0;
 
-        if ((ControlInputs.isPressed(Controls.JUMP) || (Settings.localSettings.upEqualsJump.value && ControlInputs.isPressed(Controls.UP)))) {
-            if (player.jumpReleased && !(player.touchingWall && !player.touchingGround) || ControlInputs.isJustPressed(Controls.JUMP))
+        if ((player.controller.isPressed(Controls.JUMP) || (Settings.localSettings.upEqualsJump.value && player.controller.isPressed(Controls.UP)))) {
+            if (player.jumpReleased && !(player.touchingWall && !player.touchingGround) || player.controller.isJustPressed(Controls.JUMP))
                 player.jump(game);
             player.jumpReleased = false;
         } else {
@@ -230,9 +231,15 @@ public class CelesteMode extends Powerup {
         super.preDrawPlayer(g, game);
     }
 
-    // TODO: Make celeste h draw hair
+    // TODO: Make celeste h draw hair pixelified
 
     public void drawHair(Graphics g) {
+        if (player.doubleJump) {
+            g.setColor(new Color(0.9f, 0.4f, 0.2f, 1f));
+        } else {
+            g.setColor(new Color(0.4f, 0.9f, 1f, 1f));
+        }
+
         int[][] trail = new int[2][9];
         trail[0][0] = (int) player.x + player.width / 2;
         trail[1][0] = (int) player.y + player.height / 2 - 12 * player.getGravityDirection();
@@ -245,12 +252,12 @@ public class CelesteMode extends Powerup {
             angles[i] = Math.atan2(trail[1][i + 1] - trail[1][i], trail[0][i + 1] - trail[0][i]);
         }
         for (int i = 0; i < 4; i++) {
-            trail[0][8 - i] = (int) (trail[0][i] + (3.5f * (5 - i) + 2.5f) * Math.cos(angles[i] + Math.PI / 2));
-            trail[1][8 - i] = (int) (trail[1][i] + (3.5f * (5 - i) + 2.5f) * Math.sin(angles[i] + Math.PI / 2));
+            trail[0][8 - i] = (int) (trail[0][i] + (4f * (5 - i) + 7f) * Math.cos(angles[i] + Math.PI / 2));
+            trail[1][8 - i] = (int) (trail[1][i] + (4f * (5 - i) + 7f) * Math.sin(angles[i] + Math.PI / 2));
         }
         for (int i = 0; i < 4; i++) {
-            trail[0][i] = (int) (trail[0][i] + (3.5f * (5 - i) + 2.5f) * Math.cos(angles[i] + Math.PI / 2 * 3));
-            trail[1][i] = (int) (trail[1][i] + (3.5f * (5 - i) + 2.5f) * Math.sin(angles[i] + Math.PI / 2 * 3));
+            trail[0][i] = (int) (trail[0][i] + (4f * (5 - i) + 7f) * Math.cos(angles[i] + Math.PI / 2 * 3));
+            trail[1][i] = (int) (trail[1][i] + (4f * (5 - i) + 7f) * Math.sin(angles[i] + Math.PI / 2 * 3));
         }
 
         float[] vertices = new float[18];
@@ -260,14 +267,25 @@ public class CelesteMode extends Powerup {
             vertices[i * 2 + 1] = trail[1][i] + 8;
         }
 
+        LittleH.program.beginTempBuffer();
+        g.drawMesh(null, vertices);
+//        g.drawMesh(null, vertices);
+        g.resetColor();
+        LittleH.program.endTempBuffer();
+        g.setShader(Shaders.crushShader);
+        DynamicCamera camera = LittleH.program.dynamicCamera;
+        Shaders.crushShader.setUniformf("u_amount", 8f / camera.zoom);
+        Shaders.crushShader.setUniform2fv("u_offset", new float[] { camera.getPosition().x - camera.targetPosition.x, camera.getPosition().y + camera.targetPosition.y }, 0, 2);
+        LittleH.program.useStaticCamera();
+        LittleH.program.drawTempBuffer();
+        LittleH.program.useDynamicCamera();
+        g.resetShader();
+        
         if (player.doubleJump) {
             g.setColor(new Color(0.9f, 0.4f, 0.2f, 1f));
         } else {
             g.setColor(new Color(0.4f, 0.9f, 1f, 1f));
         }
-//        g.drawMesh(vertices, Shaders.crushShader);
-        g.drawMesh(vertices);
-        g.resetShader();
-        g.resetColor();
+        g.draw(Images.getImage("player/celeste_h_hair_ball.png"), player.x - 8, player.y, 64, 64);
     }
 }

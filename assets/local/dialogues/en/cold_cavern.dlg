@@ -1,0 +1,8 @@
+@1 ui/portraits/player Little h
+@2 ui/portraits/q.png Q
+@script
+@2 \cN(1)h, be quick here! It's too cold for your life support systems.
+@1 \cN(0)What'll happen if I take to long?
+@2 Let's try to avoid finding out...
+@1 If time is limited why're you wasting time by calling me?
+@2 ...\wF(10) Good point.

@@ -44,6 +44,7 @@ public class ControlsMenu extends MainMenu {
         buttons.add(new MenuButton("square_button", "Reset to Defaults", -420 / 2 + 256, -640 / 2 - 32, 420, 64, () -> {
             Controls.resetControls();
             Controls.save();
+            Controls.load();
             inputFields.clear();
             int i = 128;
             for (Control control : Controls.getControls()) {

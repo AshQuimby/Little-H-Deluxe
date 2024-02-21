@@ -3,7 +3,7 @@ package com.sab.littleh.game.entity.player.powerups;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
@@ -11,6 +11,7 @@ import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
+import com.sab.littleh.net.NetPlayer;
 import com.sab.littleh.util.*;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class GunMode extends Powerup {
     public void update(Level game) {
         if (!(player.touchingWall))
             player.direction = getAdjustedGunRotation() > 180 ? -1 : 1;
-        if (player.currentAnimation == Player.runAnimation) {
+        if (player.currentAnimation == player.runAnimation) {
             if (Math.signum(player.velocityX) != player.direction) {
                 player.currentAnimation = runBackwardsAnimation;
             }
@@ -53,8 +54,9 @@ public class GunMode extends Powerup {
         player.coolRoll = 0;
         if (!(player.touchingWall))
             player.direction = getAdjustedGunRotation() > 180 ? -1 : 1;
-        if (Cursors.cursorIsNot("reticle"))
-            Cursors.switchCursor("reticle");
+        if (!(player instanceof NetPlayer))
+            if (Cursors.cursorIsNot("reticle"))
+                Cursors.switchCursor("reticle");
 
         bullets.forEach(bullet -> bullet.update(game));
         bullets.removeIf(bullet -> !bullet.alive);
@@ -74,12 +76,12 @@ public class GunMode extends Powerup {
 
     @Override
     public void move() {
-        if (ControlInputs.isPressed(Controls.LEFT)) {
+        if (player.controller.isPressed(Controls.LEFT)) {
             player.direction = -1;
             player.velocityX -= 1.2f * (player.touchingWater ? 0.5f : 1);
         }
 
-        if (ControlInputs.isPressed(Controls.RIGHT)) {
+        if (player.controller.isPressed(Controls.RIGHT)) {
             player.direction = 1;
             player.velocityX += 1.2f * (player.touchingWater ? 0.5f : 1);
         }

@@ -3,16 +3,12 @@ package com.sab.littleh.game.entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.sab.littleh.controls.ControlInputs;
-import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.util.Collisions;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
 
-import java.awt.Point;
-import java.awt.Graphics2D;
 import java.util.*;
 
 public class Entity {
@@ -30,6 +26,7 @@ public class Entity {
     public boolean touchingWater;
     public String image;
     public Set<Tile> lastTouchedTiles = new HashSet<>();
+    public boolean remove;
 
     public void update(Level game) {
         touchingWater = false;
@@ -131,14 +128,23 @@ public class Entity {
         boolean stopY = false;
 
         collisions = getNearbyTiles(game.getBaseLayer().tileMap);
+        List<Rectangle> hitboxes = new ArrayList<>();
         for (Tile tile : collisions) {
             if (!tile.isSolid()) continue;
-            Rectangle tileHitbox = tile.toRectangle();
-            if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 2) == Math.signum(velocityX) || velocityX == 0 || tile.tileType % 2 == 0) || lastTouchedTiles.contains(tile)) continue;
-            if (Collisions.resolveX(entityHitbox, tileHitbox, step.x)) {
-                if (onCollide(game, entityHitbox, tileHitbox, tile, false)) stopX = true;
-                stop.x = 0;
+            tile.toRectangles(hitboxes);
+            for (Rectangle tileHitbox : hitboxes) {
+                if (tile.hasTag("slope")) {
+                    slopeCollision(step, stop, entityHitbox, tile, game, false);
+                } else {
+                    if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 2) == Math.signum(velocityX) || velocityX == 0 || tile.tileType % 2 == 0) || lastTouchedTiles.contains(tile))
+                        continue;
+                    if (Collisions.resolveX(entityHitbox, tileHitbox, step.x)) {
+                        if (onCollide(game, entityHitbox, tileHitbox, tile, false)) stopX = true;
+                        stop.x = 0;
+                    }
+                }
             }
+            hitboxes.clear();
         }
 
         entityHitbox.y += step.y;
@@ -147,16 +153,87 @@ public class Entity {
         collisions = getNearbyTiles(game.getBaseLayer().tileMap);
         for (Tile tile : collisions) {
             if (!tile.isSolid()) continue;
-            Rectangle tileHitbox = tile.toRectangle();
-            if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 1) == Math.signum(velocityY) || tile.tileType % 2 != 0) || lastTouchedTiles.contains(tile)) continue;
-            if (Collisions.resolveY(entityHitbox, tileHitbox, step.y)) {
-                if (onCollide(game, entityHitbox, tileHitbox, tile, true)) {
-                    stopY = true;
-                    if (step.y < 0 && !dontRefreshTouchingGround()) {
-                        touchingGround = true;
+            tile.toRectangles(hitboxes);
+            for (Rectangle tileHitbox : hitboxes) {
+                if (tile.hasTag("slope")) {
+                    slopeCollision(step, stop, entityHitbox, tile, game, true);
+                } else {
+                    if (tile.hasTag("one_way") && (Math.signum(tile.tileType - 1) == Math.signum(velocityY) || tile.tileType % 2 != 0) || lastTouchedTiles.contains(tile))
+                        continue;
+                    if (Collisions.resolveY(entityHitbox, tileHitbox, step.y)) {
+                        if (onCollide(game, entityHitbox, tileHitbox, tile, true)) {
+                            stopY = true;
+                            if (step.y < 0 && !dontRefreshTouchingGround()) {
+                                touchingGround = true;
+                            }
+                        }
+                        stop.y = 0;
                     }
                 }
-                stop.y = 0;
+            }
+            hitboxes.clear();
+        }
+
+        if (stopX || stopY) onCollision(stopX, stopY);
+    }
+
+    private void slopeCollision(Vector2 step, Vector2 stop, Rectangle entityHitbox, Tile tile, Level game, boolean yCollision) {
+        boolean stopX = false;
+        boolean stopY = false;
+
+        if (yCollision) {
+            Rectangle tileHitbox = tile.toRectangle();
+            if (tile.tileType == 0) {
+                if (y < tileHitbox.y - Math.abs(velocityX)) {
+                    if (Collisions.resolveY(entityHitbox, tileHitbox, step.y)) {
+                        if (onCollide(game, entityHitbox, tileHitbox, tile, true)) {
+                            if (step.y < 0 && !dontRefreshTouchingGround()) {
+                                touchingGround = true;
+                            }
+                            stopY = true;
+                        }
+                        stop.y = 0;
+                    }
+                } else {
+                    tileHitbox.y += Math.abs(velocityX);
+                    if (step.y < 0 && tileHitbox.overlaps(entityHitbox)) {
+                        if (tile.hasTag("normal_slope")) {
+                            float slopeY = Math.min(64, Math.max(0, (entityHitbox.x + entityHitbox.width) - tileHitbox.x));
+                            if (entityHitbox.y <= tileHitbox.y + slopeY) {
+                                entityHitbox.y = slopeY + tileHitbox.y;
+                                velocityY = 0;
+                                stop.y = 0;
+                                touchingGround = true;
+                            }
+                        }
+                    }
+                }
+            } else
+            if (tile.tileType == 1) {
+                if (y < tileHitbox.y - Math.abs(velocityX)) {
+                    if (Collisions.resolveY(entityHitbox, tileHitbox, step.y)) {
+                        if (onCollide(game, entityHitbox, tileHitbox, tile, true)) {
+                            if (step.y < 0 && !dontRefreshTouchingGround()) {
+                                touchingGround = true;
+                            }
+                            stopY = true;
+                        }
+                        stop.y = 0;
+                    }
+                } else {
+                    tileHitbox.y += Math.abs(velocityX);
+                    if (step.y < 0 && tileHitbox.overlaps(entityHitbox)) {
+                        if (tile.hasTag("normal_slope")) {
+                            float slopeY = Math.min(64, Math.max(0, tileHitbox.height - (entityHitbox.x - tileHitbox.x)));
+                            if (entityHitbox.y <= tileHitbox.y + slopeY) {
+                                entityHitbox.y = slopeY + tileHitbox.y;
+                                velocityY = 0;
+                                stop.y = 0;
+                                touchingGround = true;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -186,7 +263,8 @@ public class Entity {
         Set<Tile> newLastTouchedTiles = new HashSet<>();
         for (Tile tile : collisions) {
             if (tile.hasTag("multi_hitbox")) {
-                List<Rectangle> tileHitboxes = tile.toRectangles();
+                List<Rectangle> tileHitboxes = new ArrayList<>();
+                tile.toRectangles(tileHitboxes);
                 for (Rectangle tileHitbox : tileHitboxes) {
                     if (entityHitbox.overlaps(tileHitbox)) {
                         touchingTile(game, tile);

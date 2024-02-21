@@ -28,7 +28,7 @@ public class EnemyF extends Enemy {
       frame = runAnimation.stepLooping();
       super.update(game);
       float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
-      if (playerDist > 1800 * 1800) {
+      if (playerDist > 2000 * 2000) {
          despawn = true;
       } else {
          Tile tileAhead = getTile(direction, 0, game.getBaseLayer().tileMap);

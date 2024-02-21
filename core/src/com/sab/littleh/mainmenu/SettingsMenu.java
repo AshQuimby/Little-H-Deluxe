@@ -54,7 +54,7 @@ public class SettingsMenu extends MainMenu {
             LittleH.program.resetWindow();
         }));
         menuButtons.add(new MenuButton("square_button", "Don't Save", -384 / 2, -640 / 2 + 16, 384, 64, () -> {
-            Settings.localSettings.load();
+            Settings.loadSettings();
             LittleH.program.switchMenu(cameFrom);
             LittleH.program.resetWindow();
         }));

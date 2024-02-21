@@ -1,0 +1,7 @@
+@location summit
+@local_index 2
+@id cold_cavern
+@x 422
+@y 130
+@p_time 24000
+@unlocks [ running ]

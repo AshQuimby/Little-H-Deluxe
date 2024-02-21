@@ -1,14 +1,13 @@
 package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.settings.ListSetting;
 import com.sab.littleh.settings.SettingButton;
@@ -146,11 +145,11 @@ public class JukeboxMenu extends MainMenu {
 
     @Override
     public void update() {
-        if (ControlInputs.isJustPressed(Controls.RIGHT)) {
+        if (ControlInput.localControls.isJustPressed(Controls.RIGHT)) {
             SoundEngine.playSound("blip.ogg");
             settingButton.setting.next();
         }
-        if (ControlInputs.isJustPressed(Controls.LEFT)) {
+        if (ControlInput.localControls.isJustPressed(Controls.LEFT)) {
             SoundEngine.playSound("blip.ogg");
             settingButton.setting.previous();
         }
@@ -194,9 +193,9 @@ public class JukeboxMenu extends MainMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (ControlInputs.isJustPressed("return"))
+        if (ControlInput.localControls.isJustPressed("return"))
             LittleH.program.switchMenu(new LevelSelectMenu());
-        else if (ControlInputs.isJustPressed(Controls.JUMP))
+        else if (ControlInput.localControls.isJustPressed(Controls.JUMP))
             buttons.get(1).onPress.run();
     }
 

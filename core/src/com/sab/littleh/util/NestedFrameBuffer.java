@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import java.util.Stack;
 
 public class NestedFrameBuffer extends FrameBuffer {
-    private static Stack<NestedFrameBuffer> bufferStack = new Stack<>();
+    private static final Stack<NestedFrameBuffer> bufferStack = new Stack<>();
     public NestedFrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth) {
         super(format, width, height, hasDepth, false);
     }
@@ -21,6 +21,7 @@ public class NestedFrameBuffer extends FrameBuffer {
     public void begin() {
         super.begin();
         bufferStack.add(this);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     @Override

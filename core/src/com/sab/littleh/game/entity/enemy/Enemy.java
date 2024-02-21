@@ -18,7 +18,6 @@ public class Enemy extends Entity {
    protected boolean deathWarn;
    protected boolean dead;
    public boolean despawn;
-   public boolean remove;
 
    public Enemy(int x, int y, Player player, Tile parent) {
       this.x = x * 64 + 8;
@@ -49,6 +48,8 @@ public class Enemy extends Entity {
             return new EnemyF(x, y, player, parent);
          case 3 :
             return new EnemyC(x, y, player, parent);
+         case 4 :
+            return new EnemyO(x, y, player, parent);
       }
       return null;
    }

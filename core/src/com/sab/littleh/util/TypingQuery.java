@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.controls.ControlInputs;
-import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.mainmenu.MenuButton;
 
 import java.util.regex.Pattern;
@@ -57,7 +56,7 @@ public class TypingQuery {
                 headerPosition = length();
             else
                 headerPosition = Math.min(length(), headerPosition + 1);
-        } else if (ControlInputs.isJustPressed("select")) {
+        } else if (ControlInput.localControls.isJustPressed("select")) {
             if (enterIsNewline) {
                 if (query.length() < max) {
                     query.insert(headerPosition, '\n');
@@ -66,7 +65,7 @@ public class TypingQuery {
             } else {
                 complete(true);
             }
-        } else if (ControlInputs.isJustPressed("return")) {
+        } else if (ControlInput.localControls.isJustPressed("return")) {
             complete(false);
         }
     }

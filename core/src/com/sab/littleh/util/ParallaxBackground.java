@@ -8,6 +8,7 @@ import com.sab.littleh.LittleH;
 import com.sab.littleh.util.sab_format.SabData;
 import com.sab.littleh.util.sab_format.SabParsingException;
 import com.sab.littleh.util.sab_format.SabReader;
+import com.sab.littleh.util.sab_format.SabValue;
 
 import java.awt.*;
 import java.io.File;
@@ -58,42 +59,32 @@ public class ParallaxBackground {
     private Map<String, Texture> layers;
     private DynamicCamera personalCamera;
     private DynamicCamera personalStaticCamera;
-
-    public ParallaxBackground(String path, boolean internal) {
-        if (internal) {
-            InputStream metaFile = ParallaxBackground.class.getResourceAsStream("/images/" + path + "/meta.sab");
-            SabData data;
-            try {
-                data = SabReader.read(metaFile);
-            } catch (SabParsingException e) {
-                throw new RuntimeException(e);
-            }
-            boolean firstLoaded = false;
-            layers = new HashMap<>();
-            for (String layer : data.getValues().keySet()) {
-                Texture texture = Images.getImage(path + "/" + layer + ".png");
-                if (layer.equals("back") || firstLoaded) {
-                    width = texture.getWidth();
-                    height = texture.getHeight();
-                }
-                layers.put(layer, texture);
-            }
-        } else {
-            throw new IllegalArgumentException("Action not supported");
-        }
+    private static InputStream getMetaFile(String name) {
+        return ParallaxBackground.class.getResourceAsStream("/images/backgrounds/" + name + "/meta.sab");
     }
 
-    public ParallaxBackground(String background, InputStream metaFile) {
+    public ParallaxBackground(String background, InputStream metaFile, SabValue bonusElements) {
         SabData data;
         try {
             data = SabReader.read(metaFile);
+            if (bonusElements != null) {
+                for (String bonus : bonusElements.asStringArray()) {
+                    SabData bonusData = SabReader.read(getMetaFile("bonus/" + bonus));
+                    data.add(bonusData);
+                }
+            }
         } catch (SabParsingException e) {
             throw new RuntimeException(e);
         }
         boolean firstLoaded = false;
         layers = new HashMap<>();
         for (String layer : data.getValues().keySet()) {
-            Texture texture = Images.getImage("backgrounds/" + background + "/" + layer + ".png");
+            Texture texture;
+            if (layer.startsWith("bonus")) {
+                texture = Images.getImage("backgrounds/" + layer + ".png");
+            } else {
+                texture = Images.getImage("backgrounds/" + background + "/" + layer + ".png");
+            }
             if (layer.equals("back") || firstLoaded) {
                 width = texture.getWidth();
                 height = texture.getHeight();
@@ -102,8 +93,12 @@ public class ParallaxBackground {
         }
     }
 
+    public ParallaxBackground(String backgroundName, SabValue sabValue) {
+        this(backgroundName, getMetaFile(backgroundName), sabValue);
+    }
+
     public ParallaxBackground(String backgroundName) {
-        this(backgroundName, ParallaxBackground.class.getResourceAsStream("/images/backgrounds/" + backgroundName + "/meta.sab"));
+        this(backgroundName, null);
     }
 
     public void setDimensions(int width, int height) {
@@ -136,12 +131,12 @@ public class ParallaxBackground {
         for (int i = 0; i < drawOrder.length; i++) {
             String layer = drawOrder[i];
             for (String backgroundLayer : layers.keySet()) {
-                int patchWidth = (int) Math.ceil(width * backgroundScalar);
-                int patchHeight = (int) Math.ceil(height * backgroundScalar);
-                Texture texture = layers.get(backgroundLayer);
-                patchWidth *= (float) texture.getWidth() / width;
-                patchHeight *= (float) texture.getHeight() / height;
                 if (backgroundLayer.contains(layer)) {
+                    int patchWidth = (int) Math.ceil(width * backgroundScalar);
+                    int patchHeight = (int) Math.ceil(height * backgroundScalar);
+                    Texture texture = layers.get(backgroundLayer);
+                    patchWidth *= (float) texture.getWidth() / width;
+                    patchHeight *= (float) texture.getHeight() / height;
                     boolean isStatic = backgroundLayer.contains("static") || backgroundLayer.equals("back") || backgroundLayer.equals("full");
                     if (isStatic) {
                         g.draw(texture, -screenWidth / 2, -screenHeight / 2, screenWidth, screenHeight);

@@ -12,6 +12,7 @@ import com.sab.littleh.util.SoundEngine;
 import com.sun.tools.javac.Main;
 
 public class MenuButton extends Rectangle {
+    public boolean dynamic;
     protected String patchString;
     protected String text;
     protected boolean hovered;
@@ -61,7 +62,7 @@ public class MenuButton extends Rectangle {
 
     }
     public void update() {
-        if (!disabled && contains(MouseUtil.getMousePosition())) {
+        if (!disabled && contains(dynamic ? MouseUtil.getDynamicMousePosition() : MouseUtil.getMousePosition())) {
             if (!hovered) {
                 hovered = true;
                 onHover();
@@ -102,7 +103,7 @@ public class MenuButton extends Rectangle {
         g.drawPatch(getPatch(), this, patchScale);
         if (text != null && !text.isBlank()) {
             LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
-            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? patchScale : 0), LittleH.defaultFontScale * fontScale, 0);
+            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? patchScale : 0) - 1 / fontScale, LittleH.defaultFontScale * fontScale, 0);
         }
     }
 

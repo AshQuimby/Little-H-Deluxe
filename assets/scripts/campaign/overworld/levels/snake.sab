@@ -1,0 +1,7 @@
+@location hyperspace
+@local_index 0
+@id snake
+@x 256
+@y 324
+@p_time 53000
+@unlocks [ ricochet, pinball ]

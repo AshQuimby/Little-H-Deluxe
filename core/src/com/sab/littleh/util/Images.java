@@ -23,17 +23,28 @@ public class Images {
     }
 
     public static Texture getImage(String key) {
-        key = "images/" + key;
-        if (cache.containsKey(key)) {
-            return cache.get(key);
+        String imageKey = "images/" + key;
+        if (cache.containsKey(imageKey)) {
+            return cache.get(imageKey);
         }
         Texture image;
 
-        FileHandle handle = Gdx.files.internal(key);
+//        String altKey = "images/hi-res/" + key;
+//        FileHandle handle = Gdx.files.internal(altKey);
+//        if (handle.exists()) {
+//            image = new Texture(handle);
+//            cache.put(imageKey, image);
+//            return image;
+//        }
+        FileHandle handle = Gdx.files.internal(imageKey);
         if (!handle.exists()) return getImage("missing.png");
-        image = new Texture(handle);
+        try {
+            image = new Texture(handle);
+        } catch (Exception e) {
+            return getImage("missing.png");
+        }
 
-        cache.put(key, image);
+        cache.put(imageKey, image);
         return image;
     }
 
@@ -59,7 +70,7 @@ public class Images {
 
     public static void cacheHColor() {
         if (Settings.localSettings.hColor.value == -1) {
-            hColor = new Color(1f, 1f, 1f, 1f).fromHsv(LittleH.getTick() % 360, 1f, 1f);
+            hColor = getRainbowColor();
         } else {
             hColor = new Color(1f, 1f, 1f, 1f).fromHsv(Settings.localSettings.hColor.asRelativeFloat() * 360f, 1f, 1f);
         }
@@ -82,5 +93,9 @@ public class Images {
 
     public static void clearCache() {
         cache.clear();
+    }
+
+    public static Color getRainbowColor() {
+        return new Color(1f, 1f, 1f, 1f).fromHsv(LittleH.getTick() % 360, 1f, 1f);
     }
 }

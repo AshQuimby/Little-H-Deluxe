@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
@@ -25,15 +25,16 @@ import java.util.List;
 import java.util.Set;
 
 public class Player extends Entity {
-    public static Animation idleAnimation = new Animation(12, 0, 1);
-    public static Animation runAnimation = new Animation(4, 2, 3, 4, 5);
-    public static Animation deathAnimation = new Animation(4, 9, 10, 11, 12, 13, 14);
-    public static Animation wallSlideAnimation = new Animation(1, 8);
-    public static Animation fallAnimation = new Animation(1, 6);
-    public static Animation jumpAnimation = new Animation(1, 7);
-    public static Animation crouchAnimation = new Animation(1, 24);
-    public static Animation slideAnimation = new Animation(4, 25, 26);
-    public static Animation winAnimation = new Animation(8, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 17, 18, 19, 20, 21, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23);
+    public Animation idleAnimation = new Animation(12, 0, 1);
+    public Animation runAnimation = new Animation(4, 2, 3, 4, 5);
+    public Animation deathAnimation = new Animation(4, 9, 10, 11, 12, 13, 14);
+    public Animation wallSlideAnimation = new Animation(1, 8);
+    public Animation fallAnimation = new Animation(1, 6);
+    public Animation jumpAnimation = new Animation(1, 7);
+    public Animation crouchAnimation = new Animation(1, 24);
+    public Animation slideAnimation = new Animation(4, 25, 26);
+    public Animation winAnimation = new Animation(8, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 15, 16, 17, 18, 19, 20, 21, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23);
+    public ControlInput controller;
 
     public boolean win;
     public boolean end;
@@ -43,7 +44,7 @@ public class Player extends Entity {
     public int leftGroundFor;
     public int leftWallFor;
     public int jumpStrength;
-    public boolean touchingWall, doubleJump, dead, trueKill;
+    public boolean touchingWall, doubleJump, bonusDoubleJump, dead, trueKill;
     // Style points
     public float coolRoll;
     public float maxGroundSpeed;
@@ -57,6 +58,7 @@ public class Player extends Entity {
     public float trailSpeed;
     public boolean hasEvilKey;
     public boolean savedEvilKey;
+    public int savedDirection;
     public EvilKey evilKey;
     public int savedKeyCount;
     public boolean savedGravity;
@@ -98,6 +100,8 @@ public class Player extends Entity {
         powerup = new Powerup(this);
         savedPowerup = powerup;
         previousPositions.clear();
+        savedDirection = 1;
+        controller = ControlInput.localControls;
     }
 
     public Player(Point startPos, Level game) {
@@ -112,12 +116,14 @@ public class Player extends Entity {
 
     public void init(Level game) {
         ticksAlive = 0;
-        leftGroundFor = 0;
-        leftWallFor = 0;
+        leftGroundFor = 30;
+        leftWallFor = 30;
         touchingGround = false;
         win = false;
         x = startPos.x * 64 + 8;
         y = startPos.y * 64;
+        for (int i = 0; i < 20; i++)
+            previousPositions.add(0, new Point(getCenterX(), getCenterY()));
         velocityX = 0;
         velocityY = 0;
         jumpReleased = false;
@@ -133,6 +139,7 @@ public class Player extends Entity {
         keyCount = savedKeyCount;
         flippedGravity = savedGravity;
         hasEvilKey = savedEvilKey;
+        direction = savedDirection;
         if (hasEvilKey) {
             evilKey = new EvilKey((int) x / 64, (int) y / 64);
         }
@@ -255,11 +262,11 @@ public class Player extends Entity {
             kill();
 
         if (canCrouch && game.mapData.getValue("crouching").asBool()) {
-            if (ControlInputs.isJustPressed(Controls.LEFT) ^ ControlInputs.isJustPressed(Controls.RIGHT) || !ControlInputs.isPressed(Controls.DOWN) || !touchingGround) {
+            if (controller.isJustPressed(Controls.LEFT) ^ controller.isJustPressed(Controls.RIGHT) || !controller.isPressed(Controls.DOWN) || !touchingGround) {
                 height = 48;
                 crouched = false;
             }
-            if (ControlInputs.isJustPressed(Controls.DOWN) && touchingGround) {
+            if (controller.isJustPressed(Controls.DOWN) && leftGroundFor < 4) {
                 touchingWall = false;
                 velocityX *= 1.5f;
                 height = 24;
@@ -269,6 +276,7 @@ public class Player extends Entity {
 
         crushed = false;
         updateVelocity();
+        if (touchingGround) bonusDoubleJump = false;
         touchingGround = false;
         touchingWall = false;
         slippery = false;
@@ -282,6 +290,10 @@ public class Player extends Entity {
             }
             if (ticksAlive > 2)
                 ticksAlive = 2;
+        }
+
+        if (controller != ControlInput.localControls) {
+            controller.update();
         }
     }
 
@@ -331,19 +343,21 @@ public class Player extends Entity {
     @Override
     public void tileInteractions(Rectangle playerHitbox, List<Tile> collisions, Level game) {
         Set<Tile> newLastTouchedTiles = new HashSet<>();
+        List<Rectangle> tileHitboxes = new ArrayList<>();
         for (Tile tile : collisions) {
             if (crouched && tile.isSolid() && tile.hasTag("half") && (tile.tileType == 0 || tile.tileType == 2)) {
-                ControlInputs.pressControl(Controls.DOWN);
+                controller.pressControl(Controls.DOWN);
                 crushed = true;
             }
             if (tile.hasTag("multi_hitbox")) {
-                List<Rectangle> tileHitboxes = tile.toRectangles();
+                tile.toRectangles(tileHitboxes);
                 for (Rectangle tileHitbox : tileHitboxes) {
                     if (playerHitbox.overlaps(tileHitbox)) {
                         touchingTile(game, playerHitbox, tile, tileHitbox, newLastTouchedTiles);
                         break;
                     }
                 }
+                tileHitboxes.clear();
             } else {
                 Rectangle tileHitbox = tile.toRectangle();
                 if (playerHitbox.overlaps(tileHitbox)) {
@@ -423,6 +437,7 @@ public class Player extends Entity {
             savedKeyCount = keyCount;
             savedEvilKey = hasEvilKey;
             savedPowerup = powerup;
+            savedDirection = direction;
             game.showTimer();
         } else if (!win && tile.hasTag("end")) {
             game.showTimer();
@@ -458,13 +473,7 @@ public class Player extends Entity {
                     }
                     if (tile.hasTag("powerup")) {
                         SoundEngine.playSound("powerup_get.ogg");
-                        if (tile.tileType == 0) powerup = new Powerup(this);
-                        else if (tile.tileType == 1) powerup = new BallMode(this);
-                        else if (tile.tileType == 2) powerup = new WingedMode(this);
-                        else if (tile.tileType == 3) powerup = new CelesteMode(this);
-                        else if (tile.tileType == 4) powerup = new GravityMode(this);
-                        else if (tile.tileType == 5) powerup = new StoneMode(this);
-                        else if (tile.tileType == 6) powerup = new GunMode(this);
+                        pickUpPowerup(tile.tileType);
                     }
                     if (tile.hasTag("key")) {
                         SoundEngine.playSound("coin.ogg");
@@ -478,6 +487,9 @@ public class Player extends Entity {
                     if (tile.hasTag("jump_refresh")) {
                         SoundEngine.playSound("coin.ogg");
                         doubleJump = true;
+                        if (!game.mapData.getValue("double_jumping").asBool()) {
+                            bonusDoubleJump = true;
+                        }
                     }
                     if (tile.hasTag("timer")) {
                         SoundEngine.playSound("powerup_get.ogg");
@@ -559,7 +571,7 @@ public class Player extends Entity {
             }
 
             g.setColor(new Color(1, 1, 1, Math.min(1, Math.max(0, (int) speed - 24) * 2 / 255f)));
-            g.drawMesh(vertices);
+            g.drawMesh(null, vertices);
             g.resetColor();
         }
     }
@@ -614,6 +626,17 @@ public class Player extends Entity {
 
     public float getFeetY() {
         return getCenterY() + height / 2f * getGravityDirection();
+    }
+
+    public void pickUpPowerup(int typeIndex) {
+        if (typeIndex == 0) powerup = new Powerup(this);
+        else if (typeIndex == 1) powerup = new BallMode(this);
+        else if (typeIndex == 2) powerup = new WingedMode(this);
+        else if (typeIndex == 3) powerup = new CelesteMode(this);
+        else if (typeIndex == 4) powerup = new GravityMode(this);
+        else if (typeIndex == 5) powerup = new StoneMode(this);
+        else if (typeIndex == 6) powerup = new GunMode(this);
+        else if (typeIndex == 7) powerup = new CubeMode(this);
     }
 
     public class EvilKey {

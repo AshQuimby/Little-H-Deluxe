@@ -10,12 +10,12 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.sab.littleh.campaign.visual_novel.dialogue.VnDialogue;
+import com.sab.littleh.campaign.SaveFile;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.level.LevelEditor;
 import com.sab.littleh.mainmenu.*;
 import com.sab.littleh.settings.Settings;
@@ -47,12 +47,10 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static final int resolutionX = 1024;
     public static final int resolutionY = 576;
     public static LittleH program;
-    static {
-        Settings.localSettings.load();
-    }
     private Graphics g;
     private NestedFrameBuffer buffer;
-    private NestedFrameBuffer tempBuffer;
+    private NestedFrameBuffer[] tempBuffers;
+    private int tempBufferLayer = -1;
     private NestedFrameBuffer bufferHoldover;
     public OrthographicCamera staticCamera;
     public DynamicCamera dynamicCamera;
@@ -79,10 +77,32 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         return controllers;
     }
 
+    public static File getFileResource(String resource) {
+        return new File(String.format(Images.inArchive ? "resources/%s" : "../resources/%s", resource));
+    }
+
+    public static String formatTime(long time) {
+        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
+                getTimeWithZeros(time / 1000 % 60, 2),
+                getTimeWithZeros(time % 1000, 3));
+    }
+
+    public static String getTimeWithZeros(long time, int minChars) {
+        String str = String.valueOf(time);
+
+        while (str.length() < minChars) {
+            str = 0 + str;
+        }
+
+        return str;
+    }
+
     @Override
     public void create() {
         Shaders.load();
+        Settings.loadSettings();
         Controls.load();
+        SaveFile.load();
 
         g = new Graphics();
         staticCamera = new OrthographicCamera(resolutionX, resolutionY);
@@ -111,8 +131,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Patch.cachePatch("menu_hollow", new Patch("ui/menu/menu_hollow.png", 7, 7, 3, 3));
         Fonts.loadFont("sab_font.ttf", 100);
         Fonts.loadFont("sab_font.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
-        Fonts.loadFont("minecraft.ttf", 100);
-        Fonts.loadFont("minecraft.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
+        Fonts.loadFont("minecraft.ttf", 128);
+        Fonts.loadFont("minecraft.ttf", 128, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         Fonts.loadFont("shitfont23.ttf", 240);
         Fonts.loadFont("shitfont23.ttf", 240, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         Fonts.loadFont("arial.ttf", 100);
@@ -130,10 +150,14 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SoundEngine.playMusic("menu/menu_theme.ogg");
         SoundEngine.update();
         Images.cacheHColor();
-        VnDialogue.load();
+//        VnDialogue.load();
         buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
         bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
-        tempBuffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        tempBuffers = new NestedFrameBuffer[4];
+        tempBuffers[0] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        tempBuffers[1] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        tempBuffers[2] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        tempBuffers[3] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
         recheckShaderStack();
     }
 
@@ -247,14 +271,14 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             PixmapIO.writePNG(Gdx.files.local(imagePath), pixmap, Deflater.DEFAULT_COMPRESSION, true);
             pixmap.dispose();
         }
-        ControlInputs.press(keycode);
+        ControlInput.localControls.press(keycode);
         mainMenu.keyDown(keycode);
         return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        ControlInputs.release(keycode);
+        ControlInput.localControls.release(keycode);
         mainMenu.keyUp(keycode);
         return true;
     }
@@ -280,9 +304,15 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void resize(int width, int height) {
-        buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
-        bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
-        tempBuffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        try {
+            buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+            bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+            tempBuffers[0] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+            tempBuffers[1] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+            tempBuffers[2] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+            tempBuffers[3] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -322,23 +352,23 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         if (!controllers.contains(controller))
             connected(controller);
         if (buttonCode < 2) {
-            ControlInputs.pressControl(Controls.JUMP);
-            ControlInputs.pressControl(Controls.get("select"));
+            ControlInput.localControls.pressControl(Controls.JUMP);
+            ControlInput.localControls.pressControl(Controls.get("select"));
         } else if (buttonCode < 4) {
-            ControlInputs.pressControl(Controls.DOWN);
+            ControlInput.localControls.pressControl(Controls.DOWN);
         } else if (buttonCode == 11) {
-            ControlInputs.pressControl(Controls.UP);
-            ControlInputs.pressControl(Controls.JUMP);
+            ControlInput.localControls.pressControl(Controls.UP);
+            ControlInput.localControls.pressControl(Controls.JUMP);
         } else if (buttonCode == 12) {
-            ControlInputs.pressControl(Controls.DOWN);
+            ControlInput.localControls.pressControl(Controls.DOWN);
         } else if (buttonCode == 13) {
-            ControlInputs.pressControl(Controls.LEFT);
+            ControlInput.localControls.pressControl(Controls.LEFT);
         } else if (buttonCode == 14) {
-            ControlInputs.pressControl(Controls.RIGHT);
+            ControlInput.localControls.pressControl(Controls.RIGHT);
         } else if (buttonCode == 6) {
-            ControlInputs.pressControl(Controls.get("return"));
+            ControlInput.localControls.pressControl(Controls.get("return"));
         } else if (buttonCode == 4) {
-            ControlInputs.pressControl(Controls.get("select"));
+            ControlInput.localControls.pressControl(Controls.get("select"));
         }
         keyDown(-1);
         return true;
@@ -349,23 +379,23 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         if (!controllers.contains(controller))
             connected(controller);
         if (buttonCode < 2) {
-            ControlInputs.releaseControl(Controls.JUMP);
-            ControlInputs.releaseControl(Controls.get("select"));
+            ControlInput.localControls.releaseControl(Controls.JUMP);
+            ControlInput.localControls.releaseControl(Controls.get("select"));
         } else if (buttonCode < 4) {
-            ControlInputs.releaseControl(Controls.DOWN);
+            ControlInput.localControls.releaseControl(Controls.DOWN);
         } else if (buttonCode == 11) {
-            ControlInputs.releaseControl(Controls.UP);
-            ControlInputs.releaseControl(Controls.JUMP);
+            ControlInput.localControls.releaseControl(Controls.UP);
+            ControlInput.localControls.releaseControl(Controls.JUMP);
         } else if (buttonCode == 12) {
-            ControlInputs.releaseControl(Controls.DOWN);
+            ControlInput.localControls.releaseControl(Controls.DOWN);
         } else if (buttonCode == 13) {
-            ControlInputs.releaseControl(Controls.LEFT);
+            ControlInput.localControls.releaseControl(Controls.LEFT);
         } else if (buttonCode == 14) {
-            ControlInputs.releaseControl(Controls.RIGHT);
+            ControlInput.localControls.releaseControl(Controls.RIGHT);
         } else if (buttonCode == 6) {
-            ControlInputs.releaseControl(Controls.get("return"));
+            ControlInput.localControls.releaseControl(Controls.get("return"));
         } else if (buttonCode == 4) {
-            ControlInputs.releaseControl(Controls.get("select"));
+            ControlInput.localControls.releaseControl(Controls.get("select"));
         }
         keyUp(-1);
         return true;
@@ -377,30 +407,30 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             connected(controller);
         if (axisCode == 0) {
             if (value > 0.5f) {
-                ControlInputs.pressControl(Controls.RIGHT);
+                ControlInput.localControls.pressControl(Controls.RIGHT);
             } else if (value < -0.5f) {
-                ControlInputs.pressControl(Controls.LEFT);
+                ControlInput.localControls.pressControl(Controls.LEFT);
             } else {
-                ControlInputs.releaseControl(Controls.RIGHT);
-                ControlInputs.releaseControl(Controls.LEFT);
+                ControlInput.localControls.releaseControl(Controls.RIGHT);
+                ControlInput.localControls.releaseControl(Controls.LEFT);
             }
         } else if (axisCode == 1) {
             if (value < -0.5f) {
-                ControlInputs.pressControl(Controls.UP);
+                ControlInput.localControls.pressControl(Controls.UP);
             } else if (value > 0.5f) {
-                ControlInputs.pressControl(Controls.DOWN);
+                ControlInput.localControls.pressControl(Controls.DOWN);
             } else {
-                ControlInputs.releaseControl(Controls.UP);
-                ControlInputs.releaseControl(Controls.DOWN);
+                ControlInput.localControls.releaseControl(Controls.UP);
+                ControlInput.localControls.releaseControl(Controls.DOWN);
             }
         } else if (axisCode == 3) {
             if (value < -0.5f) {
-                ControlInputs.pressControl(Controls.JUMP);
+                ControlInput.localControls.pressControl(Controls.JUMP);
             } else if (value > 0.5f) {
-                ControlInputs.pressControl(Controls.DOWN);
+                ControlInput.localControls.pressControl(Controls.DOWN);
             } else {
-                ControlInputs.releaseControl(Controls.JUMP);
-                ControlInputs.releaseControl(Controls.DOWN);
+                ControlInput.localControls.releaseControl(Controls.JUMP);
+                ControlInput.localControls.releaseControl(Controls.DOWN);
             }
         }
         return true;
@@ -451,6 +481,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
         g.begin();
         buffer.begin();
+        g.setBlendFunction(-1, -1);
+        Gdx.gl20.glBlendFuncSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         useStaticCamera();
 
@@ -470,10 +502,11 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
         g.flush();
         buffer.end();
+        g.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         // Run through the shader stack w/o blending for post-processing
 
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+//        Gdx.gl.glDisable(GL20.GL_BLEND);
 
         shaderStack.forEach(shaderProgram -> {
             TextureRegion tex = new TextureRegion(buffer.getColorBufferTexture());
@@ -494,26 +527,30 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         g.draw(buffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
         g.end();
 
-        Gdx.gl.glEnable(GL20.GL_BLEND);
+//        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         hoverInfo = null;
         MouseUtil.update();
-        ControlInputs.update();
+        ControlInput.localControls.update();
         tick++;
     }
 
     public void beginTempBuffer() {
         g.flush();
-        tempBuffer.begin();
+        tempBufferLayer++;
+        tempBuffers[tempBufferLayer].begin();
+        ScreenUtils.clear(1, 1, 1, 0);
     }
 
     public void endTempBuffer() {
         g.flush();
-        tempBuffer.end();
+        tempBuffers[tempBufferLayer].end();
+        tempBufferLayer--;
     }
 
     public void drawTempBuffer() {
-        g.draw(tempBuffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+        g.draw(tempBuffers[tempBufferLayer + 1].getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
     }
 
     public NestedFrameBuffer getFrameBuffer() {

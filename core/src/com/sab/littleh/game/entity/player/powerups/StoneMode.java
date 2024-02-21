@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
-import com.sab.littleh.controls.ControlInputs;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
@@ -37,12 +37,12 @@ public class StoneMode extends Powerup {
    @Override
    public void move() {
       if (groundSlam == 0 || groundSlam >= GROUND_SLAM_DELAY) {
-         if (ControlInputs.isPressed(Controls.LEFT)) {
+         if (player.controller.isPressed(Controls.LEFT)) {
             if (!player.touchingWall) player.direction = -1;
             player.velocityX -= 1.2f * (player.touchingWater ? 0.9f : 1) * (groundSlam >= GROUND_SLAM_DELAY ? 0.5f : 1);
          }
 
-         if (ControlInputs.isPressed(Controls.RIGHT)) {
+         if (player.controller.isPressed(Controls.RIGHT)) {
             if (!player.touchingWall) player.direction = 1;
             player.velocityX += 1.2f * (player.touchingWater ? 0.9f : 1) * (groundSlam >= GROUND_SLAM_DELAY ? 0.5f : 1);
          }
@@ -69,7 +69,7 @@ public class StoneMode extends Powerup {
       if (groundSlam < GROUND_SLAM_DELAY) {
          player.kill();
       } else {
-         if (ControlInputs.isPressed(Controls.JUMP) || ControlInputs.isPressed(Controls.UP)) {
+         if (player.controller.isPressed(Controls.JUMP) || player.controller.isPressed(Controls.UP)) {
             player.velocityY = Math.abs(player.velocityY) * 0.9f;
             player.velocityY += 4f * -player.getGravityMagnitude();
             LittleH.program.dynamicCamera.addScreenShake(6);
@@ -92,7 +92,7 @@ public class StoneMode extends Powerup {
             groundSlam++;
             if (groundSlam < GROUND_SLAM_DELAY) {
                if (groundSlam > GROUND_SLAM_DELAY / 2) {
-                  if (!ControlInputs.isPressed(Controls.DOWN)) {
+                  if (!player.controller.isPressed(Controls.DOWN)) {
                      groundSlam = 0;
                   }
                }
@@ -100,7 +100,7 @@ public class StoneMode extends Powerup {
                player.velocityY = 0;
                player.velocityX *= 0.1f;
             } else {
-               if (ControlInputs.isJustPressed(Controls.JUMP) || ControlInputs.isJustPressed(Controls.UP)) {
+               if (player.controller.isJustPressed(Controls.JUMP) || player.controller.isJustPressed(Controls.UP)) {
                   groundSlam = 0;
                } else {
                   player.velocityY += 1 * player.getGravityMagnitude();
@@ -110,7 +110,7 @@ public class StoneMode extends Powerup {
          }
       }
 
-      if (ControlInputs.isJustPressed(Controls.DOWN)) {
+      if (player.controller.isJustPressed(Controls.DOWN)) {
          if (!player.touchingGround) {
             SoundEngine.playSound("slam_start.ogg");
             groundSlam = 1;
@@ -120,6 +120,9 @@ public class StoneMode extends Powerup {
 
    @Override
    public void updateVelocity() {
+      if (player.touchingGround) {
+         player.maxGroundSpeed = Math.abs(player.velocityX);
+      }
       if (!(player.slippery && player.crouched)) {
          player.velocityX *= 0.92f;
       } else {
@@ -130,5 +133,9 @@ public class StoneMode extends Powerup {
          player.velocityY *= 0.99f;
       if (!noGravity)
          player.velocityY -= 1.2f * -player.getGravityMagnitude();
+
+      if (player.touchingGround && player.controller.isPressed(Controls.RIGHT) == player.controller.isPressed(Controls.LEFT)) {
+         if (!player.slippery && !player.crouched) player.velocityX *= 0.5f;
+      }
    }
 }

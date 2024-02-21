@@ -1,0 +1,7 @@
+@location woodlands
+@local_index 1
+@id forest
+@x 176
+@y 40
+@p_time 34000
+@unlocks [ infection, temple ]

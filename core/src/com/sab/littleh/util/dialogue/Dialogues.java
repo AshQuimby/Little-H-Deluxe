@@ -1,6 +1,5 @@
 package com.sab.littleh.util.dialogue;
 
-import com.sab.littleh.campaign.visual_novel.dialogue.VnDialogue;
 import com.sab.littleh.util.Localization;
 
 import java.io.File;
@@ -137,13 +136,13 @@ public class Dialogues {
       return new Dialogue(dialogue, characters, files, breakPoints);
    }
 
-   public static VnDialogue getVnDialogue(String fileName) {
-      // Fills the arrays
-      if (!fillDialogue(fileName))
-         return null;
-
-      return new VnDialogue(dialogue, characters, files, breakPoints);
-   }
+//   public static VnDialogue getVnDialogue(String fileName) {
+//       Fills the arrays
+//      if (!fillDialogue(fileName))
+//         return null;
+//
+//      return new VnDialogue(dialogue, characters, files, breakPoints);
+//   }
    
    public static boolean hasUnspentDialogue(String fileName) {
       return !dialogueKeys.contains(fileName);

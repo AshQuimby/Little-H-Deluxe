@@ -133,7 +133,7 @@ public class Tile {
     }
 
     public boolean tileEquals(Tile other) {
-        return other != null && image.equals(other.image) && (tileType == other.tileType || !ignoreTiling);
+        return other != null && image.equals(other.image) && (tileType == other.tileType || !ignoreTiling) && extrasEqual(other);
     }
 
     public boolean extrasEqual(Tile other) {
@@ -166,6 +166,7 @@ public class Tile {
     }
 
     public int getOrientation() {
+        if (tileType == 0) return (x + y / 2) % 4;
         return tileType / 15 % 4;
     }
 
@@ -349,8 +350,11 @@ public class Tile {
         return tileHitbox;
     }
 
-    public List<Rectangle> toRectangles() {
-        List<Rectangle> hitboxes = new ArrayList<>();
+    public void toRectangles(List<Rectangle> hitboxes) {
+        if (!hasTag("multi_hitbox")) {
+            hitboxes.add(toRectangle());
+            return;
+        }
         Rectangle tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
         if (hasTag("small_triangle")) {
             switch (tileType) {
@@ -398,8 +402,6 @@ public class Tile {
                     break;
             }
         }
-
-        return hitboxes;
     }
 
     public void setImage(String image) {
@@ -477,6 +479,9 @@ public class Tile {
                 ((Object[]) arbDat)[1] = 120;
             }
         }
+        if (hasTag("notified_spring_bounce")) {
+            arbDat = tileType % 2 + 30;
+        }
     }
 
     public void update(Level game) {
@@ -511,6 +516,17 @@ public class Tile {
                     timer--;
                     data[1] = timer;
                 }
+            }
+        }
+
+        if (hasTag("notified_spring_bounce")) {
+            if (arbDat != null) {
+                int data = (Integer) arbDat;
+                if (data > 0) data--;
+
+                tileType = (byte) (tileType % 2 + data / 10);
+            } else {
+                arbDat = 0;
             }
         }
 

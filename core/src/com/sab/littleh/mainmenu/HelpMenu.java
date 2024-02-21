@@ -3,8 +3,7 @@ package com.sab.littleh.mainmenu;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.controls.ControlInputs;
-import com.sab.littleh.controls.Controls;
+import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
@@ -37,7 +36,7 @@ public class HelpMenu extends MainMenu {
 
     @Override
     public void keyDown(int keycode) {
-        if (ControlInputs.isJustPressed("return") || ControlInputs.isJustPressed("select")) {
+        if (ControlInput.localControls.isJustPressed("return") || ControlInput.localControls.isJustPressed("select")) {
             goBack();
         }
     }
@@ -52,7 +51,8 @@ public class HelpMenu extends MainMenu {
             return;
         } else if (newIndex == buttonMenu.items.length - 2) {
             LoadingUtil.startLoading(() -> {
-                InternalLevelMenu tutorial = new InternalLevelMenu(this, LevelLoader.readInternalLevel("tutorial.map"));
+                InternalLevelMenu tutorial = new InternalLevelMenu(this,
+                        LevelLoader.readInternalLevel("tutorial.map"), ControlInput.localControls.isPressed("shift"));
                 LittleH.pendingMenu = tutorial;
             });
             // Don't update the index;

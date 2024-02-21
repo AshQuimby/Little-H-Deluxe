@@ -19,7 +19,8 @@ public class Cursors {
             "pen",
             "pencil",
             "move_arrow",
-            "drag_hand"
+            "drag_hand",
+            "line"
     };
     private static final HashMap<String, Cursor> cache = new HashMap<>();
 

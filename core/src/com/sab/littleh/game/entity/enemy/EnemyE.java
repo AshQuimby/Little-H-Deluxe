@@ -26,7 +26,7 @@ public class EnemyE extends Enemy {
          }
       }
       float playerDist = game.player.getCenter().dst2(new Vector2(x + 24, y + 24));
-      if (playerDist > 1800 * 1800) {
+      if (playerDist > 2000 * 2000) {
          despawn = true;
       }
       if (touchingGround) {
