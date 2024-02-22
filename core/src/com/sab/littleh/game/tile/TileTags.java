@@ -29,6 +29,10 @@ public class TileTags {
         tags.put(tag, null);
     }
 
+    public String[] getTags() {
+        return tags.keySet().toArray(new String[0]);
+    }
+
     public void addTag(String tag, String value) {
         tags.put(tag, value);
     }

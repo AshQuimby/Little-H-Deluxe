@@ -19,13 +19,9 @@ import java.util.*;
 
 public class Tile {
     public static final Rectangle drawRect = new Rectangle(0, 0, 8, 8);
-    // Cache tag sets to save RAM
-    public static final Map<Set<String>, Set<String>> tagsCache = new HashMap<>();
     // Store position for efficiency both in-game and for saving files
     public int x;
     public int y;
-    // Byte to save RAM, it should never be bigger than 3
-    private byte rotation;
     // An image identifier used to find the image
     public String image;
     public String extra;
@@ -36,13 +32,14 @@ public class Tile {
     private Rectangle cachedDrawRect;
     private Object arbDat;
     // Set because we only use it to check if one is present
-    public Set<String> tags;
+    public TileTags tags;
 
-    private Tile(int x, int y, String image, int tileType, Set<String> tags, String extra, boolean ignoreTiling, Rectangle drawRect) {
+    private Tile(int x, int y, String image, int tileType, TileTags tags, String extra, boolean ignoreTiling, Rectangle drawRect) {
         this.x = x;
         this.y = y;
         this.image = image;
-        this.tags = tags;
+        // Very important to create a new TileTags, not just reference the argument
+        this.tags = new TileTags(tags);
         if (extra != null)
             this.extra = extra.trim();
         this.tileType = (byte) tileType;
@@ -50,11 +47,11 @@ public class Tile {
         this.cachedDrawRect = drawRect;
     }
 
-    private Tile(int x, int y, String image, int tileType, Set<String> tags, String extra) {
+    private Tile(int x, int y, String image, int tileType, TileTags tags, String extra) {
         this.x = x;
         this.y = y;
         this.image = image;
-        this.tags = getCachedTags(tags);
+        this.tags = new TileTags(tags);
         if (extra != null)
             this.extra = extra.trim();
         setTileType(tileType);
@@ -68,11 +65,10 @@ public class Tile {
         this.x = x;
         this.y = y;
         this.image = image;
-        this.tags = new HashSet<>();
+        this.tags = new TileTags();
         for (String string : tags) {
-            this.tags.add(string);
+            this.tags.addTag(string);
         }
-        this.tags = getCachedTags(this.tags);
         if (extra != null)
             this.extra = extra.trim();
         setTileType(tileType);
@@ -121,15 +117,12 @@ public class Tile {
             return;
         setTags(LevelLoader.tagsByTile.getValue(identifier).asStringArray());
     }
+
     public void setTags(String[] tags) {
         if (tags == null) return;
-        this.tags = new HashSet<>();
-        Collections.addAll(this.tags, tags);
-        this.tags = getCachedTags(this.tags);
-    }
-
-    public void setTags(Set<String> tags) {
-        this.tags = getCachedTags(tags);
+        for (String tag: tags) {
+            this.tags.addTag(tag);
+        }
     }
 
     public boolean tileEquals(Tile other) {
@@ -144,25 +137,9 @@ public class Tile {
         return tile == null && other == null || tile != null && tile.tileEquals(other);
     }
 
-    public static void clearTagsCache() {
-        tagsCache.clear();
-    }
-
-    public Set<String> getCachedTags(Set<String> tags) {
-        if (tagsCache.containsKey(tags)) {
-            return tagsCache.get(tags);
-        }
-        tagsCache.put(tags, tags);
-        return tags;
-    }
-
     public boolean isSolid() {
         if (hasTag("coin_box") || hasTag("enemy_box")) return tileType % 2 == 0;
         return hasTag("solid");
-    }
-
-    public boolean matches(Tile other) {
-        return other != null && other.image.equals(image);
     }
 
     public int getOrientation() {
@@ -200,59 +177,17 @@ public class Tile {
     }
 
     public int getPropertyCount() {
-        if (hasTag("property_set")) {
-            for (String tag : tags) {
-                if (!tag.contains("_set") || tag.equals("property_set")) continue;
-                String count = tag.split("_")[0];
-                return Integer.parseInt(count);
-            }
+        if (hasTag("states")) {
+            return Integer.parseInt(tags.getTag("states"));
         }
         return 0;
     }
 
     public int getPropertyIndex() {
-        if (hasTag("property_set")) {
+        if (hasTag("states")) {
             return tileType;
         }
         return 0;
-    }
-
-    public void setPropertyValue(int value) {
-        if (hasTag("property_set")) {
-            setTileType(value);
-        }
-    }
-
-    public int[] getPropertyValues() {
-        if (hasTag("property_set")) {
-            for (String tag : tags) {
-                if (!tag.contains("_set") || tag.equals("property_set")) continue;
-                String count = tag.split("_")[0];
-                int[] values = new int[Integer.parseInt(count)];
-                for (int i = 0; i < values.length; i++) {
-                    values[i] = i;
-                }
-                return values;
-            }
-        }
-//       if (hasTag("3_set")) {
-//          return new int[]{ 0, 1, 2 };
-//       } else if (hasTag("4_set")) {
-//          return new int[]{ 0, 1, 2, 3 };
-//       } else if (hasTag("15_set")) {
-//          return new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-//       }
-        return new int[]{ 0 };
-    }
-
-    public void cycleProperties(boolean forward) {
-        if (hasTag("property_set")) {
-            int max = getPropertyValues().length;
-            tileType = (byte) (tileType + (forward ? 1 : -1));
-            if (tileType > max) tileType = 0;
-            else if (tileType < 0) tileType = (byte) (max - 1)  ;
-            updateDrawSection();
-        }
     }
 
     /*
@@ -415,48 +350,15 @@ public class Tile {
     }
 
     public boolean hasTag(String tag) {
-        return tags.contains(tag);
-    }
-
-    public boolean hasTags() {
-        return tags.isEmpty();
+        return tags.hasTag(tag);
     }
 
     public String[] getTags() {
-        String[] tagsArray = new String[tags.size()];
-        int i = 0;
-        for (String string : tags) {
-            tagsArray[i] = string;
-            i++;
-        }
-        return tagsArray;
-    }
-
-    public void addTag(String tag) {
-        String[] tags = getTags();
-        List<String> newTags = new ArrayList<>();
-        for (String string : tags) {
-            newTags.add(string);
-        }
-        newTags.add(tag);
-        tags = new String[newTags.size()];
-        for (int i = 0; i < tags.length; i++) {
-            tags[i] = newTags.get(i);
-        }
-        setTags(tags);
+        return tags.getTags();
     }
 
     public void removeTag(String tag) {
-        String[] tags = getTags();
-        String[] newTags = new String[tags.length - 1];
-        int n = 0;
-        for (int i = 0; i < tags.length; i++) {
-            if (!tags[i].equals(tag)) {
-                newTags[n] = tags[i];
-                n++;
-            }
-        }
-        setTags(newTags);
+        tags.removeTag(tag);
     }
 
     public Tile copy() {
