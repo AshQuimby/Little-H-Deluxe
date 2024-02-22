@@ -321,13 +321,9 @@ public class Level {
         return mapLayers.get("wiring");
     }
 
-    public int getcheckpointSavedTileCount() {
-        return getBaseLayer().checkpointSavedTiles.size();
-    }
-
     public void inGameRemoveTile(Tile tile) {
         if (tilesDesynced) {
-            if (tile.hasTag(checkpoint_saved)) {
+            if (tile.hasTag("checkpoint_saved")) {
                 getBaseLayer().checkpointSavedTiles.remove(tile);
             }
             if (tile.hasTag("notifiable")) {
@@ -344,7 +340,7 @@ public class Level {
 
     public void inGameAddTile(Tile tile) {
         if (tilesDesynced) {
-            if (tile.hasTag(checkpoint_saved)) {
+            if (tile.hasTag("checkpoint_saved")) {
                 getBaseLayer().checkpointSavedTiles.add(tile);
             }
             if (tile.hasTag("notifiable")) {
@@ -408,8 +404,8 @@ public class Level {
         GunMode.bullets.clear();
         enemies.clear();
         getBaseLayer().checkpointSavedTiles.clear();
-        getBaseLayer().notifiableTiles.removeIf(tile -> tile.hasTag(checkpoint_saved));
-        getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag(checkpoint_saved));
+        getBaseLayer().notifiableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
+        getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
         for (Tile tile : getBaseLayer().checkpointState) {
             Tile copy = tile.copy();
             if (tile.hasTag("notifiable"))
@@ -460,7 +456,7 @@ public class Level {
         for (Tile tile : getBaseLayer().allTiles) {
             Tile copy = tile.copy();
             getBaseLayer().tileMap.get(copy.x).set(copy.y, copy);
-            if (tile.hasTag(checkpoint_saved)) {
+            if (tile.hasTag("checkpoint_saved")) {
                 getBaseLayer().checkpointSavedTiles.add(copy);
             }
             if (tile.hasTag("notifiable")) {

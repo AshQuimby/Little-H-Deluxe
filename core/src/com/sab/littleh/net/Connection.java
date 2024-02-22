@@ -14,7 +14,7 @@ public class Connection {
     private DataOutputStream out;
     private DataInputStream in;
 
-    private checkpointSaved ConnectionState state;
+    private ConnectionState state;
 
     public Connection(String address, int port) throws IOException {
         state = ConnectionState.CONNECTING;
