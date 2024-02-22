@@ -11,8 +11,9 @@ public class MapLayer {
     public List<Tile> volatileTiles;
     public List<Tile> notifiableTiles;
     public List<Tile> checkpointState;
-    public List<Tile> updatableTiles;
+    public List<Tile> updatableTiles;k
     public List<List<Tile>> tileMap;
+
     public MapLayer() {
         allTiles = new ArrayList<>();
         volatileTiles = new ArrayList<>();
