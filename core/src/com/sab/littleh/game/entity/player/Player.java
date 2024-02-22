@@ -56,18 +56,17 @@ public class Player extends Entity {
     public int keyCount;
     public int ticksAlive;
     public float trailSpeed;
-    public boolean hasEvilKey;
-    public boolean savedEvilKey;
+    public int savedEvilKeyCount;
     public int savedDirection;
-    public EvilKey evilKey;
+    public final List<EvilKey> evilKeys = new ArrayList<>();
     public int savedKeyCount;
     public boolean savedGravity;
     public int[] totalCoinCounts;
     public int[] coinCounts;
     public boolean[] shouldRenderCoinCounts;
     public Powerup savedPowerup;
-    public java.util.List<Point> previousPositions;
-    public java.util.List<Float> previousSpeeds;
+    public List<Point> previousPositions;
+    public List<Float> previousSpeeds;
     public boolean canCrouch;
     public boolean flippedGravity;
     private Powerup powerup;
@@ -138,23 +137,23 @@ public class Player extends Entity {
         slippery = false;
         keyCount = savedKeyCount;
         flippedGravity = savedGravity;
-        hasEvilKey = savedEvilKey;
         direction = savedDirection;
-        if (hasEvilKey) {
-            evilKey = new EvilKey((int) x / 64, (int) y / 64);
+        evilKeys.clear();
+        for (int i = 0; i < savedEvilKeyCount; i++) {
+            evilKeys.add(new EvilKey((int) x / 64, (int) y / 64));
         }
     }
 
     public void setCoinCounts(Level game) {
         for (int i = 0; i < totalCoinCounts.length; i++) {
-            totalCoinCounts[i] = game.getVolatileTileCount("coin", i);
-            shouldRenderCoinCounts[i] = game.getVolatileTileCount("coin_box", i * 2) > 0 || game.getVolatileTileCount("coin_box", i * 2 + 1) > 0;
+            totalCoinCounts[i] = game.getcheckpointSavedTileCount("coin", i);
+            shouldRenderCoinCounts[i] = game.getcheckpointSavedTileCount("coin_box", i * 2) > 0 || game.getcheckpointSavedTileCount("coin_box", i * 2 + 1) > 0;
         }
     }
 
     public void updateCoinCounts(Level game) {
         for (int i = 0; i < coinCounts.length; i++) {
-            if (totalCoinCounts[i] > 0) coinCounts[i] = totalCoinCounts[i] - game.getVolatileTileCount("coin", i);
+            if (totalCoinCounts[i] > 0) coinCounts[i] = totalCoinCounts[i] - game.getcheckpointSavedTileCount("coin", i);
         }
     }
 
@@ -191,11 +190,7 @@ public class Player extends Entity {
 
         ticksAlive++;
 
-        if (hasEvilKey) {
-            evilKey.update(this, game);
-        } else {
-            evilKey = null;
-        }
+        evilKeys.forEach(evilKey -> evilKey.update(this, game));
 
         previousPositions.add(0, new Point((int) x, (int) y));
         if (previousPositions.size() > 1024) {
@@ -435,7 +430,7 @@ public class Player extends Entity {
             game.saveCheckpointState();
             savedGravity = flippedGravity;
             savedKeyCount = keyCount;
-            savedEvilKey = hasEvilKey;
+            savedEvilKeyCount = evilKeys.size();
             savedPowerup = powerup;
             savedDirection = direction;
             game.showTimer();
@@ -466,7 +461,7 @@ public class Player extends Entity {
                     if (tile.hasTag("coin")) {
                         SoundEngine.playSound("coin.ogg");
                         coinCounts[tile.tileType]++;
-                        if (shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
+                        if (shouldRenderCoinCounts[tile.tileType] && game.getcheckpointSavedTileCount("coin", tile.tileType) == 0) {
                             SoundEngine.playSound("all_coins_collected.ogg");
                             game.notify("notify_all_coins", tile.tileType);
                         }
@@ -478,8 +473,7 @@ public class Player extends Entity {
                     if (tile.hasTag("key")) {
                         SoundEngine.playSound("coin.ogg");
                         if (tile.hasTag("evil")) {
-                            evilKey = new EvilKey(tile.x, tile.y);
-                            hasEvilKey = true;
+                            evilKeys.add(new EvilKey(tile.x, tile.y));
                             return;
                         }
                         keyCount++;
@@ -524,7 +518,7 @@ public class Player extends Entity {
 
     public Point getPreviousCenter(int ticksBehind) {
         if (ticksBehind < previousPositions.size()) return new Point(previousPositions.get(ticksBehind).x + width / 2, previousPositions.get(ticksBehind).y + height / 2);
-        return new Point (0, 0);
+        return new Point(previousPositions.get(previousPositions.size() - 1).x + width / 2, previousPositions.get(previousPositions.size() - 1).y + height / 2);
     }
 
     public void drawTrail(Graphics g) {
@@ -583,9 +577,7 @@ public class Player extends Entity {
                 g.drawImage(Images.getImage("tiles/key.png"), new Rectangle(position.x - 8, position.y, 64, 64), new Rectangle(0, 0, 8, 8));
             }
         }
-        if (evilKey != null) {
-            evilKey.render(g, this, game);
-        }
+        evilKeys.forEach(evilKey ->  evilKey.render(g, this, game));
         if (!warpingOut())
             drawTrail(g);
         powerup.preDrawPlayer(g, game);
@@ -662,9 +654,10 @@ public class Player extends Entity {
                 game.addParticle(new Particle(hitbox.x + hitbox.width / 2 - 24, hitbox.y + hitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -6), (float) ((Math.random() - 0.5) * -6), 32, 32, 4, 4, 1, 0.98f, 0f,
                         (int) (Math.random() * 4), 0, "particles/evil_smoke.png", 30, 0.02f));
             }
-            Point target = player.previousPositions.get(30);
-            keyVelX = (target.x - hitbox.x) / 3;
-            keyVelY = (target.y - hitbox.y) / 3;
+            Point target = player.getPreviousCenter(30 + 20 * player.evilKeys.indexOf(this));
+            Vector2 center = hitbox.getCenter(new Vector2());
+            keyVelX = (target.x - center.x) / 3;
+            keyVelY = (target.y - center.y) / 3;
             hitbox.x += keyVelX;
             hitbox.y += keyVelY;
             if (hitbox.overlaps(new Rectangle(player.x ,player.y, player.width, player.height))) {

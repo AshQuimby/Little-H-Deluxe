@@ -1,9 +1,9 @@
 @author_name The Minuscule M Murderer
 @rainbow_title false
 @debug_mode false
-@grid_enabled true
+@grid_enabled false
 @h_color 0
-@master_volume 50
+@master_volume 0
 @screen_shake true
 @use_shaders true
 @high_contrast_selection false

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MapLayer {
     public List<Tile> allTiles;
-    public List<Tile> volatileTiles;
+    public List<Tile> checkpointSavedTiles;
     public List<Tile> notifiableTiles;
     public List<Tile> checkpointState;
     public List<Tile> updatableTiles;
@@ -16,7 +16,7 @@ public class MapLayer {
 
     public MapLayer() {
         allTiles = new ArrayList<>();
-        volatileTiles = new ArrayList<>();
+        checkpointSavedTiles = new ArrayList<>();
         notifiableTiles = new ArrayList<>();
         checkpointState = new ArrayList<>();
         updatableTiles = new ArrayList<>();

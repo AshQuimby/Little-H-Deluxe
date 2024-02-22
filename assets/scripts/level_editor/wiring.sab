@@ -1,0 +1,5 @@
+@0 tiles/wiring/wires/red_wire
+@1 tiles/wiring/wires/yellow_wire
+@2 tiles/wiring/wires/green_wire
+@3 tiles/wiring/wires/blue_wire
+@4 tiles/wiring/actuator

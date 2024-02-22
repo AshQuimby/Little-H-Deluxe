@@ -147,7 +147,7 @@ public class GunMode extends Powerup {
                 game.inGameRemoveTile(tile);
                 SoundEngine.playSound("coin.ogg");
                 game.player.coinCounts[tile.tileType]++;
-                if (game.player.shouldRenderCoinCounts[tile.tileType] && game.getVolatileTileCount("coin", tile.tileType) == 0) {
+                if (game.player.shouldRenderCoinCounts[tile.tileType] && game.getcheckpointSavedTileCount("coin", tile.tileType) == 0) {
                     SoundEngine.playSound("all_coins_collected.ogg");
                     game.notify("notify_all_coins", tile.tileType);
                 }

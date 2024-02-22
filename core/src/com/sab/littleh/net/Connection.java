@@ -14,7 +14,7 @@ public class Connection {
     private DataOutputStream out;
     private DataInputStream in;
 
-    private volatile ConnectionState state;
+    private checkpointSaved ConnectionState state;
 
     public Connection(String address, int port) throws IOException {
         state = ConnectionState.CONNECTING;

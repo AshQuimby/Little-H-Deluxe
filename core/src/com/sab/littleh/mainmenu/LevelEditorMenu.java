@@ -28,28 +28,33 @@ import java.util.List;
 public class LevelEditorMenu extends MainMenu {
     public boolean canPlaceTiles;
     private List<List<Tile>> tileSelections;
+    private List<Tile> wireSelection;
     private TypingQuery timeQuery;
     private TypingQuery extraQuery;
-    private ImageButton tileMenuButton;
-    private ImageButton settingsMenuButton;
+    private final ImageButton tileMenuButton;
+    private final ImageButton settingsMenuButton;
     private Menu<MenuButton> tileButtons;
-    private Menu<ImageButton> toolButtons;
+    private Menu<MenuButton> normalTileButtons;
+    private Menu<MenuButton> wiringTileButtons;
+    private final Menu<ImageButton> toolButtons;
     private Menu<ImageButton> settingsButtons;
     private Menu<MenuButton> backgroundMenu;
-    private Menu<MenuButton> severeConfirmationMenu;
-    private Menu<MenuButton> severeSevereConfirmationMenu;
+    private final Menu<MenuButton> severeConfirmationMenu;
+    private final Menu<MenuButton> severeSevereConfirmationMenu;
     private Menu<? extends MenuButton> currentMenu;
-    private static DynamicCamera camera = LittleH.program.dynamicCamera;
-    private File file;
+    private static final DynamicCamera camera = LittleH.program.dynamicCamera;
+    private final File file;
     private boolean editingBackground;
-    private Level level;
+    private boolean wiringMode;
+    private final Level level;
     private LevelEditor editor;
-    private LevelEditor levelEditor;
-    private LevelEditor backgroundEditor;
+    private final LevelEditor levelEditor;
+    private final LevelEditor backgroundEditor;
+    private final LevelEditor wiringEditor;
     private Vector2 mousePosition;
     private Vector2 mouseWorldPosition;
     private Vector2 previousMousePosition;
-    private Point tiledMousePosition;
+    private final Point tiledMousePosition;
     private Point lineToolOrigin;
     private boolean deleteLine;
     private Player lastPlayer;
@@ -64,6 +69,7 @@ public class LevelEditorMenu extends MainMenu {
         backgroundVisible = Settings.localSettings.backgroundVisibility.value;
         levelEditor = new LevelEditor(level, "normal");
         backgroundEditor = new LevelEditor(level, "background");
+        wiringEditor = new LevelEditor(level, "wiring");
         editor = levelEditor;
         mousePosition = new Vector2();
         mouseWorldPosition = new Vector2();
@@ -143,12 +149,19 @@ public class LevelEditorMenu extends MainMenu {
                     level.mapData.insertValue("look_around", SabValue.fromBool(!level.mapData.getValue("look_around").asBool()));
                     editor.setSaved(false);
                 }),
-                imageButton.quickCreate("ui/buttons/icons/edit_background.png", "Toggle edit background", () -> {
+                imageButton.quickCreate("ui/buttons/icons/edit_background.png", "Toggle background editor", () -> {
                     editingBackground = !editingBackground;
                     if (editingBackground)
                         editor = backgroundEditor;
                     else
                         editor = levelEditor;
+                }),
+                imageButton.quickCreate("ui/buttons/icons/wiring_mode.png", "Toggle wiring mode", () -> {
+                    wiringMode = !wiringMode;
+                    if (wiringMode)
+                        enterWiringMode();
+                    else
+                        exitWiringMode();
                 }),
                 imageButton.quickCreate("ui/buttons/icons/floppy_disc.png", "Save", () -> {
                     LevelLoader.saveLevel(file, level);
@@ -173,6 +186,21 @@ public class LevelEditorMenu extends MainMenu {
         SoundEngine.playMusic(Settings.localSettings.buildingSong.value);
     }
 
+    private void enterWiringMode() {
+        editor = wiringEditor;
+        tileButtons = wiringTileButtons;
+        resetTileMenu();
+    }
+
+    private void exitWiringMode() {
+        if (editingBackground)
+            editor = backgroundEditor;
+        else
+            editor = levelEditor;
+        tileButtons = normalTileButtons;
+        resetTileMenu();
+    }
+
     public void stop() {
         LittleH.program.switchMenu(new LevelOptionsMenu(file, level.mapData));
         setToolIndex(5);
@@ -180,39 +208,68 @@ public class LevelEditorMenu extends MainMenu {
     }
 
     public void resetTileMenu() {
-        List<Tile> tileSelection = getTileSelection();
+        if (wiringMode) {
+            List<Tile> tileSelection = wireSelection;
 
-        MenuButton[] buttons = new MenuButton[tileSelection.size() + (Settings.localSettings.dividedTileSelection.value ? 3 : 1)];
-        buttons[0] = new ImageButton(null, "settings_dots.png", 0, 0, 64, 64,
-                0, 0, 64, 64, null);
-        for (int i = 1; i < buttons.length - (Settings.localSettings.dividedTileSelection.value ? 2 : 0); i++) {
-            tileSelection.get(i - 1).setTags();
-            buttons[i] = new TileButton(tileSelection.get(i - 1), 0, 0);
-        }
-
-        if (Settings.localSettings.dividedTileSelection.value) {
-            buttons[buttons.length - 2] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64,
+            MenuButton[] buttons = new MenuButton[tileSelection.size() + 1];
+            buttons[0] = new ImageButton(null, "settings_dots.png", 0, 0, 64, 64,
                     0, 0, 64, 64, null);
 
-            buttons[buttons.length - 1] = new ImageButton(null, "forward_arrow.png", 0, 0, 64, 64,
-                    0, 0, 64, 64, null);
-        }
-
-        tileButtons = new Menu<MenuButton>(buttons, 64, 64, 8) {
-            @Override
-            public MenuButton setItemIndex(int i) {
-                if (i > 0) {
-                    setTileIndex(i - 1);
-                    return super.setItemIndex(i);
-                }
-                return getSelectedItem();
+            for (int i = 1; i < buttons.length; i++) {
+                tileSelection.get(i - 1).setTags();
+                buttons[i] = new TileButton(tileSelection.get(i - 1), 0, 0);
             }
-        };
-        tileButtons.setItemIndex(1);
+
+            wiringTileButtons = new Menu<>(buttons, 64, 64, 8) {
+                @Override
+                public MenuButton setItemIndex(int i) {
+                    if (i > 0) {
+                        setTileIndex(i - 1);
+                        return super.setItemIndex(i);
+                    }
+                    return getSelectedItem();
+                }
+            };
+            wiringTileButtons.setItemIndex(1);
+            tileButtons = wiringTileButtons;
+        } else {
+            List<Tile> tileSelection = getTileSelection();
+
+            MenuButton[] buttons = new MenuButton[tileSelection.size() + (Settings.localSettings.dividedTileSelection.value ? 3 : 1)];
+            buttons[0] = new ImageButton(null, "settings_dots.png", 0, 0, 64, 64,
+                    0, 0, 64, 64, null);
+            for (int i = 1; i < buttons.length - (Settings.localSettings.dividedTileSelection.value ? 2 : 0); i++) {
+                tileSelection.get(i - 1).setTags();
+                buttons[i] = new TileButton(tileSelection.get(i - 1), 0, 0);
+            }
+
+            if (Settings.localSettings.dividedTileSelection.value) {
+                buttons[buttons.length - 2] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64,
+                        0, 0, 64, 64, null);
+
+                buttons[buttons.length - 1] = new ImageButton(null, "forward_arrow.png", 0, 0, 64, 64,
+                        0, 0, 64, 64, null);
+            }
+
+            normalTileButtons = new Menu<>(buttons, 64, 64, 8) {
+                @Override
+                public MenuButton setItemIndex(int i) {
+                    if (i > 0) {
+                        setTileIndex(i - 1);
+                        return super.setItemIndex(i);
+                    }
+                    return getSelectedItem();
+                }
+            };
+            normalTileButtons.setItemIndex(1);
+            tileButtons = normalTileButtons;
+        }
+
         currentMenu = tileButtons;
     }
 
     public List<Tile> getTileSelection() {
+        if (wiringMode) return wireSelection;
         return tileSelections.get(tileSelectionIndex);
     }
 
@@ -248,6 +305,13 @@ public class LevelEditorMenu extends MainMenu {
         }
         if (!Settings.localSettings.dividedTileSelection.value)
             tileSelections.add(selection);
+
+        wireSelection = new ArrayList<>();
+        SabData data = SabReader.read(LevelEditorMenu.class.getResourceAsStream("/scripts/level_editor/wiring.sab"));
+        for (String string : data.getValues().keySet()) {
+            wireSelection.add(new Tile(data.getRawValue(string)));
+        }
+
 
         resetTileMenu();
     }
@@ -708,10 +772,15 @@ public class LevelEditorMenu extends MainMenu {
             if (!level.inGame())
                 startTesting();
 
+        } else if (ControlInput.localControls.isJustPressed("toggle_wiring")) {
+            wiringMode = !wiringMode;
+            if (wiringMode)
+                enterWiringMode();
+            else
+                exitWiringMode();
         } else if (ControlInput.localControls.isJustPressed("toggle_layer")) {
             editingBackground = !editingBackground;
             editor = editingBackground ? backgroundEditor : levelEditor;
-
         }
     }
 
@@ -903,7 +972,7 @@ public class LevelEditorMenu extends MainMenu {
 
         program.useDynamicCamera();
 
-        level.render(g, editingBackground);
+        level.render(g, editingBackground, wiringMode);
 
         program.useDynamicCamera();
 
@@ -1026,7 +1095,13 @@ public class LevelEditorMenu extends MainMenu {
                     } else {
                         g.draw(Images.getImage("ui/level_setting_off.png"), item.x - 8, item.y - 8, item.width + 16, item.height + 16);
                     }
-                } else if (i > 2 && i < 7) {
+                } else if (i == 8) {
+                    if (wiringMode) {
+                        g.draw(Images.getImage("ui/level_setting_on.png"), item.x - 8, item.y - 8, item.width + 16, item.height + 16);
+                    } else {
+                        g.draw(Images.getImage("ui/level_setting_off.png"), item.x - 8, item.y - 8, item.width + 16, item.height + 16);
+                    }
+                }  else if (i > 2 && i < 7) {
                     int levelSettingIndex = i - 3;
                     if (level.mapData.getValue(levelOptions[levelSettingIndex]).asBool()) {
                         g.draw(Images.getImage("ui/level_setting_on.png"), item.x - 8, item.y - 8, item.width + 16, item.height + 16);

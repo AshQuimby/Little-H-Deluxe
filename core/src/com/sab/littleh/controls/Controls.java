@@ -99,7 +99,8 @@ public class Controls {
         controlMap.put("selection", new Control("Selection", false, NUM_7, V));
         controlMap.put("quick_test", new Control("Quick Test", false, NUM_8, T));
         controlMap.put("playtest", new Control("Quick Test", false, ENTER));
-        controlMap.put("toggle_layer", new Control("Toggle Edit Background", false, TAB));
+        controlMap.put("toggle_layer", new Control("Toggle Background Editor", false, TAB));
+        controlMap.put("toggle_wiring", new Control("Toggle Wiring Mode", true, TAB));
         controlMap.put("prev_selection", new Control("Previous Tile Menu", false, Q));
         controlMap.put("next_selection", new Control("Next Tile Menu", false, E));
         controlMap.put("drag_camera", new Control("Drag Camera", false, SHIFT_LEFT));

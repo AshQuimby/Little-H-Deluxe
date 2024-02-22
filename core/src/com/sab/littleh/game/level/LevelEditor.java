@@ -89,12 +89,12 @@ public class LevelEditor {
             level.mapLayers.get(layer).tileMap.get(tile.x).set(tile.y, tile);
         }
 
-        Tile[][] neighbors = getNeighbors(tile.x, tile.y);
+        Tile[][] neighbors = getNeighbors(null, tile.x, tile.y);
 
         for (Tile[] tiles : neighbors)
             for (Tile neighborTile : tiles)
                 if (neighborTile != null)
-                    checkTiling(getNeighbors(neighborTile.x, neighborTile.y), neighborTile);
+                    checkTiling(getNeighbors(neighborTile, neighborTile.x, neighborTile.y), neighborTile);
         setSaved(false);
 
         return amountNegativeResize;
@@ -268,13 +268,18 @@ public class LevelEditor {
         return movingSelection;
     }
 
-    public Tile[][] getNeighbors(int tileX, int tileY) {
+    public Tile[][] getNeighbors(Tile tile, int tileX, int tileY) {
         // Magic
         Tile[][] neighbors = new Tile[3][3];
         for (int i = tileX - 1; i < tileX + 2; i++) {
             for (int j = tileY - 1; j < tileY + 2; j++) {
-                if (!(i < 0 || j < 0 || i >= level.getWidth() || j >= level.getHeight()) && level.getTileAt(layer, i, j) != null && !level.getTileAt(layer, i, j).ignoreTiling) {
-                    neighbors[tileX - i + 1][tileY - j + 1] = level.getTileAt(layer, i, j);
+                Tile otherTile = level.getTileAt(layer, i, j);
+                if (otherTile != null && !otherTile.ignoreTiling) {
+                    if (tile != null && !tile.image.equals("delete") && tile.hasTag("exclusive_tiling") && !otherTile.image.equals(tile.image)) {
+                        neighbors[tileX - i + 1][tileY - j + 1] = null;
+                        continue;
+                    }
+                    neighbors[tileX - i + 1][tileY - j + 1] = otherTile;
                 } else {
                     neighbors[tileX - i + 1][tileY - j + 1] = null;
                 }
@@ -633,7 +638,6 @@ public class LevelEditor {
         float dLen = (float) Math.sqrt(dX * dX + dY * dY);
         float sclX = ((float) dX / dLen);
         float sclY = ((float) dY / dLen);
-        System.out.println(sclX + ", " + sclY);
 
         int[] delta = new int[]{ dX, dY };
         int[] point = new int[]{ startX * 64 + 32, startY * 64 + 32 };

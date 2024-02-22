@@ -9,16 +9,53 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Fixed water shader issues with corners">
-      <change afterPath="$PROJECT_DIR$/assets/resources/controls.sab" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/resources/settings.sab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Tile tag system updates">
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/actuator.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/button.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/ui/buttons/icons/wiring_mode.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/maps/testing.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/level_editor/wiring.sab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/crt.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/crt.fsh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/crush.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/crush.fsh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/palette.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/palette.fsh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/vines.vsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/vines.vsh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/SaveFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/SaveFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/enemy_box.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/enemy_box.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/hyperspace/pinball.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/hyperspace/pinball.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/resources/settings.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/resources/settings.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/base_tags.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/base_tags.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/level_editor/special.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/level_editor/special.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/Controls.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/Controls.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelEditor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/TileTags.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/TileTags.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/settings/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/forest.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/forest.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/test.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/test.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/controls.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/controls.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/saves/clear_times.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/saves/clear_times.sab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +180,7 @@
       <recent name="com.sab.littleh.game.entity.player.powerups" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.Little-H-Deluxe:desktop [run]">
+  <component name="RunManager" selected="Application.DesktopLauncher">
     <configuration name="DesktopLauncher" type="Application" factoryName="Application" singleton="false" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.sab.littleh.DesktopLauncher" />
       <module name="little_h.desktop.main" />
@@ -468,7 +505,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705735610732</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Gitignore updates">
+      <created>1708547699961</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1708547699961</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -521,7 +565,10 @@
     <MESSAGE value="Campaign stuff" />
     <MESSAGE value="Reworked Layer System" />
     <MESSAGE value="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated." />
-    <option name="LAST_COMMIT_MESSAGE" value="A bunch of shader stuff added, alpha broke and I cant seem to properly be able to apply shader's to Backpacker H's hair. Anti-gravity and a jump restoring pearl have also been added. Tutorial level has been updated." />
+    <MESSAGE value="Fixed water shader issues with corners" />
+    <MESSAGE value="Gitignore updates" />
+    <MESSAGE value="Tile tag system updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tile tag system updates" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

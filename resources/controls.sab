@@ -18,6 +18,7 @@
 @copy [31]
 @next_selection [33]
 @jump [62]
+@toggle_wiring [61]
 @suicide [39]
 @toggle_layer [61]
 @right [22, 32]

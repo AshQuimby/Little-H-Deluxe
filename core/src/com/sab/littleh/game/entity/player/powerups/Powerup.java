@@ -234,8 +234,8 @@ public class Powerup {
     public boolean onCollide(Level game, Rectangle entityHitbox, Rectangle tileHitbox, Tile tile, boolean yCollision) {
         if (tile.hasTag("key_box")) {
             if (tile.hasTag("evil")) {
-                if (player.hasEvilKey) {
-                    player.hasEvilKey = false;
+                if (player.evilKeys.size() > 0) {
+                    player.evilKeys.remove(0);
                     for (int i = 0; i < 4; i++) {
                         game.addParticle(new Particle(tileHitbox.x + tileHitbox.width / 2 - 16, tileHitbox.y + tileHitbox.height / 2 - 16, (float) ((Math.random() - 0.5) * -20), (float) (Math.random() * -10), 32, 32, 4, 4, 1, 0.98f, 0f, i, 0, "particles/evil_key_box_rubble.png", 30));
                     }

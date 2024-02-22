@@ -34,7 +34,7 @@ public class Tile {
     // Set because we only use it to check if one is present
     public TileTags tags;
 
-    private Tile(int x, int y, String image, int tileType, TileTags tags, String extra, boolean ignoreTiling, Rectangle drawRect) {
+    public Tile(int x, int y, String image, int tileType, TileTags tags, String extra, boolean ignoreTiling, Rectangle drawRect) {
         this.x = x;
         this.y = y;
         this.image = image;
@@ -47,7 +47,7 @@ public class Tile {
         this.cachedDrawRect = drawRect;
     }
 
-    private Tile(int x, int y, String image, int tileType, TileTags tags, String extra) {
+    public Tile(int x, int y, String image, int tileType, TileTags tags, String extra) {
         this.x = x;
         this.y = y;
         this.image = image;
@@ -57,48 +57,12 @@ public class Tile {
         setTileType(tileType);
     }
 
-    public Tile(int x, int y, String image, int tileType, String tags, String extra) {
-        this(x, y, image, tileType, tags.split(","), extra);
-    }
-
-    public Tile(int x, int y, String image, int tileType, String[] tags, String extra) {
-        this.x = x;
-        this.y = y;
-        this.image = image;
-        this.tags = new TileTags();
-        for (String string : tags) {
-            this.tags.addTag(string);
-        }
-        if (extra != null)
-            this.extra = extra.trim();
-        setTileType(tileType);
-    }
-
-    public Tile(int x, int y, String image, int tileType, String[] tags) {
-        this(x, y, image, tileType, tags, "");
-    }
-
-    public Tile(int x, int y, String image, int tileType, String tags) {
-        this(x, y, image, tileType, tags, "");
-    }
-
-    public Tile(int x, int y, String image, int tileType) {
-        this(x, y, image, tileType, "");
-    }
-
-    public Tile(String image, int tileType) {
-        this(0, 0, image, tileType);
-    }
-
-    public Tile(String image, String[] tags) {
-        this(0, 0, image, 0, tags, "");
-    }
-
     public Tile(String image) {
         this.image = image;
-        setTags();
-        if (!image.equals("delete"))
+        if (!image.equals("delete")) {
+            setTags();
             setTileType(0);
+        }
     }
 
     public static boolean imagesEqual(Tile tileAt, Tile newTile) {
@@ -110,12 +74,7 @@ public class Tile {
     }
 
     public void setTags() {
-        String identifier = image;
-        if (!image.startsWith("."))
-            identifier = image.substring(image.lastIndexOf("/") + 1);
-        if (LevelLoader.tagsByTile.getValue(identifier) == null)
-            return;
-        setTags(LevelLoader.tagsByTile.getValue(identifier).asStringArray());
+        tags = new TileTags(LevelLoader.getTileTags(image));
     }
 
     public void setTags(String[] tags) {
@@ -362,6 +321,7 @@ public class Tile {
     }
 
     public Tile copy() {
+        if (image.equals("delete")) return new Tile("delete");
         return new Tile(x, y, image, tileType, tags, extra, ignoreTiling, cachedDrawRect);
     }
 

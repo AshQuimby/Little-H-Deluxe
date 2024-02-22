@@ -91,10 +91,11 @@ public class Settings {
 
     public static String getRandomName() {
         Random random = new RandomXS128();
-        String[] prefixes = new String[]{ "The Big", "The Little", "The Medium", "The Colossal", "The Microscopic", "The Minuscule" };
+        String[] prefixes = new String[]{ "Big", "Little", "Medium", "Colossal", "Microscopic", "Minuscule", "Infinitesimal", "Voluminous", "Plump", "Scrawny", "Expansive",
+                "Diminutive", "Cavernous", "Tiny", "Wee", "Giant", "Mammoth", "Kilometerous", "Gargantuan", "Puny", "Monumental" };
         String[] bases = new String[]{ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-        String[] suffixes = new String[]{ "Fan", "Enjoyer", "Appreciator", "Stan", "Hater", "Critic", "Scorner", "Murderer", "Elater", "Skeptic", "Actualizer" };
-        return prefixes[random.nextInt(prefixes.length)] + " " + bases[random.nextInt(bases.length)] + " " + suffixes[random.nextInt(suffixes.length)];
+        String[] suffixes = new String[]{ "Fan", "Enjoyer", "Appreciator", "Stan", "Hater", "Critic", "Scorner", "Murderer", "Elater", "Skeptic", "Actualizer", "Dictator", "Mortician" };
+        return "The " + prefixes[random.nextInt(prefixes.length)] + " " + bases[random.nextInt(bases.length)] + " " + suffixes[random.nextInt(suffixes.length)];
     }
 
     public void resetAll() {

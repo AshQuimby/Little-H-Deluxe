@@ -52,7 +52,7 @@ public class Level {
     public HashMap<String, MapLayer> mapLayers;
 //    public List<Tile> backgroundTiles;
 //    public List<Tile> allTiles;
-//    public List<Tile> volatileTiles;
+//    public List<Tile> checkpointSavedTiles;
 //    public List<Tile> notifiableTiles;
 //    public List<Tile> checkpointState;
 //    public List<Tile> updatableTiles;
@@ -170,6 +170,22 @@ public class Level {
     public void addBackground(List<Tile> tiles) {
         MapLayer newLayer = new MapLayer();
         mapLayers.put("background", newLayer);
+        newLayer.tileMap = new ArrayList<>(getWidth());
+        for (int i = 0; i < getWidth(); i++) {
+            newLayer.tileMap.add(i, new ArrayList<>(getHeight()));
+            for (int j = 0; j < getHeight(); j++) {
+                newLayer.tileMap.get(i).add(null);
+            }
+        }
+        newLayer.allTiles.addAll(tiles);
+        for (Tile tile : newLayer.allTiles) {
+            newLayer.tileMap.get(tile.x).set(tile.y, tile);
+        }
+    }
+
+    public void addWiring(List<Tile> tiles) {
+        MapLayer newLayer = new MapLayer();
+        mapLayers.put("wiring", newLayer);
         newLayer.tileMap = new ArrayList<>(getWidth());
         for (int i = 0; i < getWidth(); i++) {
             newLayer.tileMap.add(i, new ArrayList<>(getHeight()));
@@ -301,19 +317,23 @@ public class Level {
         return mapLayers.get("background");
     }
 
-    public int getVolatileTileCount() {
-        return getBaseLayer().volatileTiles.size();
+    public MapLayer getWiringLayer() {
+        return mapLayers.get("wiring");
+    }
+
+    public int getcheckpointSavedTileCount() {
+        return getBaseLayer().checkpointSavedTiles.size();
     }
 
     public void inGameRemoveTile(Tile tile) {
         if (tilesDesynced) {
-            if (tile.hasTag("volatile")) {
-                getBaseLayer().volatileTiles.remove(tile);
+            if (tile.hasTag(checkpoint_saved)) {
+                getBaseLayer().checkpointSavedTiles.remove(tile);
             }
             if (tile.hasTag("notifiable")) {
                 getBaseLayer().notifiableTiles.remove(tile);
             }
-            if (tile.hasTag("updatable")) {
+            if (tile.hasTag("update")) {
                 getBaseLayer().updatableTiles.remove(tile);
             }
             getBaseLayer().tileMap.get(tile.x).set(tile.y, null);
@@ -322,13 +342,30 @@ public class Level {
         }
     }
 
+    public void inGameAddTile(Tile tile) {
+        if (tilesDesynced) {
+            if (tile.hasTag(checkpoint_saved)) {
+                getBaseLayer().checkpointSavedTiles.add(tile);
+            }
+            if (tile.hasTag("notifiable")) {
+                getBaseLayer().notifiableTiles.add(tile);
+            }
+            if (tile.hasTag("update")) {
+                getBaseLayer().updatableTiles.add(tile);
+            }
+            getBaseLayer().tileMap.get(tile.x).set(tile.y, tile);
+        } else {
+            throw new IllegalStateException("The Level must be desynced before calling this to avoid the permanent alteration of tiles");
+        }
+    }
+
     public boolean inGame() {
         return player != null;
     }
 
-    public int getVolatileTileCount(String tag, int tileType) {
+    public int getcheckpointSavedTileCount(String tag, int tileType) {
         int count = 0;
-        for (Tile tile : getBaseLayer().volatileTiles) {
+        for (Tile tile : getBaseLayer().checkpointSavedTiles) {
             if (tile.hasTag(tag) && tile.tileType == tileType)
                 count++;
         }
@@ -370,31 +407,31 @@ public class Level {
     public void resetToCheckpointState() {
         GunMode.bullets.clear();
         enemies.clear();
-        getBaseLayer().volatileTiles.clear();
-        getBaseLayer().notifiableTiles.removeIf(tile -> tile.hasTag("volatile"));
-        getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag("volatile"));
+        getBaseLayer().checkpointSavedTiles.clear();
+        getBaseLayer().notifiableTiles.removeIf(tile -> tile.hasTag(checkpoint_saved));
+        getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag(checkpoint_saved));
         for (Tile tile : getBaseLayer().checkpointState) {
             Tile copy = tile.copy();
             if (tile.hasTag("notifiable"))
                 getBaseLayer().notifiableTiles.add(copy);
-            if (tile.hasTag("updatable")) {
+            if (tile.hasTag("update")) {
                 getBaseLayer().updatableTiles.add(copy);
             }
-            getBaseLayer().volatileTiles.add(copy);
+            getBaseLayer().checkpointSavedTiles.add(copy);
             addTileToMap("normal", copy);
         }
     }
 
     public void saveCheckpointState() {
         getBaseLayer().checkpointState.clear();
-        for (Tile tile : getBaseLayer().volatileTiles) {
+        for (Tile tile : getBaseLayer().checkpointSavedTiles) {
             getBaseLayer().checkpointState.add(tile.copy());
         }
     }
 
     public void syncTiles() {
         enemies.clear();
-        getBaseLayer().volatileTiles.clear();
+        getBaseLayer().checkpointSavedTiles.clear();
         getBaseLayer().notifiableTiles.clear();
         getBaseLayer().updatableTiles.clear();
         for (Tile tile : getBaseLayer().allTiles) {
@@ -417,26 +454,26 @@ public class Level {
     }
 
     public void desyncTiles() {
-        getBaseLayer().volatileTiles.clear();
+        getBaseLayer().checkpointSavedTiles.clear();
         getBaseLayer().notifiableTiles.clear();
         getBaseLayer().updatableTiles.clear();
         for (Tile tile : getBaseLayer().allTiles) {
             Tile copy = tile.copy();
             getBaseLayer().tileMap.get(copy.x).set(copy.y, copy);
-            if (tile.hasTag("volatile")) {
-                getBaseLayer().volatileTiles.add(copy);
+            if (tile.hasTag(checkpoint_saved)) {
+                getBaseLayer().checkpointSavedTiles.add(copy);
             }
             if (tile.hasTag("notifiable")) {
                 getBaseLayer().notifiableTiles.add(copy);
             }
-            if (tile.hasTag("updatable")) {
+            if (tile.hasTag("update")) {
                 getBaseLayer().updatableTiles.add(copy);
             }
         }
         for (Tile tile : getBackgroundLayer().allTiles) {
             if (tile.hasTag("ignore_background")) {
                 Tile copy = tile.copy();
-                if (tile.hasTag("updatable")) {
+                if (tile.hasTag("update")) {
                     getBaseLayer().updatableTiles.add(copy);
                 }
                 if (tile.hasTag("notifiable")) {
@@ -453,186 +490,188 @@ public class Level {
     }
 
     public void render(Graphics g) {
-        render(g, false);
+        render(g, false, false);
     }
 
-    public void render(Graphics g, boolean backgroundPriority) {
-        Vector2 renderAround = g.getCameraPosition();
-        int centerX = (int) (renderAround.x / 64);
-        int centerY = (int) (renderAround.y / 64);
-        int screenTileWidth = (int) Math.ceil(LittleH.program.getWidth() / 64f * LittleH.program.dynamicCamera.zoom + 4);
-        int screenTileHeight = (int) Math.ceil(LittleH.program.getHeight() / 64f * LittleH.program.dynamicCamera.zoom + 4);
-        int startX = centerX - screenTileWidth / 2;
-        int startY = centerY - screenTileHeight / 2;
-        int endX = startX + screenTileWidth;
-        int endY = startY + screenTileHeight;
-
-        List<Tile> backgroundPostRenders = new ArrayList<>();
-
-        g.resetTint();
-        g.resetColor();
-
-        if (!inGame()) {
-            if (backgroundPriority) {
-                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
-            } else {
-                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
-            }
+    public void render(Graphics g, boolean backgroundPriority, boolean wiringMode) {
+        List<Point> toDrawGrid = new ArrayList<>();
+        if (wiringMode && !inGame()) {
+            toDrawGrid = renderWiring(g, backgroundPriority);
         } else {
-            g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
-        }
+            Vector2 renderAround = g.getCameraPosition();
+            int centerX = (int) (renderAround.x / 64);
+            int centerY = (int) (renderAround.y / 64);
+            int screenTileWidth = (int) Math.ceil(LittleH.program.getWidth() / 64f * LittleH.program.dynamicCamera.zoom + 4);
+            int screenTileHeight = (int) Math.ceil(LittleH.program.getHeight() / 64f * LittleH.program.dynamicCamera.zoom + 4);
+            int startX = centerX - screenTileWidth / 2;
+            int startY = centerY - screenTileHeight / 2;
+            int endX = startX + screenTileWidth;
+            int endY = startY + screenTileHeight;
 
-        // Draw in the back
-        for (int i = startX; i < endX; i++) {
-            if (i < 0 || i >= getWidth()) continue;
-            for (int j = startY; j < endY; j++) {
-                if (j < 0 || j >= getHeight()) continue;
-                if (!inGame()) {
-                    Tile tile;
-                    if (backgroundPriority) {
-                        // Draw foreground behind
-                        tile = getTileAt("normal", i, j);
+            List<Tile> backgroundPostRenders = new ArrayList<>();
+
+            g.resetTint();
+            g.resetColor();
+
+            if (!inGame()) {
+                if (backgroundPriority) {
+                    g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+                } else {
+                    g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+                }
+            } else {
+                g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
+            }
+
+            // Draw in the back
+            for (int i = startX; i < endX; i++) {
+                if (i < 0 || i >= getWidth()) continue;
+                for (int j = startY; j < endY; j++) {
+                    if (j < 0 || j >= getHeight()) continue;
+                    if (!inGame()) {
+                        Tile tile;
+                        if (backgroundPriority) {
+                            // Draw foreground behind
+                            tile = getTileAt("normal", i, j);
+                        } else {
+                            // Draw background
+                            tile = getTileAt("background", i, j);
+                        }
+                        if (tile != null) {
+                            tile.render(inGame(), g);
+                            if (tile.hasTag("post_render"))
+                                backgroundPostRenders.add(tile);
+                        }
                     } else {
                         // Draw background
-                        tile = getTileAt("background", i, j);
-                    }
-                    if (tile != null) {
-                        tile.render(inGame(), g);
-                        if (tile.hasTag("post_render"))
-                            backgroundPostRenders.add(tile);
-                    }
-                } else {
-                    // Draw background
-                    // Tint multiplies with graphics color to make a darker background
-                    Tile tile = getTileAt("background", i, j);
-                    if (tile != null) {
-                        tile.render(inGame(), g);
-                        if (tile.hasTag("post_render"))
-                            backgroundPostRenders.add(tile);
-                        else if (tile.hasTag("post_render_in_game") && player != null)
-                            backgroundPostRenders.add(tile);
+                        // Tint multiplies with graphics color to make a darker background
+                        Tile tile = getTileAt("background", i, j);
+                        if (tile != null) {
+                            tile.render(inGame(), g);
+                            if (tile.hasTag("post_render"))
+                                backgroundPostRenders.add(tile);
+                            else if (tile.hasTag("special_render") && player != null)
+                                backgroundPostRenders.add(tile);
+                        }
                     }
                 }
             }
-        }
 
-        g.resetTint();
-        g.resetColor();
+            g.resetTint();
+            g.resetColor();
 
-        List<Tile> postRenders = new ArrayList<>();
-        List<Tile> visibleTiles = new ArrayList<>();
-        List<Point> toDrawGrid = new ArrayList<>();
+            List<Tile> postRenders = new ArrayList<>();
+            List<Tile> visibleTiles = new ArrayList<>();
 
-        backgroundPostRenders = (drawPostRenders(g, backgroundPostRenders, true, true, false));
+            backgroundPostRenders = (drawPostRenders(g, backgroundPostRenders, true, true, false));
 
-        // Draw in the front but behind players
-        for (int i = startX; i < endX; i++) {
-            if (i < 0 || i >= getWidth()) continue;
-            for (int j = startY; j < endY; j++) {
-                if (j < 0 || j >= getHeight()) continue;
-                if (!inGame()) {
-                    // Draw background in front
-                    if (backgroundPriority) {
-                        Tile tile = getTileAt("background", i, j);
+            // Draw in the front but behind players
+            for (int i = startX; i < endX; i++) {
+                if (i < 0 || i >= getWidth()) continue;
+                for (int j = startY; j < endY; j++) {
+                    if (j < 0 || j >= getHeight()) continue;
+                    if (!inGame()) {
+                        // Draw background in front
+                        if (backgroundPriority) {
+                            Tile tile = getTileAt("background", i, j);
+                            if (tile != null) {
+                                if (!(tile.isSolid() && tile.hasTag("tileset"))) {
+                                    tile.render(inGame(), g);
+                                } else visibleTiles.add(tile);
+                                if (tile.hasTag("post_render"))
+                                    postRenders.add(tile);
+                            }
+                            toDrawGrid.add(new Point(i * 64, j * 64));
+                            continue;
+                        }
+                        // Draw foreground
+                        Tile tile = getTileAt("normal", i, j);
                         if (tile != null) {
                             if (!(tile.isSolid() && tile.hasTag("tileset"))) {
                                 tile.render(inGame(), g);
-                            }
-                            else visibleTiles.add(tile);
+                            } else visibleTiles.add(tile);
                             if (tile.hasTag("post_render"))
                                 postRenders.add(tile);
                         }
                         toDrawGrid.add(new Point(i * 64, j * 64));
-                        continue;
-                    }
-                    // Draw foreground
-                    Tile tile = getTileAt("normal", i, j);
-                    if (tile != null) {
-                        if (!(tile.isSolid() && tile.hasTag("tileset"))) {
-                            tile.render(inGame(), g);
+                    } else {
+                        // Draw foreground
+                        Tile tile = getTileAt("normal", i, j);
+                        if (tile != null) {
+                            if (!(tile.isSolid() && !tile.ignoreTiling)) tile.render(inGame(), g);
+                            else visibleTiles.add(tile);
+                            if (tile.hasTag("post_render"))
+                                postRenders.add(tile);
+                            else if (tile.hasTag("special_render") && player != null)
+                                postRenders.add(tile);
                         }
-                        else visibleTiles.add(tile);
-                        if (tile.hasTag("post_render"))
-                            postRenders.add(tile);
-                    }
-                    toDrawGrid.add(new Point(i * 64, j * 64));
-                } else {
-                    // Draw foreground
-                    Tile tile = getTileAt("normal", i, j);
-                    if (tile != null) {
-                        if (!(tile.isSolid() && !tile.ignoreTiling)) tile.render(inGame(), g);
-                        else visibleTiles.add(tile);
-                        if (tile.hasTag("post_render"))
-                            postRenders.add(tile);
-                        else if (tile.hasTag("post_render_in_game") && player != null)
-                            postRenders.add(tile);
                     }
                 }
             }
-        }
 
-        postRenders = drawPostRenders(g, postRenders, false, true, false);
+            postRenders = drawPostRenders(g, postRenders, false, true, false);
 
-        enemies.forEach(enemy -> enemy.render(g, this));
-        entities.forEach(entity -> entity.render(g, this));
-        if (inGame())
-            player.render(g, this);
-        particles.forEach(particle -> particle.render(g));
+            enemies.forEach(enemy -> enemy.render(g, this));
+            entities.forEach(entity -> entity.render(g, this));
+            if (inGame())
+                player.render(g, this);
+            particles.forEach(particle -> particle.render(g));
 
-        if (!inGame()) {
-            if (backgroundPriority) {
-                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+            if (!inGame()) {
+                if (backgroundPriority) {
+                    g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+                } else {
+                    g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+                }
             } else {
-                g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+                g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
             }
-        } else {
-            g.setTint(new Color(0.45f, 0.45f, 0.45f, 1f));
-        }
 
-        if (!inGame()) {
-            if (backgroundPriority) {
-                g.setTint(new Color(1f, 1f, 1f, 0.65f));
+            if (!inGame()) {
+                if (backgroundPriority) {
+                    g.setTint(new Color(1f, 1f, 1f, 0.65f));
+                } else {
+                    g.resetTint();
+                }
             } else {
                 g.resetTint();
             }
-        } else {
-            g.resetTint();
-        }
 
-        List<Tile> textRenders = drawPostRenders(g, postRenders, false, false, false);
-        textRenders.addAll(drawPostRenders(g, backgroundPostRenders, true, false, false));
+            List<Tile> textRenders = drawPostRenders(g, postRenders, false, false, false);
+            textRenders.addAll(drawPostRenders(g, backgroundPostRenders, true, false, false));
 
-        // Draw in the front
-        for (Tile tile : visibleTiles) {
-            if (!inGame()) {
-                // Draw background in front
-                if (backgroundPriority) {
+            // Draw in the front
+            for (Tile tile : visibleTiles) {
+                if (!inGame()) {
+                    // Draw background in front
+                    if (backgroundPriority) {
+                        if (tile != null) {
+                            tile.render(inGame(), g);
+                            if (tile.hasTag("post_render"))
+                                postRenders.add(0, tile);
+                        }
+                        continue;
+                    }
+                    // Draw foreground
                     if (tile != null) {
                         tile.render(inGame(), g);
                         if (tile.hasTag("post_render"))
                             postRenders.add(0, tile);
                     }
-                    continue;
-                }
-                // Draw foreground
-                if (tile != null) {
-                    tile.render(inGame(), g);
-                    if (tile.hasTag("post_render"))
-                        postRenders.add(0, tile);
-                }
-            } else {
-                // Draw foreground
-                if (tile != null) {
-                    tile.render(inGame(), g);
-                    if (tile.hasTag("post_render"))
-                        postRenders.add(0, tile);
-                    else if (tile.hasTag("post_render_in_game") && player != null)
-                        postRenders.add(0, tile);
+                } else {
+                    // Draw foreground
+                    if (tile != null) {
+                        tile.render(inGame(), g);
+                        if (tile.hasTag("post_render"))
+                            postRenders.add(0, tile);
+                        else if (tile.hasTag("special_render") && player != null)
+                            postRenders.add(0, tile);
+                    }
                 }
             }
-        }
 
-        drawPostRenders(g, textRenders, false, false, true);
+            drawPostRenders(g, textRenders, false, false, true);
+        }
 
         g.resetTint();
 
@@ -656,7 +695,9 @@ public class Level {
 
         LittleH.program.useStaticCamera();
 
-        if (backgroundPriority) {
+        if (wiringMode) {
+            g.drawString("WIRING MODE", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
+        } else if (backgroundPriority) {
             g.drawString("EDITING BACKGROUND", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
         }
 
@@ -704,6 +745,42 @@ public class Level {
         if (currentDialogue != null) {
             currentDialogue.render(g);
         }
+    }
+
+    // Returns tile positioned run through for drawing the grid
+    private List<Point> renderWiring(Graphics g, boolean backgroundPriority) {
+        Vector2 renderAround = g.getCameraPosition();
+        int centerX = (int) (renderAround.x / 64);
+        int centerY = (int) (renderAround.y / 64);
+        int screenTileWidth = (int) Math.ceil(LittleH.program.getWidth() / 64f * LittleH.program.dynamicCamera.zoom + 4);
+        int screenTileHeight = (int) Math.ceil(LittleH.program.getHeight() / 64f * LittleH.program.dynamicCamera.zoom + 4);
+        int startX = centerX - screenTileWidth / 2;
+        int startY = centerY - screenTileHeight / 2;
+        int endX = startX + screenTileWidth;
+        int endY = startY + screenTileHeight;
+        MapLayer layerToRender = mapLayers.get(backgroundPriority ? "background" : "normal");
+        List<Point> tilesRendered = new ArrayList<>();
+        g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.33f));
+        for (int i = startX; i < endX; i++) {
+            if (i < 0 || i >= getWidth()) continue;
+            for (int j = startY; j < endY; j++) {
+                if (j < 0 || j >= getHeight()) continue;
+                Tile tile = layerToRender.tileMap.get(i).get(j);
+                if (tile != null) tile.render(inGame(), g);
+                tilesRendered.add(new Point(i, j));
+            }
+        }
+        layerToRender = mapLayers.get("wiring");
+        g.resetTint();
+        for (int i = startX; i < endX; i++) {
+            if (i < 0 || i >= getWidth()) continue;
+            for (int j = startY; j < endY; j++) {
+                if (j < 0 || j >= getHeight()) continue;
+                Tile tile = layerToRender.tileMap.get(i).get(j);
+                if (tile != null) tile.render(inGame(), g);
+            }
+        }
+        return tilesRendered;
     }
 
     public Tile[][] getNeighbors(int tileX, int tileY, boolean background) {
@@ -817,7 +894,7 @@ public class Level {
                     }
                 }
             }
-            if (tile.hasTag("sinusoid")) {
+            if (tile.hasTag("levitating")) {
                 g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 8, 64, 64, tile.getDrawSection());
             }
             g.resetColor();

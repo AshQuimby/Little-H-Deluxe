@@ -158,7 +158,6 @@ public class BallMode extends Powerup {
          } else if (tile.tileType == 2) {
             if (xSpeed > ySpeed && xSpeed > speedForBounce) {
                SoundEngine.playSound("ball_bounce.ogg");
-               System.out.println(player.velocityX + ", " + xSpeed);
                player.velocityX *= 0;
                player.velocityY -= xSpeed * 1.2f;
             } else if (ySpeed > speedForBounce) {
