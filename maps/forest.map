@@ -1,3 +1,4 @@
+@bonus_background [big_tree]
 @crouching true
 @look_around true
 @is_deluxe true
@@ -1372,7 +1373,6 @@
 121 10 tiles/enemy 2 
 112 12 tiles/enemy 2 
 104 14 tiles/grass_decor 0 
-103 14 tiles/checkpoint 0 
 127 13 tiles/enemy 2 
 117 11 tiles/enemy 2 
 120 9 tiles/grass_decor 2 
@@ -2202,7 +2202,6 @@
 211 55 tiles/enemy 2 
 223 55 tiles/invisible_death 0 
 203 69 tiles/grass_decor 5 
-205 69 tiles/grass_decor 1 
 208 68 tiles/grass_decor 2 
 211 68 tiles/grass_decor 3 
 213 68 tiles/grass_decor 0 
@@ -2542,6 +2541,7 @@
 247 113 tiles/grass_decor 4 
 246 113 tiles/grass_decor 0 
 241 113 tiles/rocks_decor 2 
+205 69 tiles/checkpoint 0 
 @background_tiles
 65 12 tiles/sets/grass 17 
 62 12 tiles/sets/grass 19 

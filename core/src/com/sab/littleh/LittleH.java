@@ -525,6 +525,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
         g.flush();
         g.draw(buffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+
         g.end();
 
 //        Gdx.gl.glEnable(GL20.GL_BLEND);

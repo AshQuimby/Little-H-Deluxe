@@ -1,44 +1,47 @@
-solid                  - Has collisions
-tileset                - Renders using a tileset
-slippery               - Slippery (ice, etc.)
-small                  - Hitbox is slightly smaller
-slick                  - Cannot be wall jumped off of
-death                  - Kills player on collision
-bounce                 - Accelerates players and enemies upwards
-enemy_walkable         - Enemies will walk on it, even if it is not solid
-water                  - Can be swum in
-special_render         - Rendered after everything else
-invisible              - Not rendered when playing the level
-ignore_background      - Acts normally when in the background
-checkpoint_saved       - Reset on death and saved when a checkpoint is activated
-checkpoint             - Is a checkpoint
-pickup                 - Is removed when collided with
-string_picker          - Takes a string as input when placed
-render_color           - Drawn with a specified color
-dialogue               - Triggers dialogue
-ambient_particles      - Spawns ambient particles
-update                 - Updated every frame
-levitating             - Floats up and down
-end                    - Ends the level when picked up
-key                    - Increments key count when picked up
-key_box                - Can be destroyed by a player with a key
-evil                   - Spawns an evil key instead of a key, or accepts an evil key instead of a normal key
-multi_hitbox           - Uses multiple rectangles to define its hitbox
-small_triangle         - Has a hitbox that emulates a triangle with two rectangles (rotated based on tile type)
-quarter                - Hitbox is one quarter of a block
-one_way                - Uses the logic of a one way gate
-powerup                - Is a powerup
-respawn_power_fruit    - If in the background behind a power fruit, respawns the power fruit after one second when unobstructed after it is picked up
-crumbling              - Destructible in various ways, including when ground slammed, shot, or destroyed by the Big H
-text                   - Renders text
-post_render            - Renders on the UI layer
-start                  - The start of the level
-timer                  - Grants time based off tile type
-enemy_box              - Captures enemies
-windy                  - Waves in the wind (grass, flowers, etc.)
-vines                  - Dangles from tiles above it
-even_pickup            - Acts like a pickup if state is even
-gravity_swapper        - Swaps gravity
-jump_refresh           - Resets double jump, even when double jumping is disabled
-slope                  - Is a slope
-normal_slope           - 45 degree slope
+solid                       - Has collisions
+tileset                     - Renders using a tileset
+states(int)                 - Allows the first <n> tile states of this tile to be selected in the editor
+slippery                    - Slippery (ice, etc.)
+small                       - Hitbox is slightly smaller (48x48 instead of 64x64)
+slick                       - Cannot be wall jumped off of
+death                       - Kills player on collision
+bounce                      - Accelerates players and enemies upwards
+enemy_walkable              - Enemies will walk on it, even if it is not solid
+water                       - Can be swum in
+special_render              - Rendered after everything else
+invisible                   - Not rendered when playing the level
+ignore_background           - Acts normally when in the background
+checkpoint_saved            - Reset on death and saved when a checkpoint is activated
+checkpoint                  - Is a checkpoint
+pickup                      - Is removed when collided with
+string_picker               - Takes a string as input when placed
+render_color                - Drawn with a specified color
+dialogue                    - Triggers dialogue
+ambient_particles           - Spawns ambient particles
+update                      - Updated every frame
+levitating                  - Floats up and down
+end                         - Ends the level when picked up
+key                         - Increments key count when picked up
+key_box                     - Can be destroyed by a player with a key
+evil                        - Spawns an evil key instead of a key, or accepts an evil key instead of a normal key
+multi_hitbox                - Uses multiple rectangles to define its hitbox
+small_triangle              - Has a hitbox that emulates a triangle with two rectangles (rotated based on tile type)
+half                        - Hitbox is one half of a block (rotated based on tile type)
+quarter                     - Hitbox is one quarter of a block (rotated based on tile type)
+one_way                     - Uses the logic of a one way gate
+powerup                     - Is a powerup
+respawn_power_fruit         - If in the background behind a power fruit, respawns the power fruit after one second when unobstructed after it is picked up
+crumbling                   - Destructible in various ways, including when ground slammed, shot, or destroyed by the Big H
+text                        - Renders text
+post_render                 - Renders on the UI layer
+start                       - The start of the level
+timer                       - Grants time based off tile type
+enemy_box                   - Captures enemies
+windy                       - Waves in the wind (grass, flowers, etc.)
+vines                       - Dangles from tiles above it
+even_pickup                 - Acts like a pickup if state is even
+gravity_swapper             - Swaps gravity
+jump_refresh                - Resets double jump, even when double jumping is disabled
+slope                       - Is a slope
+normal_slope                - 45 degree slope
+exclusive_tiling(str...)    - If a tileset, will only tile with tiles with the tag(s) specified in the parameters

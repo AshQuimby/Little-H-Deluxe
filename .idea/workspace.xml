@@ -10,52 +10,54 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Tile tag system updates">
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/actuator.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/button.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/blue_wire_rotation_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/green_wire_rotation_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/red_wire_rotation_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/wires/yellow_wire_rotation_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/ui/buttons/icons/wiring_mode.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/maps/testing.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/scripts/level_editor/wiring.sab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/ui/selector.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tiles/enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/enemy.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tiles/enemy_box.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/enemy_box.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/checkpoint.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/checkpoint.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/coin.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/coin.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/coin_box.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/coin_box.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/color_cube.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/color_cube.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/dialogue_trigger.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/dialogue_trigger.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/dynamic_color_cube.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/dynamic_color_cube.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/end.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/end.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/evil_key.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/evil_key.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/evil_key_awake.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/evil_key_awake.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/evil_key_box.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/evil_key_box.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/grass_decor.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/grass_decor.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/gravity_swapper.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/gravity_swapper.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/invisible_death.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/invisible_death.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/invisiblock.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/invisiblock.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/jump_pearl.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/jump_pearl.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/key.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/key.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/key_box.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/key_box.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/mud.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/mud.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/one_way.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/one_way.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/power_fruit_spawner.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/power_fruit_spawner.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/selector.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/slope.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/slope.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/spawn.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/spawn.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/spring.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/statues.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/statues.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/strong_checkpoint.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/strong_checkpoint.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/strong_checkpoint_on.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/text.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/text.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/timer.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/timer.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/vines_decor.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/vines_decor.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/maps/hyperspace/pinball.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/hyperspace/pinball.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/resources/settings.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/resources/settings.sab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scripts/base_tags.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/base_tags.sab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scripts/level_editor/special.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/level_editor/special.sab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/Controls.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/controls/Controls.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/hyperspace/snake.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/hyperspace/snake.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/woodlands/forest.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/woodlands/forest.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/tag_manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/tag_manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/LittleH.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/LittleH.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/OverworldMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/campaign/overworld/OverworldMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/BallMode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelEditor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/TileTags.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/TileTags.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/Connection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/settings/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/TileButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/TileButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maps/forest.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/forest.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/temple.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/temple.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maps/test.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/test.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/controls.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/controls.sab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/saves/clear_times.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/saves/clear_times.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/the_little_c.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/the_little_c.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,6 +126,11 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN"
+  }
+}]]></component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -146,17 +153,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "com.google.cloudcode.ide_session_index": "20240222_0003",
+    "last_opened_file_path": "C:/Users/ianaa/Documents/The Little H Rebake/little_h/assets/shaders"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.sab.littleh.mainmenu" />
       <recent name="com.sab.littleh.game.level" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\shaders" />
       <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\maps\summit" />
       <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\scripts\campaign\overworld\levels" />
       <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\maps\desert" />
       <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\local\dialogues\en" />
-      <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\assets\maps\hyperspace" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\ianaa\Documents\The Little H Rebake\little_h\resources" />
@@ -268,7 +281,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f5ded004-22a9-481a-9a2a-b40c1a1f3aae" name="Changes" comment="" />
+      <changelist id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Tile tag system updates" />
       <created>1689134133824</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -512,7 +525,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708547699961</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Tile tag system updates">
+      <created>1708576768628</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1708576768628</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

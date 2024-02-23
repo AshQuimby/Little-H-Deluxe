@@ -52,6 +52,10 @@ public class Tile {
         this.y = y;
         this.image = image;
         this.tags = new TileTags(tags);
+        for (String tag : tags.getTags()) {
+            if (tag.contains("state"))
+                System.out.println(tag);
+        }
         if (extra != null)
             this.extra = extra.trim();
         setTileType(tileType);
@@ -123,7 +127,7 @@ public class Tile {
         int localType = tileType % (hasTag("tileset") ? 15 : 16);
         int column = localType % 4;
         int row = localType / 4;
-        Rectangle region = new Rectangle(column * 8, row * 8, 8, 8);
+        Rectangle region = new Rectangle(1 + column * 9, row * 9, 8, 8);
         cacheDrawRect(region);
     }
 

@@ -4,7 +4,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -29,17 +31,33 @@ public class Images {
         }
         Texture image;
 
-//        String altKey = "images/hi-res/" + key;
-//        FileHandle handle = Gdx.files.internal(altKey);
-//        if (handle.exists()) {
-//            image = new Texture(handle);
-//            cache.put(imageKey, image);
-//            return image;
-//        }
         FileHandle handle = Gdx.files.internal(imageKey);
         if (!handle.exists()) return getImage("missing.png");
         try {
             image = new Texture(handle);
+            // If the image is a tile add procedural padding so that way the .png still looks nice
+            if (key.contains("tiles/")) {
+                // Fetch the data of the original image
+                TextureData data = image.getTextureData();
+                data.prepare();
+                // Get a pixmap of the original
+                Pixmap originalImage = data.consumePixmap();
+                // Set up a pixmap to add the buffer to
+                Pixmap paddedPixmap = new Pixmap(36, 36, Pixmap.Format.RGBA8888);
+                // Go through every frame on the 4x4 tilesheet and copy over each frame (this is why every tile has to be on a 16x16 image)
+                for (int i = 0; i < 16; i++) {
+                    // Get the frameX and frameY from i in the same way the game would based on tileType
+                    int frameX = i % 4;
+                    int frameY = i / 4;
+                    // Actually put the padding on the simulated image
+                    paddedPixmap.drawPixmap(originalImage, frameX * 9, frameY * 9, frameX * 8, frameY * 8, 1, 8);
+                    paddedPixmap.drawPixmap(originalImage, frameX * 9, frameY * 9 + 8, frameX * 8, frameY * 8 + 7, 8, 1);
+                    paddedPixmap.drawPixmap(originalImage, frameX * 9 + 8, frameY * 9 + 8, frameX * 8 + 7, frameY * 8 + 7, 1, 1);
+                    paddedPixmap.drawPixmap(originalImage, frameX * 9 + 1, frameY * 9, frameX * 8, frameY * 8, 8, 8);
+                }
+                image.dispose();
+                image = new Texture(paddedPixmap);
+            }
         } catch (Exception e) {
             return getImage("missing.png");
         }

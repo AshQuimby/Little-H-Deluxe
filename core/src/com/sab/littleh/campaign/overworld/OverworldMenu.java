@@ -34,21 +34,22 @@ public class OverworldMenu extends MainMenu {
     @Override
     public void start() {
         if (worldMap == null) {
-            if (playedLevel.playerBackup.win) {
-                long time = playedLevel.getTimeMillis();
-                if (SaveFile.saveData.get("clear_times").getValue(selectedLevel.getId()) == null ||
-                        time < SaveFile.saveData.get("clear_times").getValue(selectedLevel.getId()).asLong()) {
-                    SaveFile.saveData.get("clear_times").insertValue(selectedLevel.getId(), String.valueOf(time));
-                }
-                SabValue unlocks = selectedLevel.getData().getValue("unlocks");
-                if (unlocks != null) {
-                    for (String string : unlocks.asStringArray()) {
-                        SaveFile.saveData.get("unlocked_levels").insertValue(string, "true");
+            if (playedLevel.playerBackup != null) {
+                if (playedLevel.playerBackup.win) {
+                    long time = playedLevel.getTimeMillis();
+                    if (SaveFile.saveData.get("clear_times").getValue(selectedLevel.getId()) == null ||
+                            time < SaveFile.saveData.get("clear_times").getValue(selectedLevel.getId()).asLong()) {
+                        SaveFile.saveData.get("clear_times").insertValue(selectedLevel.getId(), String.valueOf(time));
                     }
+                    SabValue unlocks = selectedLevel.getData().getValue("unlocks");
+                    if (unlocks != null) {
+                        for (String string : unlocks.asStringArray()) {
+                            SaveFile.saveData.get("unlocked_levels").insertValue(string, "true");
+                        }
+                    }
+                    SaveFile.saveGame();
                 }
-                SaveFile.saveGame();
             }
-
             camera.reset();
             camera.setPosition(selectedLevel.getWorldPosition());
             camera.setZoom(0.5f);

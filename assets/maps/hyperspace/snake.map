@@ -1,7 +1,7 @@
 @is_deluxe true
 @crouching true
 @look_around true
-@time_limit 60
+@time_limit -1
 @background hyperspace
 @author AshQuimby
 @name Snake Train
@@ -387,8 +387,7 @@
 208 25 tiles/invisible_death 0 
 96 29 tiles/sets/location_bricks 19 
 193 61 tiles/sets/location_bricks 44 
-140 30 tiles/timer 1 
-195 13 tiles/invisible_death 0 
+195 13 tiles/invisible_death 0
 237 108 tiles/sets/slick_block 18 
 92 29 tiles/sets/location_bricks 19 
 5 12 tiles/sets/location_bricks 19 
@@ -593,8 +592,7 @@
 84 27 tiles/sets/location_bricks 49 
 261 9 tiles/sets/location_bricks 3 
 261 27 tiles/sets/location_bricks 3 
-184 107 tiles/timer 1 
-186 107 tiles/color_cube 1 
+186 107 tiles/color_cube 1
 167 101 tiles/sets/ice 19 
 247 104 tiles/sets/location_bricks 49 
 0 12 tiles/sets/location_bricks 2 
@@ -880,8 +878,7 @@
 130 28 tiles/sets/location_bricks 5 
 0 9 tiles/sets/location_bricks 47 
 186 104 tiles/sets/location_bricks 49 
-195 62 tiles/timer 1 
-242 108 tiles/sets/slick_block 18 
+242 108 tiles/sets/slick_block 18
 113 31 tiles/sets/location_bricks 18 
 149 70 tiles/color_cube 13 
 226 109 tiles/half_spike 0 

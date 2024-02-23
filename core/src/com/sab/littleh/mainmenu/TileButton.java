@@ -38,7 +38,7 @@ public class TileButton extends MenuButton {
         }
         g.drawImage(tile.getImage(), x, y, 64, 64, tile.getDrawSection());
         g.resetColor();
-        if (drawGear && tile.hasTag("property_set")) {
+        if (drawGear && tile.hasTag("states")) {
             g.draw(Images.getImage("ui/properties_gear.png"), x, y, 64, 64);
         }
         if (tile.extra != null && !tile.extra.isBlank()) {

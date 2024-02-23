@@ -315,7 +315,7 @@ public class LevelLoader {
             for (String tag : tags) {
                 int index = tag.indexOf("(");
                 if (index != -1) {
-                    tileTags.addTag(tag.substring(0, index), tag.substring(index, tag.lastIndexOf(")")));
+                    tileTags.addTag(tag.substring(0, index), tag.substring(index + 1, tag.lastIndexOf(")")));
                 } else {
                     tileTags.addTag(tag);
                 }

@@ -519,7 +519,7 @@ public class LevelEditorMenu extends MainMenu {
                                 tileButtons.setItemIndex(tileIndex + 1);
                                 if (tileAt.ignoreTiling)
                                     tile.tileType = tileAt.tileType;
-                                if (tile.hasTag("property_set")) {
+                                if (tile.hasTag("states")) {
                                     MenuButton[] buttons = new MenuButton[tile.getPropertyCount() + 1];
                                     buttons[0] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64, 0, 0, 64, 64, null);
                                     for (int i = 1; i < buttons.length; i++) {
@@ -817,7 +817,7 @@ public class LevelEditorMenu extends MainMenu {
                     } else {
                         tileButtons.setItemIndex(newIndex);
                         Tile tile = getEditorTile();
-                        if (tile.hasTag("property_set")) {
+                        if (tile.hasTag("states")) {
                             MenuButton[] buttons = new MenuButton[tile.getPropertyCount() + 1];
                             buttons[0] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64, 0, 0, 64, 64, null);
                             for (int i = 1; i < buttons.length; i++) {
@@ -992,11 +992,11 @@ public class LevelEditorMenu extends MainMenu {
                         g.drawString(tileAt.extra, LittleH.font, tileAt.x * 64 + 32, tileAt.y * 64 + 96, LittleH.defaultFontScale * 0.85f, 0);
                     }
                 }
-                g.draw(Images.getImage("tiles/selector.png"), tiledMousePosition.x * 64, tiledMousePosition.y * 64, 64, 64);
+                g.draw(Images.getImage("ui/selector.png"), tiledMousePosition.x * 64, tiledMousePosition.y * 64, 64, 64);
                 if (lineToolOrigin != null) {
                     List<Point> line = editor.getLinePoints(tiledMousePosition.x, tiledMousePosition.y, lineToolOrigin.x, lineToolOrigin.y);
                     for (Point point : line)
-                        g.draw(Images.getImage("tiles/selector.png"), point.x * 64, point.y * 64, 64, 64);
+                        g.draw(Images.getImage("ui/selector.png"), point.x * 64, point.y * 64, 64, 64);
                 }
             }
         }
