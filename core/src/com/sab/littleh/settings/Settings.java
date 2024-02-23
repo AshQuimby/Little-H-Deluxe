@@ -117,7 +117,7 @@ public class Settings {
     }
 
     private void load() {
-        File resourcesFolder = new File("resources");
+        File resourcesFolder = LittleH.getFileResource("");
         if (!resourcesFolder.exists())
             resourcesFolder.mkdir();
         File settingsFile = LittleH.getFileResource("settings.sab");
