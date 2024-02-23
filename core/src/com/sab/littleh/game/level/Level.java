@@ -82,7 +82,7 @@ public class Level {
     private Dialogue currentDialogue;
     private boolean ignoreDialogue;
 
-    private Wiring wiring;
+    public Wiring wiring;
 
     public Level(SabData mapData) {
         mapLayers = new HashMap<>();

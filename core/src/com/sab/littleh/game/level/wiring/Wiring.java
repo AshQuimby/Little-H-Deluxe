@@ -11,6 +11,10 @@ import java.util.List;
 public class Wiring {
     private final Map<Tile, List<Tile>> connections;
 
+    public List<Tile> getPoweredTiles(Tile source) {
+        return connections.get(source);
+    }
+
     public Wiring(Level level) {
         connections = new HashMap<>();
         MapLayer wiring = level.getWiringLayer();
@@ -32,7 +36,7 @@ public class Wiring {
 
         for (List<Tile> system : systems) {
             for (Tile i : system) {
-                if (i.hasTag("receiver")) {
+                if (i.hasTag("receiver") || i.hasTag("power_source")) {
                     connections.put(i, new ArrayList<>());
                     for (Tile j: system) {
                         if (j != i && j.hasTag("powered")) {
@@ -96,7 +100,7 @@ public class Wiring {
     private static boolean canConnect(Tile a, Tile b) {
         if (b == null) return false;
         if (a.hasTag("wire")) {
-            if (b.hasTag("junction") || b.hasTag("powered")) {
+            if (b.hasTag("junction") || b.hasTag("powered") || b.hasTag("power_source")) {
                 return true;
             }
             return b.hasTag("wire") && a.tags.getTag("wire").equals(b.tags.getTag("wire"));

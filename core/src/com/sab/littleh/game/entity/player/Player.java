@@ -447,6 +447,10 @@ public class Player extends Entity {
         }
         if (tile.hasTag("button") && tile.tileType < 4) {
             tile.setTileType(tile.tileType + 4);
+            Tile receiver = game.getTileAt("wiring", tile.x, tile.y);
+            if (receiver != null) {
+                receiver.signalReceived(game);
+            }
         }
         if (tile.hasTag("pickup")) {
             boolean pickup = true;

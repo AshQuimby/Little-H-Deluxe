@@ -352,9 +352,34 @@ public class Tile {
         if (hasTag("notified_spring_bounce")) {
             arbDat = tileType % 2 + 30;
         }
+
+        if (hasTag("observer")) {
+            Tile observing = game.getTileAt("normal", x, y);
+            if (observing == null) {
+                tileType = -1;
+            } else {
+                tileType = observing.tileType;
+            }
+        }
     }
 
     public void update(Level game) {
+        if (hasTag("observer")) {
+            Tile observing = game.getTileAt("normal", x, y);
+            byte observedTileType = observing == null ? -1 : observing.tileType;
+
+            if (tileType != observedTileType) {
+                List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
+                if (poweredTiles != null) {
+                    for (Tile powered : poweredTiles) {
+                        powered.signalReceived(game);
+                    }
+                }
+
+                tileType = observedTileType;
+            }
+        }
+
         if (hasTag("enemy")) {
             for (Enemy enemy : game.getEnemies()) {
                 if (enemy.getParent().equals(this)) return;
@@ -421,6 +446,29 @@ public class Tile {
                             (float) ((MathUtils.random() - 0.5) * 2), (float) ((MathUtils.random() - 0.5) * 2),
                             24, 24, 3, 3, 1, 0.98f, 0f,
                             (int) (MathUtils.random() * 3), 0, "particles/shine.png", 60, 0.02f));
+                }
+            }
+        }
+    }
+
+    public void signalReceived(Level game) {
+        if (hasTag("actuator")) {
+            if (arbDat == null) {
+                Tile toTake = game.getTileAt("normal", x, y);
+                if (toTake != null) {
+                    arbDat = toTake;
+                    game.inGameRemoveTile(toTake);
+                }
+            } else {
+                game.inGameAddTile((Tile) arbDat);
+                arbDat = null;
+            }
+        }
+        if (hasTag("receiver")) {
+            List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
+            if (poweredTiles != null) {
+                for (Tile powered : poweredTiles) {
+                    powered.signalReceived(game);
                 }
             }
         }
