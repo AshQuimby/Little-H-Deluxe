@@ -66,7 +66,7 @@ public class GunMode extends Powerup {
         } else {
             if (MouseUtil.leftMouseJustPressed()) {
                 SoundEngine.playSound("gunshot.ogg");
-                Bullet bullet = new Bullet(player.getCenterX(), player.getCenterY() + gunY + 8);
+                Bullet bullet = new Bullet(player.getCenterX(), player.getCenterY() + 8);
                 for (int i = 0; i < 2; i++) bullet.update(game);
                 bullets.add(bullet);
                 reloadTime = 30;

@@ -217,12 +217,12 @@ public class Powerup {
     public void drawPlayer(Graphics g, Level game) {
         g.setColor(Images.getHColor());
 
-        g.drawImage(Images.getImage(player.image + "_color.png"), new Rectangle(player.x - 8, player.y - (player.flippedGravity ? 16 : 0), 64, 64),
+        g.drawImage(Images.getImage(player.image + "_color.png"), new Rectangle(player.x - 8, player.y - (player.flippedGravity ? player.crouched ? 40 : 16 : 0), 64, 64),
                 new Rectangle((player.direction == 1 ? 0 : 8), 8 * player.frame + (player.flippedGravity ? 8 : 0), (player.direction == 1 ? 8 : -8), player.flippedGravity ? -8 : 8),
                 -MathUtils.radiansToDegrees * player.rotation);
         g.resetColor();
 
-        g.drawImage(Images.getImage(player.image + ".png"), new Rectangle(player.x - 8, player.y - (player.flippedGravity ? 16 : 0), 64, 64),
+        g.drawImage(Images.getImage(player.image + ".png"), new Rectangle(player.x - 8, player.y - (player.flippedGravity ? player.crouched ? 40 : 16 : 0), 64, 64),
                 new Rectangle((player.direction == 1 ? 0 : 8), 8 * player.frame + (player.flippedGravity ? 8 : 0), (player.direction == 1 ? 8 : -8), player.flippedGravity ? -8 : 8),
                 -MathUtils.radiansToDegrees * player.rotation);
     }

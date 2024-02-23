@@ -15,12 +15,12 @@ public class Prop extends GameObject {
         this.y = y;
         this.image = image;
         Texture tex = Images.getImage(image);
-        bounds = new Rectangle(x, y, tex.getWidth() * 8, tex.getHeight());
+        bounds = new Rectangle(x, y, tex.getWidth() * 8, tex.getHeight() * 8);
     }
 
     @Override
     public void render(Graphics g, Level game) {
-        if (LittleH.program.dynamicCamera.getViewport().overlaps(bounds)) {
+        if (LittleH.program.dynamicCamera.getScaledViewport().overlaps(bounds)) {
             g.draw(Images.getImage(image), bounds.x, bounds.y, bounds.width, bounds.height);
         }
     }

@@ -9,21 +9,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Made tilesheets procedurally add padding to fix a graphical issue. Tag system fixes. Level editor can now select tile states again. Walouis Pinball no longer crashes after loading. Forest and Snake Train rebalanced.">
-      <change afterPath="$PROJECT_DIR$/assets/images/props/malice_h.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/GameObject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Prop.java" afterDir="false" />
+    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Reworks on notification system have started, prop fixes, padding fixes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/scripts/base_tags.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/base_tags.sab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Prop.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/Prop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/GunMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/powerups/Powerup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/mainmenu/LevelEditorMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/net/OnlineLevelMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/net/OnlineLevelMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/Images.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/TypingQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/TypingQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/sab_format/SabReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/util/DynamicCamera.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/util/DynamicCamera.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maps/test.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/test.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/settings.sab" beforeDir="false" afterPath="$PROJECT_DIR$/resources/settings.sab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -505,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708646609341</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Reworks on notification system have started, prop fixes, padding fixes.">
+      <created>1708660911038</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1708660911038</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -562,7 +566,8 @@
     <MESSAGE value="Gitignore updates" />
     <MESSAGE value="Tile tag system updates" />
     <MESSAGE value="Made tilesheets procedurally add padding to fix a graphical issue. Tag system fixes. Level editor can now select tile states again. Walouis Pinball no longer crashes after loading. Forest and Snake Train rebalanced." />
-    <option name="LAST_COMMIT_MESSAGE" value="Made tilesheets procedurally add padding to fix a graphical issue. Tag system fixes. Level editor can now select tile states again. Walouis Pinball no longer crashes after loading. Forest and Snake Train rebalanced." />
+    <MESSAGE value="Reworks on notification system have started, prop fixes, padding fixes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Reworks on notification system have started, prop fixes, padding fixes." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

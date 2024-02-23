@@ -980,15 +980,13 @@ public class LevelEditorMenu extends MainMenu {
                 }
             }
             if (canPlaceTiles && Cursors.cursorIsNot("move_arrow", "drag_hand")) {
-                Tile tileAt = level.getTileAt("normal", tiledMousePosition.x, tiledMousePosition.y);
-                if (tileAt != null && tileAt.hasTag("string_picker")) {
-                    if (tileAt.extra != null) {
-                        if (tileAt.hasTag("prop")) {
-                            Texture tex = Images.getImage("props/" + tileAt.extra + ".png");
-                            g.draw(tex, tileAt.x * 64, tileAt.y * 64, tex.getWidth() * 8, tex.getHeight() * 8);
-                        }
-                        g.drawString(tileAt.extra, LittleH.font, tileAt.x * 64 + 32, tileAt.y * 64 + 96, LittleH.defaultFontScale * 0.85f, 0);
+                Tile tileAt = level.getTileAt(editingBackground ? "background" : "normal", tiledMousePosition.x, tiledMousePosition.y);
+                if (tileAt != null && tileAt.extra != null) {
+                    if (tileAt.hasTag("prop")) {
+                        Texture tex = Images.getImage("props/" + tileAt.extra + ".png");
+                        g.draw(tex, tileAt.x * 64, tileAt.y * 64, tex.getWidth() * 8, tex.getHeight() * 8);
                     }
+                    g.drawString(tileAt.extra, LittleH.font, tileAt.x * 64 + 32, tileAt.y * 64 + 96, LittleH.defaultFontScale * 0.85f, 0);
                 }
                 g.draw(Images.getImage("ui/selector.png"), tiledMousePosition.x * 64, tiledMousePosition.y * 64, 64, 64);
                 if (lineToolOrigin != null) {

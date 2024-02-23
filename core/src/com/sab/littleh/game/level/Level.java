@@ -452,30 +452,34 @@ public class Level {
     }
 
     public void desyncTiles() {
-        getBaseLayer().checkpointSavedTiles.clear();
-        getBaseLayer().notifiableTiles.clear();
-        getBaseLayer().updatableTiles.clear();
-        for (Tile tile : getBaseLayer().allTiles) {
+        MapLayer mapLayer = getBaseLayer();
+        mapLayer.checkpointSavedTiles.clear();
+        mapLayer.notifiableTiles.clear();
+        mapLayer.updatableTiles.clear();
+        for (Tile tile : mapLayer.allTiles) {
             Tile copy = tile.copy();
-            getBaseLayer().tileMap.get(copy.x).set(copy.y, copy);
+            mapLayer.tileMap.get(copy.x).set(copy.y, copy);
             if (tile.hasTag("checkpoint_saved")) {
-                getBaseLayer().checkpointSavedTiles.add(copy);
+                mapLayer.checkpointSavedTiles.add(copy);
             }
             if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                getBaseLayer().notifiableTiles.add(copy);
+                mapLayer.notifiableTiles.add(copy);
             }
             if (tile.hasTag("update")) {
-                getBaseLayer().updatableTiles.add(copy);
+                mapLayer.updatableTiles.add(copy);
             }
         }
-        for (Tile tile : getBackgroundLayer().allTiles) {
+        mapLayer = getBackgroundLayer();
+        mapLayer.notifiableTiles.clear();
+        mapLayer.updatableTiles.clear();
+        for (Tile tile : mapLayer.allTiles) {
             if (tile.hasTag("ignore_background")) {
                 Tile copy = tile.copy();
                 if (tile.hasTag("update")) {
-                    getBaseLayer().updatableTiles.add(copy);
+                    mapLayer.updatableTiles.add(copy);
                 }
                 if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                    getBaseLayer().notifiableTiles.add(copy);
+                    mapLayer.notifiableTiles.add(copy);
                 }
             }
         }

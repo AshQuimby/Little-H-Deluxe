@@ -110,7 +110,13 @@ public class DynamicCamera extends OrthographicCamera {
         return targetPosition;
     }
 
+    public Rectangle getScaledViewport() {
+        float width = viewportWidth * zoom;
+        float height = viewportHeight * zoom;
+        return new Rectangle(position.x - width / 2, position.y - height / 2, width, height);
+    }
+
     public Rectangle getViewport() {
-        return new Rectangle(position.x, position.y, viewportWidth, viewportHeight);
+        return new Rectangle(position.x - viewportWidth / 2, position.y - viewportHeight / 2, viewportWidth, viewportHeight);
     }
 }

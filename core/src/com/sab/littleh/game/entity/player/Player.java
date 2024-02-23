@@ -257,7 +257,8 @@ public class Player extends Entity {
             kill();
 
         if (canCrouch && game.mapData.getValue("crouching").asBool()) {
-            if (controller.isJustPressed(Controls.LEFT) ^ controller.isJustPressed(Controls.RIGHT) || !controller.isPressed(Controls.DOWN) || !touchingGround) {
+            if (crouched && (controller.isJustPressed(Controls.LEFT) ^ controller.isJustPressed(Controls.RIGHT) ||
+                    !controller.isPressed(Controls.DOWN) || !touchingGround)) {
                 height = 48;
                 if (flippedGravity)
                     y -= 24;
@@ -267,7 +268,8 @@ public class Player extends Entity {
                 touchingWall = false;
                 velocityX *= 1.5f;
                 height = 24;
-                y += 24;
+                if (flippedGravity)
+                    y += 24;
                 crouched = true;
             }
         }
