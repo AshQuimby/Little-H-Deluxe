@@ -1,19 +1,18 @@
 package com.sab.littleh.game.tile;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.sab.littleh.game.entity.GameObject;
 import com.sab.littleh.game.entity.Particle;
+import com.sab.littleh.game.entity.Prop;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
-import org.w3c.dom.Text;
 
 import java.util.*;
 
@@ -127,7 +126,7 @@ public class Tile {
         int localType = tileType % (hasTag("tileset") ? 15 : 16);
         int column = localType % 4;
         int row = localType / 4;
-        Rectangle region = new Rectangle(1 + column * 9, row * 9, 8, 8);
+        Rectangle region = new Rectangle(1 + column * 10, 1 + row * 10, 8, 8);
         cacheDrawRect(region);
     }
 
@@ -344,6 +343,9 @@ public class Tile {
                 ((Object[]) arbDat)[0] = powerFruit;
                 ((Object[]) arbDat)[1] = 120;
             }
+        }
+        if (hasTag("prop")) {
+            game.addMiscGameObject(new Prop("props/" + extra + ".png", x * 64, y * 64));
         }
         if (hasTag("notified_spring_bounce")) {
             arbDat = tileType % 2 + 30;

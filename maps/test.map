@@ -15,9 +15,9 @@
 10 2 tiles/sets/grass 44 
 10 3 tiles/sets/grass 3 
 4 16 tiles/sets/grass 26 
-3 16 tiles/sets/grass 2 
-3 15 tiles/sets/grass 56 
-2 15 tiles/sets/grass 14 
+3 16 tiles/sets/grass 19 
+3 15 tiles/sets/grass 49 
+2 15 tiles/sets/grass 22 
 2 14 tiles/sets/grass 3 
 2 13 tiles/sets/grass 11 
 2 12 tiles/sets/grass 37 
@@ -329,6 +329,12 @@
 21 32 tiles/sets/malice 32 
 29 36 tiles/sets/malice 17 
 29 35 tiles/sets/malice 32 
+3 17 tiles/prop 0 malice_h 
+2 16 tiles/sets/grass 19 
+1 16 tiles/sets/grass 19 
+0 16 tiles/sets/grass 2 
+1 15 tiles/sets/grass 49 
+0 15 tiles/sets/grass 47 
 @background_tiles
 12 21 tiles/sets/stone 19 
 11 21 tiles/sets/stone 2 

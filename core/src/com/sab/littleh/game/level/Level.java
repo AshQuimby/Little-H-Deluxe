@@ -3,15 +3,14 @@ package com.sab.littleh.game.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.game.entity.Entity;
+import com.sab.littleh.game.entity.GameObject;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
@@ -68,9 +67,9 @@ public class Level {
     private Tile testTile;
     private boolean levelEnded;
     private boolean tilesDesynced;
-    private List<Particle> particles;
-    private List<Enemy> enemies;
-    private List<Entity> entities;
+    private final List<Particle> particles;
+    private final List<Enemy> enemies;
+    private final List<GameObject> gameObjects;
     private String background;
     private Point startPos;
     private Popup popup;
@@ -84,7 +83,7 @@ public class Level {
         mapLayers = new HashMap<>();
         particles = new ArrayList<>();
         enemies = new ArrayList<>();
-        entities = new ArrayList<>();
+        gameObjects = new ArrayList<>();
         this.mapData = mapData;
         background = mapData.getRawValue("background");
         timeLimit = mapData.getValue("time_limit").asInt();
@@ -124,7 +123,7 @@ public class Level {
         currentTime = 0;
         checkedTime = currentTime;
         Cursors.switchCursor("none");
-        notify("notify_game_start", startPos.x, startPos.y);
+        notify("game_start", startPos.x, startPos.y);
     }
 
     public void removeTile(String layer, int x, int y) {
@@ -282,8 +281,8 @@ public class Level {
             player.update(this);
         }
 
-        for (Entity entity : entities) {
-            entity.update(this);
+        for (GameObject gameObject : gameObjects) {
+            gameObject.update(this);
         }
 
         for (Particle particle : particles) {
@@ -300,7 +299,7 @@ public class Level {
             }
             return enemy.remove || enemy.despawn;
         });
-        entities.removeIf(entity -> entity.remove);
+        gameObjects.removeIf(gameObject -> gameObject.remove);
 
         for (Tile tile : getBaseLayer().updatableTiles) {
             Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
@@ -345,7 +344,7 @@ public class Level {
             if (tile.hasTag("checkpoint_saved")) {
                 getBaseLayer().checkpointSavedTiles.add(tile);
             }
-            if (tile.hasTag("notifiable")) {
+            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
                 getBaseLayer().notifiableTiles.add(tile);
             }
             if (tile.hasTag("update")) {
@@ -395,6 +394,7 @@ public class Level {
         levelEnded = true;
         enemies.clear();
         particles.clear();
+        gameObjects.clear();
         syncTiles();
         if (LittleH.program.getMenu() instanceof LevelEditorMenu) {
             ((LevelEditorMenu) LittleH.program.getMenu()).resetToolCursor();
@@ -410,7 +410,7 @@ public class Level {
         getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
         for (Tile tile : getBaseLayer().checkpointState) {
             Tile copy = tile.copy();
-            if (tile.hasTag("notifiable"))
+            if (tile.hasTag("notifiable") || tile.hasTag("notify"))
                 getBaseLayer().notifiableTiles.add(copy);
             if (tile.hasTag("update")) {
                 getBaseLayer().updatableTiles.add(copy);
@@ -447,8 +447,8 @@ public class Level {
         enemies.add(enemy);
     }
 
-    public void addMiscEntity(Entity entity) {
-        entities.add(entity);
+    public void addMiscGameObject(GameObject gameObject) {
+        gameObjects.add(gameObject);
     }
 
     public void desyncTiles() {
@@ -461,7 +461,7 @@ public class Level {
             if (tile.hasTag("checkpoint_saved")) {
                 getBaseLayer().checkpointSavedTiles.add(copy);
             }
-            if (tile.hasTag("notifiable")) {
+            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
                 getBaseLayer().notifiableTiles.add(copy);
             }
             if (tile.hasTag("update")) {
@@ -474,7 +474,7 @@ public class Level {
                 if (tile.hasTag("update")) {
                     getBaseLayer().updatableTiles.add(copy);
                 }
-                if (tile.hasTag("notifiable")) {
+                if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
                     getBaseLayer().notifiableTiles.add(copy);
                 }
             }
@@ -610,7 +610,7 @@ public class Level {
             postRenders = drawPostRenders(g, postRenders, false, true, false);
 
             enemies.forEach(enemy -> enemy.render(g, this));
-            entities.forEach(entity -> entity.render(g, this));
+            gameObjects.forEach(gameObject -> gameObject.render(g, this));
             if (inGame())
                 player.render(g, this);
             particles.forEach(particle -> particle.render(g));
@@ -895,10 +895,6 @@ public class Level {
             if (tile.hasTag("levitating")) {
                 g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 8, 64, 64, tile.getDrawSection());
             }
-            if (tile.hasTag("prop")) {
-                Texture image = Images.getImage("props/" + tile.extra);
-                g.draw(image, tile.x * 64, tile.y * 64, image.getWidth() * 8, image.getHeight() * 8);
-            }
             g.resetColor();
         }
 
@@ -937,6 +933,23 @@ public class Level {
             if (tile.hasTag(notification)) {
                 tile.notify(this, notification, data);
             }
+            if (tile.hasTag("notify")) {
+                for (String string : tile.tags.getTagParameters("notify")) {
+                    if (string.equals(notification))
+                        tile.notify(this, notification, data);
+                }
+            }
+        }
+        for (Tile tile : getBackgroundLayer().notifiableTiles) {
+            if (tile.hasTag(notification)) {
+                tile.notify(this, notification, data);
+            }
+            if (tile.hasTag("notify")) {
+                for (String string : tile.tags.getTagParameters("notify")) {
+                    if (string.equals(notification))
+                        tile.notify(this, notification, data);
+                }
+            }
         }
     }
 
@@ -958,8 +971,8 @@ public class Level {
     public List<Enemy> getEnemies() {
         return enemies;
     }
-    public List<Entity> getEntities() {
-        return entities;
+    public List<GameObject> getGameObjects() {
+        return gameObjects;
     }
 
     public void setDialogue(Dialogue dialogue) {

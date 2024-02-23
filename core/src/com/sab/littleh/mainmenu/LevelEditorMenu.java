@@ -2,6 +2,7 @@ package com.sab.littleh.mainmenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
@@ -601,20 +602,13 @@ public class LevelEditorMenu extends MainMenu {
     }
 
     private void startExtraQuery(Tile tileAt) {
-        String prompt = "Set the arbitrary extra data for this tile \n ";
-        String regex = null;
-        int maxSize = -1;
-        if (tileAt.hasTag("text")) {
-            prompt = "Set the text for this tile: \n ";
-        } else if (tileAt.hasTag("dialogue")) {
-            prompt = "Set the path to the dialogue file \n ";
-        } else if (tileAt.hasTag("render_color")) {
-            prompt = "Set the hex code for this tile \n #";
-            regex = "([A-F]|[0-9]|[a-f])";
-            maxSize = 6;
-        }
+        String prompt = tileAt.tags.getTagParameters("string_picker")[0];
+        String regex = tileAt.tags.getTagParameters("string_picker")[1];
+        int maxSize = Integer.parseInt(tileAt.tags.getTagParameters("string_picker")[2]);
+
+        prompt = prompt.replace("\\n", "\n");
         extraQuery = new TypingQuery(prompt, tileAt.extra == null ? "" : tileAt.extra, new Rectangle(-384, -256, 384 * 2, 256 * 2), true);
-        if (regex != null)
+        if (regex.length() > 0)
             extraQuery.setRegex(regex);
         if (maxSize > 0)
             extraQuery.setAbsoluteMaxSize(maxSize);
@@ -989,6 +983,10 @@ public class LevelEditorMenu extends MainMenu {
                 Tile tileAt = level.getTileAt("normal", tiledMousePosition.x, tiledMousePosition.y);
                 if (tileAt != null && tileAt.hasTag("string_picker")) {
                     if (tileAt.extra != null) {
+                        if (tileAt.hasTag("prop")) {
+                            Texture tex = Images.getImage("props/" + tileAt.extra + ".png");
+                            g.draw(tex, tileAt.x * 64, tileAt.y * 64, tex.getWidth() * 8, tex.getHeight() * 8);
+                        }
                         g.drawString(tileAt.extra, LittleH.font, tileAt.x * 64 + 32, tileAt.y * 64 + 96, LittleH.defaultFontScale * 0.85f, 0);
                     }
                 }

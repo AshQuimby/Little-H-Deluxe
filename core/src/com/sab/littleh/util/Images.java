@@ -43,17 +43,31 @@ public class Images {
                 // Get a pixmap of the original
                 Pixmap originalImage = data.consumePixmap();
                 // Set up a pixmap to add the buffer to
-                Pixmap paddedPixmap = new Pixmap(36, 36, Pixmap.Format.RGBA8888);
+                Pixmap paddedPixmap = new Pixmap(40, 40, Pixmap.Format.RGBA8888);
                 // Go through every frame on the 4x4 tilesheet and copy over each frame (this is why every tile has to be on a 16x16 image)
                 for (int i = 0; i < 16; i++) {
                     // Get the frameX and frameY from i in the same way the game would based on tileType
                     int frameX = i % 4;
                     int frameY = i / 4;
                     // Actually put the padding on the simulated image
-                    paddedPixmap.drawPixmap(originalImage, frameX * 9, frameY * 9, frameX * 8, frameY * 8, 1, 8);
-                    paddedPixmap.drawPixmap(originalImage, frameX * 9, frameY * 9 + 8, frameX * 8, frameY * 8 + 7, 8, 1);
-                    paddedPixmap.drawPixmap(originalImage, frameX * 9 + 8, frameY * 9 + 8, frameX * 8 + 7, frameY * 8 + 7, 1, 1);
-                    paddedPixmap.drawPixmap(originalImage, frameX * 9 + 1, frameY * 9, frameX * 8, frameY * 8, 8, 8);
+                    // Pad the top left corner
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10, frameY * 10, frameX * 8, frameY * 8, 1, 1);
+                    // Pad the top right corner
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10 + 9, frameY * 10, frameX * 8 + 7, frameY * 8, 1, 1);
+                    // Pad the bottom left corner
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10, frameY * 10 + 9, frameX * 8, frameY * 8 + 7, 1, 1);
+                    // Pad the bottom right corner
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10 + 9, frameY * 10 + 9, frameX * 8 + 7, frameY * 8 + 7, 1, 1);
+                    // Pad the left
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10, frameY * 10 + 1, frameX * 8, frameY * 8, 1, 8);
+                    // Pad the right
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10 + 9, frameY * 10 + 1, frameX * 8 + 7, frameY * 8, 1, 8);
+                    // Pad the top
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10 + 1, frameY * 10, frameX * 8, frameY * 8, 8, 1);
+                    // Pad the bottom
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10 + 1, frameY * 10 + 9, frameX * 8, frameY * 8 + 7, 8, 1);
+                    // Add the original frame to the center of the new one
+                    paddedPixmap.drawPixmap(originalImage, frameX * 10 + 1, frameY * 10 + 1, frameX * 8, frameY * 8, 8, 8);
                 }
                 image.dispose();
                 image = new Texture(paddedPixmap);

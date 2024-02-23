@@ -11,9 +11,7 @@ import com.sab.littleh.util.Images;
 
 import java.util.*;
 
-public class Entity {
-    public float x;
-    public float y;
+public class Entity extends GameObject {
     public int width;
     public int height;
     public int direction;
@@ -24,10 +22,9 @@ public class Entity {
     public boolean slippery;
     public boolean touchingGround;
     public boolean touchingWater;
-    public String image;
     public Set<Tile> lastTouchedTiles = new HashSet<>();
-    public boolean remove;
 
+    @Override
     public void update(Level game) {
         touchingWater = false;
         for (Tile tile : lastTouchedTiles) {
@@ -251,6 +248,7 @@ public class Entity {
 
     }
 
+    @Override
     public void render(Graphics g, Level game) {
         g.drawImage(Images.getImage(image), new Rectangle((int) x - 8, (int) y, 64, 64), new Rectangle((direction == 1 ? 0 : 8), 8 * frame, (direction == 1 ? 8 : -8), 8), -MathUtils.radiansToDegrees * rotation);
     }

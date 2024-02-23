@@ -193,7 +193,11 @@ public class SabReader {
         char c = scanner.next().charAt(0);
         tokens.add(new SabToken(SabTokenType.OpenParen, null));
         while (true) {
-            if (c == '[') {
+            if (c == '\\') {
+                readingValue = true;
+                char escapedChar = scanner.next().charAt(0);
+                buffer.append(getEscapeChar(escapedChar));
+            } else if (c == '[') {
                 if (readingValue) {
                     throw new SabParsingException("Unexpected token: " + c);
                 }
@@ -215,5 +219,13 @@ public class SabReader {
             c = scanner.next().charAt(0);
         }
         tokens.add(new SabToken(SabTokenType.CloseParen, null));
+    }
+
+    private static char getEscapeChar(char escapedChar) {
+        if (escapedChar == 'n')
+            return '\n';
+        else if (escapedChar == 't')
+            return '\t';
+        return escapedChar;
     }
 }

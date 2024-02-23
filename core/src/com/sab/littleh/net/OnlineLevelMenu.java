@@ -1,22 +1,16 @@
 package com.sab.littleh.net;
 
 import com.sab.littleh.LittleH;
-import com.sab.littleh.controls.Control;
 import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.mainmenu.GameMenu;
 import com.sab.littleh.mainmenu.TitleMenu;
-import com.sab.littleh.net.Connection;
-import com.sab.littleh.net.NetPlayer;
 import com.sab.littleh.util.Cursors;
-import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.SoundEngine;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class OnlineLevelMenu extends GameMenu {
@@ -71,7 +65,7 @@ public class OnlineLevelMenu extends GameMenu {
         netPlayer.setNetId(netId);
         netPlayer.pickUpPowerup(data);
         netPlayers.put(netId, netPlayer);
-        level.addMiscEntity(netPlayer);
+        level.addMiscGameObject(netPlayer);
     }
 
     @Override
