@@ -9,8 +9,86 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Added wiring related images">
+    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Level now initializes notifiable and updatable tile lists.">
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/actuator.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/blue_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/blue_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/blue_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/blue_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/button.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/enemy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/enemy_box.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/green_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/green_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/green_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/green_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/red_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/red_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/red_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/red_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/wiring_mode.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/yellow_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/yellow_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/yellow_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM_[Changes]/yellow_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_6_51_PM__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/actuator.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/blue_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/blue_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/blue_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/blue_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/button.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/enemy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/enemy_box.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/green_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/green_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/green_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/green_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/red_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/red_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/red_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/red_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/wiring_mode.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/yellow_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/yellow_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/yellow_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM_[Changes]/yellow_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_10_PM__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/actuator.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/blue_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/blue_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/blue_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/blue_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/button.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/enemy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/enemy_box.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/green_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/green_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/green_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/green_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/red_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/red_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/red_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/red_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/wiring_mode.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/yellow_wire_rotation_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/yellow_wire_rotation_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/yellow_wire_rotation_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM_[Changes]/yellow_wire_rotation_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_21_2024_7_50_PM__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_23_2024_12_17_PM_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_23_2024_12_17_PM__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/wiring/button.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/button.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/base_tags.sab" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/base_tags.sab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/entity/player/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/LevelLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/tile/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maps/test.map" beforeDir="false" afterPath="$PROJECT_DIR$/maps/test.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -555,7 +633,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708722390909</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Level now initializes notifiable and updatable tile lists.">
+      <created>1708722452254</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1708722452254</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -588,7 +673,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Glitch causing enemies to not respawn fixed. More hotkeys added for tools." />
     <MESSAGE value="Enemy updates" />
     <MESSAGE value="Grid shows up when editing background" />
     <MESSAGE value="Fixed regex issue" />
@@ -613,7 +697,8 @@
     <MESSAGE value="Fixes to water shader" />
     <MESSAGE value="Updatable tiles fixed and sprites for wiring components added" />
     <MESSAGE value="Added wiring related images" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added wiring related images" />
+    <MESSAGE value="Level now initializes notifiable and updatable tile lists." />
+    <option name="LAST_COMMIT_MESSAGE" value="Level now initializes notifiable and updatable tile lists." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

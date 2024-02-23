@@ -135,6 +135,8 @@ public class Level {
     }
 
     public void removeTile(String layer, int x, int y) {
+        if (inGame())
+            throw new IllegalStateException("Do NOT call removeTile() in-game, it will PERMANENTLY delete a tile from the level while in the level editor and will NOT be reset to checkpoint states.");
         Tile toRemove = getTileAt(layer, x, y);
         if (toRemove != null) {
             while (mapLayers.get(layer).allTiles.contains(toRemove))

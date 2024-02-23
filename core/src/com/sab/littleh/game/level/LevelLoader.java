@@ -234,7 +234,7 @@ public class LevelLoader {
 
         for (Tile powerSource : powerSources) {
             Tile wiringTile = level.getTileAt("wiring", powerSource.x, powerSource.y);
-            if (wiringTile.hasTag("wire")) {
+            if (wiringTile != null && wiringTile.hasTag("wire")) {
                 wiringTile.tags.addTag("receiver");
             }
         }

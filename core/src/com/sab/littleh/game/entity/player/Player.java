@@ -397,8 +397,6 @@ public class Player extends Entity {
     }
 
     public void touchingTile(Level game, Rectangle playerHitbox, Tile tile, Rectangle tileHitbox, Set<Tile> newLastTouchedTiles) {
-//        if (tile.hasTag("multi_hitbox")) {
-//        }
         boolean splash = true;
         touchingTile(game, tile);
         if (tile.hasTag("death")) {
@@ -446,6 +444,9 @@ public class Player extends Entity {
                         24, 24, 3, 3, 1, 0.96f, 0f, (int) (Math.random() * 2), 0, "particles/twinkle.png", 120));
             }
             win();
+        }
+        if (tile.hasTag("button") && tile.tileType < 4) {
+            tile.setTileType(tile.tileType + 4);
         }
         if (tile.hasTag("pickup")) {
             boolean pickup = true;

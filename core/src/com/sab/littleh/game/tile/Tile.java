@@ -196,7 +196,7 @@ public class Tile {
     public Rectangle toRectangle() {
         Rectangle tileHitbox = new Rectangle(x * 64, y * 64, 64, 64);
         if (hasTag("half")) {
-            switch (tileType) {
+            switch (tileType % 4) {
                 case 2 :
                     tileHitbox.height = 32;
                     tileHitbox.y += 32;
