@@ -51,10 +51,6 @@ public class Tile {
         this.y = y;
         this.image = image;
         this.tags = new TileTags(tags);
-        for (String tag : tags.getTags()) {
-            if (tag.contains("state"))
-                System.out.println(tag);
-        }
         if (extra != null)
             this.extra = extra.trim();
         setTileType(tileType);
