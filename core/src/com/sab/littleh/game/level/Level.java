@@ -924,6 +924,7 @@ public class Level {
         resetToCheckpointState();
         GunMode.bullets.clear();
         player = null;
+        ignoreDialogue = true;
         startGame(startPos);
     }
 

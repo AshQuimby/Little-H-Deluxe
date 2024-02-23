@@ -274,14 +274,16 @@ public class LevelEditor {
         for (int i = tileX - 1; i < tileX + 2; i++) {
             for (int j = tileY - 1; j < tileY + 2; j++) {
                 Tile otherTile = level.getTileAt(layer, i, j);
-                if (otherTile != null && !otherTile.ignoreTiling) {
-                    if (tile != null && !tile.image.equals("delete") && tile.hasTag("exclusive_tiling") && !otherTile.image.equals(tile.image)) {
-                        neighbors[tileX - i + 1][tileY - j + 1] = null;
-                        continue;
-                    }
-                    neighbors[tileX - i + 1][tileY - j + 1] = otherTile;
-                } else {
-                    neighbors[tileX - i + 1][tileY - j + 1] = null;
+                if (otherTile != null) {
+                    if (tile != null && !tile.image.equals("delete") && tile.hasTag("exclusive_tiling")) {
+                        for (String string : tile.tags.getTagParameters("exclusive_tiling")) {
+                            if (otherTile.hasTag(string)) {
+                                neighbors[tileX - i + 1][tileY - j + 1] = otherTile;
+                                break;
+                            }
+                        }
+                    } else if (!otherTile.ignoreTiling)
+                        neighbors[tileX - i + 1][tileY - j + 1] = otherTile;
                 }
             }
         }
