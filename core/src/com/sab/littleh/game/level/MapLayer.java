@@ -9,17 +9,13 @@ import java.util.List;
 public class MapLayer {
     public List<Tile> allTiles;
     public List<Tile> checkpointSavedTiles;
-    public List<Tile> notifiableTiles;
     public List<Tile> checkpointState;
-    public List<Tile> updatableTiles;
     public List<List<Tile>> tileMap;
 
     public MapLayer() {
         allTiles = new ArrayList<>();
         checkpointSavedTiles = new ArrayList<>();
-        notifiableTiles = new ArrayList<>();
         checkpointState = new ArrayList<>();
-        updatableTiles = new ArrayList<>();
         tileMap = new ArrayList<>();
     }
 }

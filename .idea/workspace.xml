@@ -9,9 +9,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Tag system updates for working on wiring">
+    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Fixes to water shader">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tiles/wiring/actuator.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/actuator.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/shaders/water.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/water.fsh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -535,7 +538,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708719498586</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Fixes to water shader">
+      <created>1708719590039</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1708719590039</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -568,7 +578,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Fixing crash on MacOS" />
     <MESSAGE value="Map settings are shown when level starts or when Shift is held. Splish sound effect added. TileSelections fixed." />
     <MESSAGE value="Bug Squashing" />
     <MESSAGE value="Glitch causing enemies to not respawn fixed. More hotkeys added for tools." />
@@ -593,7 +602,8 @@
     <MESSAGE value="Bug fixes. Added malice menace to Infection and made some minor changes to tiles and tags" />
     <MESSAGE value="Fixed MASSIVE inefficiency when creating and copying tiles" />
     <MESSAGE value="Tag system updates for working on wiring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tag system updates for working on wiring" />
+    <MESSAGE value="Fixes to water shader" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixes to water shader" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

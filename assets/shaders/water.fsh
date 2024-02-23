@@ -10,8 +10,5 @@ uniform vec2 u_tilePosition;
 void main()
 {
     vec4 color = texture2D(u_texture, v_texCoords);
-
-    color.r = max(0.0, color.r - mod(u_time, 1.0));
-
     gl_FragColor = color;
 }

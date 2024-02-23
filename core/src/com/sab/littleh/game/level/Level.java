@@ -60,6 +60,8 @@ public class Level {
 //    public List<Tile> updatableTiles;
 //    public List<List<Tile>> tileMap;
 //    public List<List<Tile>> backgroundMap;
+    public List<Tile> notifiableTiles;
+    public List<Tile> updatableTiles;
 
     public Player playerBackup;
     public Player player;
@@ -283,6 +285,13 @@ public class Level {
             float cameraScalar = Math.min(2400f / LittleH.program.getWidth(), 1350f / LittleH.program.getHeight());
             LittleH.program.dynamicCamera.targetZoom = cameraScalar / Settings.localSettings.zoomScalar.asFloat();
             player.update(this);
+
+            for (Tile tile : updatableTiles) {
+                Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
+                if (player.getCenter().dst2(tileCenter) < 1420 * 1420) {
+                    tile.update(this);
+                }
+            }
         }
 
         for (GameObject gameObject : gameObjects) {
@@ -304,13 +313,6 @@ public class Level {
             return enemy.remove || enemy.despawn;
         });
         gameObjects.removeIf(gameObject -> gameObject.remove);
-
-        for (Tile tile : getBaseLayer().updatableTiles) {
-            Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
-            if (player.getCenter().dst2(tileCenter) < 1420 * 1420) {
-                tile.update(this);
-            }
-        }
         particles.removeIf(particle -> !particle.alive);
     }
 
@@ -331,11 +333,11 @@ public class Level {
             if (tile.hasTag("checkpoint_saved")) {
                 getBaseLayer().checkpointSavedTiles.remove(tile);
             }
-            if (tile.hasTag("notifiable")) {
-                getBaseLayer().notifiableTiles.remove(tile);
+            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
+                notifiableTiles.remove(tile);
             }
             if (tile.hasTag("update")) {
-                getBaseLayer().updatableTiles.remove(tile);
+                updatableTiles.remove(tile);
             }
             getBaseLayer().tileMap.get(tile.x).set(tile.y, null);
         } else {
@@ -349,10 +351,10 @@ public class Level {
                 getBaseLayer().checkpointSavedTiles.add(tile);
             }
             if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                getBaseLayer().notifiableTiles.add(tile);
+                notifiableTiles.add(tile);
             }
             if (tile.hasTag("update")) {
-                getBaseLayer().updatableTiles.add(tile);
+                updatableTiles.add(tile);
             }
             getBaseLayer().tileMap.get(tile.x).set(tile.y, tile);
         } else {
@@ -410,14 +412,14 @@ public class Level {
         GunMode.bullets.clear();
         enemies.clear();
         getBaseLayer().checkpointSavedTiles.clear();
-        getBaseLayer().notifiableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
-        getBaseLayer().updatableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
+        notifiableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
+        updatableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
         for (Tile tile : getBaseLayer().checkpointState) {
             Tile copy = tile.copy();
             if (tile.hasTag("notifiable") || tile.hasTag("notify"))
-                getBaseLayer().notifiableTiles.add(copy);
+                notifiableTiles.add(copy);
             if (tile.hasTag("update")) {
-                getBaseLayer().updatableTiles.add(copy);
+                updatableTiles.add(copy);
             }
             getBaseLayer().checkpointSavedTiles.add(copy);
             addTileToMap("normal", copy);
@@ -434,8 +436,8 @@ public class Level {
     public void syncTiles() {
         enemies.clear();
         getBaseLayer().checkpointSavedTiles.clear();
-        getBaseLayer().notifiableTiles.clear();
-        getBaseLayer().updatableTiles.clear();
+        notifiableTiles.clear();
+        updatableTiles.clear();
         for (Tile tile : getBaseLayer().allTiles) {
             tile.setTags();
             getBaseLayer().tileMap.get(tile.x).set(tile.y, tile);
@@ -458,8 +460,8 @@ public class Level {
     public void desyncTiles() {
         MapLayer mapLayer = getBaseLayer();
         mapLayer.checkpointSavedTiles.clear();
-        mapLayer.notifiableTiles.clear();
-        mapLayer.updatableTiles.clear();
+        notifiableTiles.clear();
+        updatableTiles.clear();
         for (Tile tile : mapLayer.allTiles) {
             Tile copy = tile.copy();
             mapLayer.tileMap.get(copy.x).set(copy.y, copy);
@@ -467,24 +469,32 @@ public class Level {
                 mapLayer.checkpointSavedTiles.add(copy);
             }
             if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                mapLayer.notifiableTiles.add(copy);
+                notifiableTiles.add(copy);
             }
             if (tile.hasTag("update")) {
-                mapLayer.updatableTiles.add(copy);
+                updatableTiles.add(copy);
             }
         }
         mapLayer = getBackgroundLayer();
-        mapLayer.notifiableTiles.clear();
-        mapLayer.updatableTiles.clear();
         for (Tile tile : mapLayer.allTiles) {
             if (tile.hasTag("ignore_background")) {
                 Tile copy = tile.copy();
                 if (tile.hasTag("update")) {
-                    mapLayer.updatableTiles.add(copy);
+                    updatableTiles.add(copy);
                 }
                 if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                    mapLayer.notifiableTiles.add(copy);
+                    notifiableTiles.add(copy);
                 }
+            }
+        }
+        mapLayer = getWiringLayer();
+        for (Tile tile : mapLayer.allTiles) {
+            Tile copy = tile.copy();
+            if (tile.hasTag("update")) {
+                updatableTiles.add(copy);
+            }
+            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
+                notifiableTiles.add(copy);
             }
         }
         saveCheckpointState();
@@ -938,18 +948,7 @@ public class Level {
     }
 
     public void notify(String notification, int... data) {
-        for (Tile tile : getBaseLayer().notifiableTiles) {
-            if (tile.hasTag(notification)) {
-                tile.notify(this, notification, data);
-            }
-            if (tile.hasTag("notify")) {
-                for (String string : tile.tags.getTagParameters("notify")) {
-                    if (string.equals(notification))
-                        tile.notify(this, notification, data);
-                }
-            }
-        }
-        for (Tile tile : getBackgroundLayer().notifiableTiles) {
+        for (Tile tile : notifiableTiles) {
             if (tile.hasTag(notification)) {
                 tile.notify(this, notification, data);
             }
