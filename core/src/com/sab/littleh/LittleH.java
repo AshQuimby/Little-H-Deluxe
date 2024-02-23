@@ -40,7 +40,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static MainMenu pendingMenu;
     private static List<Controller> controllers = new ArrayList<>();
     private int tick;
-    public static final File mapsFolder = new File(Images.inArchive ? "maps/" : "../maps/");
     public static BitmapFont font;
     public static BitmapFont borderedFont;
     public static float defaultFontScale = 0.2f;
@@ -59,46 +58,28 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     private Stack<ShaderProgram> shaderStack = new Stack<>();
     private boolean dontRender, hardPause;
     private boolean controllersNotSupported;
-
-    public static void updateFont() {
-        font = Fonts.getFont(Settings.localSettings.font.asRawValue());
-        font.setColor(Color.WHITE);
-        borderedFont = Fonts.getFont(Settings.localSettings.font.asRawValue() + "_bordered");
-        borderedFont.setColor(Color.WHITE);
-        defaultFontScale = Settings.localSettings.font.getFontSize();
-    }
-
-    public static void setTitle(String title) {
-        if (!System.getProperty("os.name").startsWith("Mac"))
-            Gdx.graphics.setTitle(TITLE + title);
-    }
-
-    public static List<Controller> getControllers() {
-        return controllers;
-    }
-
-    public static File getFileResource(String resource) {
-        return new File(String.format(Images.inArchive ? "resources/%s" : "../resources/%s", resource));
-    }
-
-    public static String formatTime(long time) {
-        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
-                getTimeWithZeros(time / 1000 % 60, 2),
-                getTimeWithZeros(time % 1000, 3));
-    }
-
-    public static String getTimeWithZeros(long time, int minChars) {
-        String str = String.valueOf(time);
-
-        while (str.length() < minChars) {
-            str = 0 + str;
-        }
-
-        return str;
-    }
+    public static File mapsFolder;
+    private String savedMapsPath;
+    private String savedDataPath;
 
     @Override
     public void create() {
+        program = this;
+        if (System.getProperty("os.name").contains("Win")) {
+            savedDataPath = String.format("%s\\TheLittleH", System.getenv("AppData"));
+        }
+        File file = new File(savedDataPath);
+        if (!file.exists()) {
+            boolean success = file.mkdirs();
+            if (!success) {
+                throw new RuntimeException("Program does not have permission to create files in the AppData directory");
+            }
+        }
+        savedMapsPath = String.format("%s/maps", savedDataPath);
+        mapsFolder = new File(savedMapsPath);
+        if (!mapsFolder.exists()) {
+            mapsFolder.mkdirs();
+        }
         Shaders.load();
         Settings.loadSettings();
         Controls.load();
@@ -109,11 +90,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         dynamicCamera = new DynamicCamera(resolutionX, resolutionY);
         SoundEngine.load();
         Cursors.loadCursors();
-        program = this;
         try {
             Controllers.addListener(program);
         } catch (Exception e) {
-            System.out.println("gool");
             controllersNotSupported = true;
         }
         MainMenu.program = this;
@@ -142,9 +121,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         updateFont();
         switchMenu(new TitleMenu());
         Gdx.input.setInputProcessor(this);
-        if (!mapsFolder.exists()) {
-            mapsFolder.mkdirs();
-        }
         Cursors.switchCursor("cursor");
         dontRender = false;
         SoundEngine.playMusic("menu/menu_theme.ogg");
@@ -159,6 +135,43 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         tempBuffers[2] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
         tempBuffers[3] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
         recheckShaderStack();
+    }
+
+    public static void updateFont() {
+        font = Fonts.getFont(Settings.localSettings.font.asRawValue());
+        font.setColor(Color.WHITE);
+        borderedFont = Fonts.getFont(Settings.localSettings.font.asRawValue() + "_bordered");
+        borderedFont.setColor(Color.WHITE);
+        defaultFontScale = Settings.localSettings.font.getFontSize();
+    }
+
+    public static void setTitle(String title) {
+        if (!System.getProperty("os.name").startsWith("Mac"))
+            Gdx.graphics.setTitle(TITLE + title);
+    }
+
+    public static List<Controller> getControllers() {
+        return controllers;
+    }
+
+    public static File getFileResource(String resource) {
+        return new File(String.format("%s/resources/%s", program.savedDataPath, resource));
+    }
+
+    public static String formatTime(long time) {
+        return String.format("%s:%s:%s", getTimeWithZeros(time / 60000, 2),
+                getTimeWithZeros(time / 1000 % 60, 2),
+                getTimeWithZeros(time % 1000, 3));
+    }
+
+    public static String getTimeWithZeros(long time, int minChars) {
+        String str = String.valueOf(time);
+
+        while (str.length() < minChars) {
+            str = 0 + str;
+        }
+
+        return str;
     }
 
     public void recheckShaderStack() {

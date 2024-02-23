@@ -121,6 +121,8 @@ public class LevelLoader {
                     if (scanner.hasNext("@wiring_tiles"))
                         break;
                     nextLine = scanner.nextLine();
+                    if (nextLine.isBlank())
+                        break;
                     Tile tile = getTile(nextLine);
                     if (tile != null && !tile.image.equals("delete")) {
                         Point tilePosition = new Point(tile.x, tile.y);
@@ -138,6 +140,8 @@ public class LevelLoader {
             if (nextLine.startsWith("@wiring_tiles")) {
                 while (scanner.hasNext()) {
                     nextLine = scanner.nextLine();
+                    if (nextLine.isBlank())
+                        break;
                     Tile tile = getTile(nextLine);
                     if (tile != null && !tile.image.equals("delete")) {
                         Point tilePosition = new Point(tile.x, tile.y);
