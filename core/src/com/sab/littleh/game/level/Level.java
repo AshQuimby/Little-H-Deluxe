@@ -3,8 +3,10 @@ package com.sab.littleh.game.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
@@ -892,6 +894,10 @@ public class Level {
             }
             if (tile.hasTag("levitating")) {
                 g.drawImage(tile.getImage(), tile.x * 64, tile.y * 64 + MathUtils.sinDeg(LittleH.getTick() / 2f + (tile.x + tile.y) * 15) * 8, 64, 64, tile.getDrawSection());
+            }
+            if (tile.hasTag("prop")) {
+                Texture image = Images.getImage("props/" + tile.extra);
+                g.draw(image, tile.x * 64, tile.y * 64, image.getWidth() * 8, image.getHeight() * 8);
             }
             g.resetColor();
         }

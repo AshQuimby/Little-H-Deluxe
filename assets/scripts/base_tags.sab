@@ -47,3 +47,4 @@
 @blue_wire [ tileset, wire, blue_wire, exclusive_tiling(blue_wire | junction) ]
 @button [ wiring_toggle, quarter, states(4), checkpoint_saved ]
 @actuator [ wiring_activated, actuator, checkpoint_saved, notifiable, notify_game_start ]
+@prop [ prop, invisible, string_picker, post_render ]

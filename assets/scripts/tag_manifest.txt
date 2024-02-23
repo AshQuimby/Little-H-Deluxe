@@ -45,3 +45,4 @@ jump_refresh                - Resets double jump, even when double jumping is di
 slope                       - Is a slope
 normal_slope                - 45 degree slope
 exclusive_tiling(str...)    - If a tileset, will only tile with tiles with the tag(s) specified in the parameters
+prop                        - Renders an image
