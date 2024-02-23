@@ -9,12 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Fixes to water shader">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tiles/wiring/actuator.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tiles/wiring/actuator.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/water.fsh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/shaders/water.fsh" afterDir="false" />
+    <list default="true" id="965e289a-d713-4277-9876-48fb620d91fe" name="Changes" comment="Added wiring related images">
       <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/Level.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/sab/littleh/game/level/MapLayer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -545,7 +541,21 @@
       <option name="project" value="LOCAL" />
       <updated>1708719590039</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Updatable tiles fixed and sprites for wiring components added">
+      <created>1708722343892</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1708722343892</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Added wiring related images">
+      <created>1708722390909</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1708722390909</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -578,8 +588,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Map settings are shown when level starts or when Shift is held. Splish sound effect added. TileSelections fixed." />
-    <MESSAGE value="Bug Squashing" />
     <MESSAGE value="Glitch causing enemies to not respawn fixed. More hotkeys added for tools." />
     <MESSAGE value="Enemy updates" />
     <MESSAGE value="Grid shows up when editing background" />
@@ -603,7 +611,9 @@
     <MESSAGE value="Fixed MASSIVE inefficiency when creating and copying tiles" />
     <MESSAGE value="Tag system updates for working on wiring" />
     <MESSAGE value="Fixes to water shader" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixes to water shader" />
+    <MESSAGE value="Updatable tiles fixed and sprites for wiring components added" />
+    <MESSAGE value="Added wiring related images" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added wiring related images" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/little_h$DesktopLauncher__1_.ic" NAME="DesktopLauncher (1) Coverage Results" MODIFIED="1689325330492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

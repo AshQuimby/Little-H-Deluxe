@@ -89,6 +89,8 @@ public class Level {
         particles = new ArrayList<>();
         enemies = new ArrayList<>();
         gameObjects = new ArrayList<>();
+        notifiableTiles = new ArrayList<>();
+        updatableTiles = new ArrayList<>();
         this.mapData = mapData;
         background = mapData.getRawValue("background");
         timeLimit = mapData.getValue("time_limit").asInt();
