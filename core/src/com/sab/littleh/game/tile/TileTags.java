@@ -26,9 +26,17 @@ public class TileTags {
     }
 
     public void addTag(String tag) {
-        modified = true;
-        tags = new HashMap<>(tags);
-        tags.put(tag, null);
+        addTag(tag, null);
+    }
+
+    public void addTag(String tag, String value) {
+        if (!modified) {
+            modified = true;
+            tags = new HashMap<>(tags);
+            tags.put(tag, value);
+        } else {
+            tags.put(tag, value);
+        }
     }
 
     public String[] getTags() {
@@ -40,10 +48,6 @@ public class TileTags {
         for (int i = 0; i < params.length; i++)
             params[i] = params[i].trim();
         return params;
-    }
-
-    public void addTag(String tag, String value) {
-        tags.put(tag, value);
     }
 
     public void removeTag(String tag) {

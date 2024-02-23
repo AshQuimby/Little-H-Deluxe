@@ -56,12 +56,18 @@ public class Tile {
         setTileType(tileType);
     }
 
-    public Tile(String image) {
+    public Tile(int x, int y, String image) {
         this.image = image;
+        this.x = x;
+        this.y = y;
         if (!image.equals("delete")) {
             setTags();
             setTileType(0);
         }
+    }
+
+    public Tile(String image) {
+        this(0, 0, image);
     }
 
     public static boolean imagesEqual(Tile tileAt, Tile newTile) {
@@ -343,16 +349,27 @@ public class Tile {
         if (hasTag("prop")) {
             game.addMiscGameObject(new Prop("props/" + extra + ".png", x * 64, y * 64));
         }
-        if (hasTag("actuator")) {
-            if (tileType == 1) {
-                arbDat = game.getTileAt("normal", x, y);
-                game.inGameRemoveTile((Tile) arbDat);
-            }
-        }
         if (hasTag("notified_spring_bounce")) {
             arbDat = tileType % 2 + 30;
         }
 
+        if (hasTag("actuator")) {
+            // Set the actuatable tiles to have their states saved at checkpoints
+            Tile tile = game.getTileAt("normal", x, y);
+            if (tile != null) {
+                tile.tags.addTag("checkpoint_saved");
+                game.inGameSetTile("normal", x, y, tile);
+            } else {
+                game.inGameSetTile("normal", x, y, new Tile(x, y, "tiles/actuator_air"));
+            }
+            tile = game.getTileAt("background", x, y);
+            if (tile != null) {
+                tile.tags.addTag("checkpoint_saved");
+                game.inGameSetTile("background", x, y, tile);
+            } else {
+                game.inGameSetTile("background", x, y, new Tile(x, y, "tiles/actuator_air"));
+            }
+        }
         if (hasTag("observer")) {
             Tile observing = game.getTileAt("normal", x, y);
             if (observing == null) {
@@ -453,16 +470,11 @@ public class Tile {
 
     public void signalReceived(Level game) {
         if (hasTag("actuator")) {
-            if (arbDat == null) {
-                Tile toTake = game.getTileAt("normal", x, y);
-                if (toTake != null) {
-                    arbDat = toTake;
-                    game.inGameRemoveTile(toTake);
-                }
-            } else {
-                game.inGameAddTile((Tile) arbDat);
-                arbDat = null;
-            }
+            Tile tileToSwap = game.getTileAt("normal", x, y);
+            Tile backgroundTile = game.getTileAt("background", x, y);
+
+            game.inGameSetTile("normal", x, y, backgroundTile);
+            game.inGameSetTile("background", x, y, tileToSwap);
         }
         if (hasTag("receiver")) {
             List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);

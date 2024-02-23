@@ -46,6 +46,7 @@
 @green_wire [ tileset, wire(green), green_wire, exclusive_tiling(green_wire | wiring_component) ]
 @blue_wire [ tileset, wire(blue), blue_wire, exclusive_tiling(blue_wire | wiring_component) ]
 @button [ power_source, quarter, button, states(4), checkpoint_saved, wiring_component ]
-@actuator [ powered, actuator, checkpoint_saved, notify(game_start), wiring_component ]
+@actuator [ powered, actuator, notify(game_start), wiring_component, states(5) ]
+@actuator_air [ checkpoint_saved ]
 @prop [ prop, invisible, string_picker(Set a path to the prop image:\\n | | -1), notify(game_start), ignore_background ]
 @observer [ wiring_component, power_source, update, observer ]

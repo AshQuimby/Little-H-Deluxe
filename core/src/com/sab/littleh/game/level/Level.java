@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.controls.ControlInput;
-import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.GameObject;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
@@ -131,7 +130,17 @@ public class Level {
         checkedTime = currentTime;
         Cursors.switchCursor("none");
         notify("game_start", startPos.x, startPos.y);
+        for (Tile tile : getBaseLayer().allTiles) {
+            // For wiring
+            if (tile.hasTag("power_source")) {
+                Tile wiringTile = getTileAt("wiring", tile.x, tile.y);
+                if (wiringTile != null && wiringTile.hasTag("wire")) {
+                    wiringTile.tags.addTag("receiver");
+                }
+            }
+        }
         wiring = new Wiring(this);
+        saveCheckpointState();
     }
 
     public void removeTile(String layer, int x, int y) {
@@ -332,10 +341,48 @@ public class Level {
         return mapLayers.get("wiring");
     }
 
+    public void inGameSetTile(String layer, int x, int y, Tile tile) {
+        inGameSetTile(mapLayers.get(layer), x, y, tile);
+    }
+    public void inGameSetTile(MapLayer mapLayer, int x, int y, Tile tile) {
+        if (tilesDesynced) {
+            if (tile == null) {
+                // Delete a tile in game
+                Tile tileAt = mapLayer.tileMap.get(x).get(y);
+                if (tileAt == null) return;
+
+                if (tileAt.hasTag("checkpoint_saved")) {
+                    mapLayer.saveImportantTiles.remove(tileAt);
+                }
+                if (tileAt.hasTag("notifiable") || tileAt.hasTag("notify")) {
+                    notifiableTiles.remove(tileAt);
+                }
+                if (tileAt.hasTag("update")) {
+                    updatableTiles.remove(tileAt);
+                }
+                mapLayer.tileMap.get(x).set(y, null);
+            } else {
+                // Add a tile in game
+                if (tile.hasTag("checkpoint_saved")) {
+                    mapLayer.saveImportantTiles.add(tile);
+                }
+                if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
+                    notifiableTiles.add(tile);
+                }
+                if (tile.hasTag("update")) {
+                    updatableTiles.add(tile);
+                }
+                mapLayer.tileMap.get(x).set(y, tile);
+            }
+        } else {
+            throw new IllegalStateException("The Level must be desynced before calling this to avoid the permanent deletion of tiles");
+        }
+    }
+
     public void inGameRemoveTile(Tile tile) {
         if (tilesDesynced) {
             if (tile.hasTag("checkpoint_saved")) {
-                getBaseLayer().checkpointSavedTiles.remove(tile);
+                getBaseLayer().saveImportantTiles.remove(tile);
             }
             if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
                 notifiableTiles.remove(tile);
@@ -349,10 +396,10 @@ public class Level {
         }
     }
 
-    public void inGameAddTile(Tile tile) {
+    public void inGameAddTile(String layer, Tile tile) {
         if (tilesDesynced) {
             if (tile.hasTag("checkpoint_saved")) {
-                getBaseLayer().checkpointSavedTiles.add(tile);
+                mapLayers.get(layer).saveImportantTiles.add(tile);
             }
             if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
                 notifiableTiles.add(tile);
@@ -360,10 +407,14 @@ public class Level {
             if (tile.hasTag("update")) {
                 updatableTiles.add(tile);
             }
-            getBaseLayer().tileMap.get(tile.x).set(tile.y, tile);
+            mapLayers.get(layer).tileMap.get(tile.x).set(tile.y, tile);
         } else {
             throw new IllegalStateException("The Level must be desynced before calling this to avoid the permanent alteration of tiles");
         }
+    }
+
+    public void inGameAddTile(Tile tile) {
+        inGameAddTile("normal", tile);
     }
 
     public boolean inGame() {
@@ -372,7 +423,7 @@ public class Level {
 
     public int getcheckpointSavedTileCount(String tag, int tileType) {
         int count = 0;
-        for (Tile tile : getBaseLayer().checkpointSavedTiles) {
+        for (Tile tile : getBaseLayer().saveImportantTiles) {
             if (tile.hasTag(tag) && tile.tileType == tileType)
                 count++;
         }
@@ -415,36 +466,44 @@ public class Level {
     public void resetToCheckpointState() {
         GunMode.bullets.clear();
         enemies.clear();
-        getBaseLayer().checkpointSavedTiles.clear();
         notifiableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
         updatableTiles.removeIf(tile -> tile.hasTag("checkpoint_saved"));
-        for (Tile tile : getBaseLayer().checkpointState) {
-            Tile copy = tile.copy();
-            if (tile.hasTag("notifiable") || tile.hasTag("notify"))
-                notifiableTiles.add(copy);
-            if (tile.hasTag("update")) {
-                updatableTiles.add(copy);
+        for (MapLayer mapLayer : mapLayers.values()) {
+            mapLayer.saveImportantTiles.clear();
+            for (Tile tile : mapLayer.checkpointState) {
+                Tile copy = tile.copy();
+                if (tile.hasTag("notifiable") || tile.hasTag("notify"))
+                    notifiableTiles.add(copy);
+                if (tile.hasTag("update")) {
+                    updatableTiles.add(copy);
+                }
+                mapLayer.saveImportantTiles.add(copy);
+                inGameSetTile(mapLayer, copy.x, copy.y, copy);
             }
-            getBaseLayer().checkpointSavedTiles.add(copy);
-            addTileToMap("normal", copy);
         }
     }
 
     public void saveCheckpointState() {
-        getBaseLayer().checkpointState.clear();
-        for (Tile tile : getBaseLayer().checkpointSavedTiles) {
-            getBaseLayer().checkpointState.add(tile.copy());
+        for (MapLayer mapLayer : mapLayers.values()) {
+            mapLayer.checkpointState.clear();
+            for (Tile tile : mapLayer.saveImportantTiles) {
+                mapLayer.checkpointState.add(tile.copy());
+            }
         }
     }
 
     public void syncTiles() {
         enemies.clear();
-        getBaseLayer().checkpointSavedTiles.clear();
         notifiableTiles.clear();
         updatableTiles.clear();
-        for (Tile tile : getBaseLayer().allTiles) {
-            tile.setTags();
-            getBaseLayer().tileMap.get(tile.x).set(tile.y, tile);
+
+        for (MapLayer mapLayer : mapLayers.values()) {
+            mapLayer.saveImportantTiles.clear();
+            mapLayer.clearTileMap();
+            for (Tile tile : mapLayer.allTiles) {
+                tile.setTags();
+                mapLayer.tileMap.get(tile.x).set(tile.y, tile);
+            }
         }
         tilesDesynced = false;
     }
@@ -462,46 +521,24 @@ public class Level {
     }
 
     public void desyncTiles() {
-        MapLayer mapLayer = getBaseLayer();
-        mapLayer.checkpointSavedTiles.clear();
         notifiableTiles.clear();
         updatableTiles.clear();
-        for (Tile tile : mapLayer.allTiles) {
-            Tile copy = tile.copy();
-            mapLayer.tileMap.get(copy.x).set(copy.y, copy);
-            if (tile.hasTag("checkpoint_saved")) {
-                mapLayer.checkpointSavedTiles.add(copy);
-            }
-            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                notifiableTiles.add(copy);
-            }
-            if (tile.hasTag("update")) {
-                updatableTiles.add(copy);
-            }
-        }
-        mapLayer = getBackgroundLayer();
-        for (Tile tile : mapLayer.allTiles) {
-            if (tile.hasTag("ignore_background")) {
+        for (MapLayer mapLayer : mapLayers.values()) {
+            mapLayer.saveImportantTiles.clear();
+            for (Tile tile : mapLayer.allTiles) {
                 Tile copy = tile.copy();
-                if (tile.hasTag("update")) {
-                    updatableTiles.add(copy);
+                mapLayer.tileMap.get(copy.x).set(copy.y, copy);
+                if (tile.hasTag("checkpoint_saved")) {
+                    mapLayer.saveImportantTiles.add(copy);
                 }
                 if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
                     notifiableTiles.add(copy);
                 }
+                if (tile.hasTag("update")) {
+                    updatableTiles.add(copy);
+                }
             }
         }
-        mapLayer = getWiringLayer();
-        for (Tile tile : mapLayer.allTiles) {
-            Tile copy = tile.copy();
-            if (tile.hasTag("update")) {
-                updatableTiles.add(copy);
-            }
-            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                notifiableTiles.add(copy);
-            }
-        }
-        saveCheckpointState();
         tilesDesynced = true;
     }
 

@@ -166,11 +166,6 @@ public class LevelLoader {
                     LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                 tiles.add(tile);
                 usedPositions.add(tilePosition);
-
-                // For wiring
-                if (tile.hasTag("power_source")) {
-                    powerSources.add(tile);
-                }
             }
         }
 
@@ -229,19 +224,17 @@ public class LevelLoader {
                     tile.x -= minX;
                     tile.y -= minY;
                 }
+
+                for (Tile tile : wiring) {
+                    tile.x -= minX;
+                    tile.y -= minY;
+                }
             }
         }
 
         level.addTiles(tiles, levelWidth, levelHeight);
         level.addBackground(background);
         level.addWiring(wiring);
-
-        for (Tile powerSource : powerSources) {
-            Tile wiringTile = level.getTileAt("wiring", powerSource.x, powerSource.y);
-            if (wiringTile != null && wiringTile.hasTag("wire")) {
-                wiringTile.tags.addTag("receiver");
-            }
-        }
 
         if (updateTilesets) {
             LevelEditor levelEditor = new LevelEditor(level, "normal");
