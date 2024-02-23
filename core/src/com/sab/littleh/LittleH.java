@@ -65,14 +65,18 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     @Override
     public void create() {
         program = this;
+
         if (System.getProperty("os.name").contains("Win")) {
             savedDataPath = String.format("%s\\TheLittleH", System.getenv("AppData"));
+        } else if (System.getProperty("os.name").contains("Mac")) {
+            savedDataPath = String.format("%s/Library/Application Support/TheLittleH", System.getProperty("user.home"));
         }
+
         File file = new File(savedDataPath);
         if (!file.exists()) {
             boolean success = file.mkdirs();
             if (!success) {
-                throw new RuntimeException("Program does not have permission to create files in the AppData directory");
+                throw new RuntimeException("Program failed to create necessary files");
             }
         }
         savedMapsPath = String.format("%s/maps", savedDataPath);
