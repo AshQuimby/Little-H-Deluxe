@@ -105,6 +105,7 @@ public class LevelLoader {
         List<Tile> tiles = new ArrayList<>();
         List<Tile> background = new ArrayList<>();
         List<Tile> wiring = new ArrayList<>();
+        List<Tile> powerSources = new ArrayList<>();
 
         int levelWidth = 31;
         int levelHeight = 31;
@@ -161,6 +162,11 @@ public class LevelLoader {
                     LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                 tiles.add(tile);
                 usedPositions.add(tilePosition);
+
+                // For wiring
+                if (tile.hasTag("power_source")) {
+                    powerSources.add(tile);
+                }
             }
         }
 
@@ -225,6 +231,13 @@ public class LevelLoader {
         level.addTiles(tiles, levelWidth, levelHeight);
         level.addBackground(background);
         level.addWiring(wiring);
+
+        for (Tile powerSource : powerSources) {
+            Tile wiringTile = level.getTileAt("wiring", powerSource.x, powerSource.y);
+            if (wiringTile.hasTag("wire")) {
+                wiringTile.tags.addTag("receiver");
+            }
+        }
 
         if (updateTilesets) {
             LevelEditor levelEditor = new LevelEditor(level, "normal");

@@ -15,6 +15,7 @@ import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.entity.player.powerups.GunMode;
+import com.sab.littleh.game.level.wiring.Wiring;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.mainmenu.LevelEditorMenu;
 import com.sab.littleh.mainmenu.MainMenu;
@@ -79,6 +80,8 @@ public class Level {
     private Dialogue currentDialogue;
     private boolean ignoreDialogue;
 
+    private Wiring wiring;
+
     public Level(SabData mapData) {
         mapLayers = new HashMap<>();
         particles = new ArrayList<>();
@@ -124,6 +127,7 @@ public class Level {
         checkedTime = currentTime;
         Cursors.switchCursor("none");
         notify("game_start", startPos.x, startPos.y);
+        wiring = new Wiring(this);
     }
 
     public void removeTile(String layer, int x, int y) {
