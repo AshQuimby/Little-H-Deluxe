@@ -31,9 +31,9 @@ public class TypingQuery {
                     () -> complete(true));
             rejectButton = new MenuButton("square_button", "Nope", rectangle.x + rectangle.width / 2 + 16, rectangle.y - 80, 128, 64,
                     () -> complete(false));
+            acceptButton.setDisabled(true);
+            rejectButton.setDisabled(true);
         }
-        acceptButton.setDisabled(true);
-        rejectButton.setDisabled(true);
         maxSize = -1;
     }
     public TypingQuery(String prompt, String startingString, Rectangle rectangle) {
@@ -75,11 +75,11 @@ public class TypingQuery {
         return c > 31 && c < 127;
     }
     public void update() {
-        if (!MouseUtil.isLeftMouseDown()) {
-            acceptButton.setDisabled(false);
-            rejectButton.setDisabled(false);
-        }
         if (acceptButton != null) {
+            if (!MouseUtil.isLeftMouseDown()) {
+                acceptButton.setDisabled(false);
+                rejectButton.setDisabled(false);
+            }
             acceptButton.update();
             rejectButton.update();
         }

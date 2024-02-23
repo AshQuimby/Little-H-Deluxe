@@ -3,6 +3,7 @@
 @look_around true
 @time_limit -1
 @background cold_mountains
+@bonus_background [ malice_menace ]
 @author AshQuimby
 @name Infection
 @double_jumping true

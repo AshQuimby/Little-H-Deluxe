@@ -347,6 +347,12 @@ public class Tile {
         if (hasTag("prop")) {
             game.addMiscGameObject(new Prop("props/" + extra + ".png", x * 64, y * 64));
         }
+        if (hasTag("actuator")) {
+            if (tileType == 1) {
+                arbDat = game.getTileAt("normal", x, y);
+                game.inGameRemoveTile((Tile) arbDat);
+            }
+        }
         if (hasTag("notified_spring_bounce")) {
             arbDat = tileType % 2 + 30;
         }

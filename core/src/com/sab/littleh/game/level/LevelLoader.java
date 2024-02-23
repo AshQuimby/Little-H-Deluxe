@@ -393,6 +393,7 @@ public class LevelLoader {
 
         level.addTiles(new ArrayList<>(), 16, 16);
         level.addBackground(new ArrayList<>());
+        level.addWiring(new ArrayList<>());
 
         LevelLoader.saveLevel(levelFile, level);
 
