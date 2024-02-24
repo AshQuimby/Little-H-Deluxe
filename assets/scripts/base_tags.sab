@@ -26,7 +26,7 @@
 @statues [ states(8) ]
 @half_spike [ multi_hitbox, small_triangle, death, states(4) ]
 @invisible_death [ death, invisible ]
-@camera_focus [ invisible, update, ignore_background, camera_focus, string_picker(Set a distance the camera will focus from:\\n |\ (\[0-9\]\\|-\) | 6) ]
+@camera_focus [ invisible, update, ignore_background, camera_focus, string_picker(Set a distance the camera will focus from:\\n |\ (\[0-9\]\\|\) | 6) ]
 @invisiblock [ solid, invisible, slick ]
 @one_way [ quarter, solid, one_way, states(4) ]
 @power_fruit [ pickup, ambient_particles, update, checkpoint_saved, powerup, states(8), levitating, invisible, special_render ]
