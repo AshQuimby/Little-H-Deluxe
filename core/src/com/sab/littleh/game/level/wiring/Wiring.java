@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.List;
 
 public class Wiring {
+    private static final boolean logWiringInfo = true;
+
     private final Map<Tile, List<Tile>> connections;
 
     public List<Tile> getPoweredTiles(Tile source) {
@@ -19,25 +21,22 @@ public class Wiring {
         connections = new HashMap<>();
         MapLayer wiring = level.getWiringLayer();
 
-        List<Tile> wires = new ArrayList<>();
-        for (Tile tile : wiring.allTiles) {
-            if (tile.hasTag("wire")) {
-                wires.add(tile);
-            }
-        }
+        List<Tile> tiles = new ArrayList<>(wiring.allTiles);
 
         List<List<Tile>> systems = new ArrayList<>();
-        while (wires.size() > 0) {
-            Tile wire = wires.remove(wires.size() - 1);
-            List<Tile> connectedWiring = getConnectedWiring(level, wire);
+        while (tiles.size() > 0) {
+            Tile tile = tiles.remove(tiles.size() - 1);
+            List<Tile> connectedWiring = getConnectedWiring(level, tile);
             systems.add(connectedWiring);
-            wires.removeAll(connectedWiring);
+            tiles.removeAll(connectedWiring);
         }
 
         for (List<Tile> system : systems) {
             for (Tile i : system) {
                 if (i.hasTag("receiver") || i.hasTag("power_source")) {
-                    connections.put(i, new ArrayList<>());
+                    if (!connections.containsKey(i)) {
+                        connections.put(i, new ArrayList<>());
+                    }
                     for (Tile j: system) {
                         if (j != i && j.hasTag("powered")) {
                             connections.get(i).add(j);
@@ -45,6 +44,30 @@ public class Wiring {
                     }
                 }
             }
+        }
+
+        if (logWiringInfo) {
+            System.out.println("\nWiring Systems:");
+            for (List<Tile> system : systems) {
+                System.out.print("[ ");
+                for (Tile tile : system) {
+                    String[] imagePath = tile.image.split("/");
+                    System.out.printf("(%s, %s, %s), ", imagePath[imagePath.length - 1], tile.x, tile.y);
+                }
+                System.out.println("]");
+            }
+
+            System.out.println("\n Wiring Connections:");
+            for (Map.Entry<Tile, List<Tile>> entry : connections.entrySet()) {
+                String[] imagePath = entry.getKey().image.split("/");
+                System.out.printf("%s -> [ ", imagePath[imagePath.length - 1]);
+                for (Tile connected : entry.getValue()) {
+                    imagePath = connected.image.split("/");
+                    System.out.printf("(%s, %s, %s), ", imagePath[imagePath.length - 1], connected.x, connected.y);
+                }
+                System.out.println("]");
+            }
+            System.out.println();
         }
     }
 
@@ -99,7 +122,14 @@ public class Wiring {
 
     private static boolean canConnect(Tile a, Tile b) {
         if (b == null) return false;
+
         if (a.hasTag("wire")) {
+            // Wires of the same color can connect
+            if (b.hasTag("wire") && a.tags.getTag("wire").equals(b.tags.getTag("wire"))) {
+                return true;
+            }
+
+            // Wires can connect to actuators that share a color
             String wireType = a.tags.getTag("wire");
             byte wireId = 0;
             if (wireType.equals("red")) wireId = 0;
@@ -107,20 +137,48 @@ public class Wiring {
             if (wireType.equals("green")) wireId = 2;
             if (wireType.equals("blue")) wireId = 3;
 
-            if (b.hasTag("junction") || b.hasTag("power_source")) {
-                return true;
+            if (b.hasTag("repeater")) {
+                int dx = 0;
+                int dy = 0;
+
+                if (b.tileType == 0) {
+                    dx = 0;
+                    dy = 1;
+                }
+                if (b.tileType == 1) {
+                    dx = 1;
+                    dy = 0;
+                }
+                if (b.tileType == 2) {
+                    dx = 0;
+                    dy = -1;
+                }
+                if (b.tileType == 3) {
+                    dx = -1;
+                    dy = 0;
+                }
+
+                return !(a.x == b.x + dx && a.y == b.y + dy);
             }
+
             if (b.hasTag("powered")) {
                 if (b.hasTag("wire_color_component")) {
                     return b.tileType == 4 || b.tileType == wireId;
                 }
                 return true;
             }
-            return b.hasTag("wire") && a.tags.getTag("wire").equals(b.tags.getTag("wire"));
+
+            // Wires can connect to junctions and power sources
+            if (b.hasTag("junction") || b.hasTag("power_source")) {
+                return true;
+            }
         }
+
+        // Actuators can connect to other actuators that share a color
         if (a.hasTag("actuator") && b.hasTag("actuator")) {
             return b.tileType == 4 || a.tileType == b.tileType;
         }
+
         return false;
     }
 }

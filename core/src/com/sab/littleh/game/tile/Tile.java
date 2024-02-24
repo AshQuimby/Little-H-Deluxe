@@ -505,11 +505,38 @@ public class Tile {
         if (hasTag("decimator")) {
             game.inGameSetTile("normal", x, y, null);
         }
-        if (hasTag("receiver")) {
+
+        if (hasTag("receiver") || hasTag("repeater")) {
+            if (hasTag("repeater")) {
+                int dx = 0;
+                int dy = 0;
+
+                if (tileType == 0) {
+                    dx = 0;
+                    dy = 1;
+                }
+                if (tileType == 1) {
+                    dx = 1;
+                    dy = 0;
+                }
+                if (tileType == 2) {
+                    dx = 0;
+                    dy = -1;
+                }
+                if (tileType == 3) {
+                    dx = -1;
+                    dy = 0;
+                }
+                Tile facing = game.getTileAt("wiring", x + dx, y + dy);
+                if (facing != null && facing.hasTag("receiver")) {
+                    game.powerTile(facing);
+                }
+            }
+
             List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
             if (poweredTiles != null) {
                 for (Tile powered : poweredTiles) {
-                    powered.signalReceived(game);
+                    game.powerTile(powered);
                 }
             }
         }

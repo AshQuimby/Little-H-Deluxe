@@ -2,6 +2,7 @@
 @1 tiles/wiring/wires/yellow_wire
 @2 tiles/wiring/wires/green_wire
 @3 tiles/wiring/wires/blue_wire
-@4 tiles/wiring/actuator
-@5 tiles/wiring/decimator
-@6 tiles/wiring/observer
+@4 tiles/wiring/repeater
+@5 tiles/wiring/observer
+@6 tiles/wiring/actuator
+@7 tiles/wiring/decimator

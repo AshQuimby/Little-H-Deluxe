@@ -83,6 +83,7 @@ public class Level {
     private boolean ignoreDialogue;
 
     public Wiring wiring;
+    private List<Tile> poweredTiles;
 
     public Level(SabData mapData) {
         mapLayers = new HashMap<>();
@@ -131,6 +132,8 @@ public class Level {
         checkedTime = currentTime;
         Cursors.switchCursor("none");
         notify("game_start", startPos.x, startPos.y);
+
+        // This cannot be moved. It must happen here
         for (Tile tile : getBaseLayer().allTiles) {
             // For wiring
             if (tile.hasTag("power_source")) {
@@ -140,7 +143,37 @@ public class Level {
                 }
             }
         }
+        for (Tile tile : getWiringLayer().allTiles) {
+            // For wiring
+            if (tile.hasTag("repeater")) {
+                int dx = 0;
+                int dy = 0;
+
+                if (tile.tileType == 0) {
+                    dx = 0;
+                    dy = 1;
+                }
+                if (tile.tileType == 1) {
+                    dx = 1;
+                    dy = 0;
+                }
+                if (tile.tileType == 2) {
+                    dx = 0;
+                    dy = -1;
+                }
+                if (tile.tileType == 3) {
+                    dx = -1;
+                    dy = 0;
+                }
+                Tile facing = getTileAt("wiring", tile.x + dx, tile.y + dy);
+                if (facing != null && facing.hasTag("wire")) {
+                    facing.tags.addTag("receiver");
+                }
+            }
+        }
+
         wiring = new Wiring(this);
+        poweredTiles = new ArrayList<>();
         saveCheckpointState();
     }
 
@@ -220,6 +253,12 @@ public class Level {
         }
     }
 
+    public void powerTile(Tile tile) {
+        if (!poweredTiles.contains(tile)) {
+            poweredTiles.add(tile);
+        }
+    }
+
     public void mouseUp() {
         if (currentDialogue != null) {
             currentDialogue.mouseUp();
@@ -249,6 +288,12 @@ public class Level {
     public void update() {
         if (inGame()) {
             gameTick++;
+
+            List<Tile> oldPoweredTiles = poweredTiles;
+            poweredTiles = new ArrayList<>();
+            for (Tile powered : oldPoweredTiles) {
+                powered.signalReceived(this);
+            }
 
             if (currentDialogue != null) {
                 currentDialogue.update();
