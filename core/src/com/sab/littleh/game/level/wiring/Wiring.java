@@ -100,10 +100,26 @@ public class Wiring {
     private static boolean canConnect(Tile a, Tile b) {
         if (b == null) return false;
         if (a.hasTag("wire")) {
-            if (b.hasTag("junction") || b.hasTag("powered") || b.hasTag("power_source")) {
+            String wireType = a.tags.getTag("wire");
+            byte wireId = 0;
+            if (wireType.equals("red")) wireId = 0;
+            if (wireType.equals("yellow")) wireId = 1;
+            if (wireType.equals("green")) wireId = 2;
+            if (wireType.equals("blue")) wireId = 3;
+
+            if (b.hasTag("junction") || b.hasTag("power_source")) {
+                return true;
+            }
+            if (b.hasTag("powered")) {
+                if (b.hasTag("actuator")) {
+                    return b.tileType == 4 || b.tileType == wireId;
+                }
                 return true;
             }
             return b.hasTag("wire") && a.tags.getTag("wire").equals(b.tags.getTag("wire"));
+        }
+        if (a.hasTag("actuator") && b.hasTag("actuator")) {
+            return b.tileType == 4 || a.tileType == b.tileType;
         }
         return false;
     }
