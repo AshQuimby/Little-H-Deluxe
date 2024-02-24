@@ -602,9 +602,10 @@ public class LevelEditorMenu extends MainMenu {
     }
 
     private void startExtraQuery(Tile tileAt) {
-        String prompt = tileAt.tags.getTagParameters("string_picker")[0];
-        String regex = tileAt.tags.getTagParameters("string_picker")[1];
-        int maxSize = Integer.parseInt(tileAt.tags.getTagParameters("string_picker")[2]);
+        String[] parameters = tileAt.tags.getTagParameters("string_picker");
+        String prompt = parameters[0];
+        String regex = parameters[1];
+        int maxSize = Integer.parseInt(parameters[2]);
 
         prompt = prompt.replace("\\n", "\n");
         extraQuery = new TypingQuery(prompt, tileAt.extra == null ? "" : tileAt.extra, new Rectangle(-384, -256, 384 * 2, 256 * 2), true);
@@ -966,7 +967,7 @@ public class LevelEditorMenu extends MainMenu {
 
         program.useDynamicCamera();
 
-        level.render(g, editingBackground, wiringMode);
+        level.render(g, editingBackground, wiringMode, getEditorTile().hasTag("wiring_component"));
 
         program.useDynamicCamera();
 

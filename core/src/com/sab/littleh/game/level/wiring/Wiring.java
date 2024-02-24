@@ -111,7 +111,7 @@ public class Wiring {
                 return true;
             }
             if (b.hasTag("powered")) {
-                if (b.hasTag("actuator")) {
+                if (b.hasTag("wire_color_component")) {
                     return b.tileType == 4 || b.tileType == wireId;
                 }
                 return true;

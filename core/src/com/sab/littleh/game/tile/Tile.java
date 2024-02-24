@@ -193,10 +193,13 @@ public class Tile {
         if (hasTag("invisible") && playerExists) {
             return;
         }
-        if (hasTag("render_color"))
+        if (hasTag("render_color")) {
             g.setColor(extra == null ? Color.WHITE : Color.valueOf("#" + extra.toUpperCase().trim()));
-        g.drawImage(getImage(), x * 64, y * 64, 64, 64, getDrawSection());
-        g.resetColor();
+            g.drawImage(getImage(), x * 64, y * 64, 64, 64, getDrawSection());
+            g.resetColor();
+        } else {
+            g.drawImage(getImage(), x * 64, y * 64, 64, 64, getDrawSection());
+        }
     }
 
     public Rectangle toRectangle() {
@@ -370,6 +373,15 @@ public class Tile {
                 game.inGameSetTile("background", x, y, new Tile(x, y, "tiles/actuator_air"));
             }
         }
+
+        if (hasTag("decimator")) {
+            // Set the actuatable tiles to have their states saved at checkpoints
+            Tile tile = game.getTileAt("normal", x, y);
+            if (tile != null) {
+                tile.tags.addTag("checkpoint_saved");
+                game.inGameSetTile("normal", x, y, tile);
+            }
+        }
         if (hasTag("observer")) {
             Tile observing = game.getTileAt("normal", x, y);
             if (observing == null) {
@@ -397,6 +409,20 @@ public class Tile {
             }
         }
 
+        if (hasTag("camera_focus")) {
+            Vector2 tileCenter = new Vector2(x * 64 + 32, y * 64 + 32);
+            float playerDist = game.player.getCenter().dst2(tileCenter);
+            float focusDist;
+            if (extra == null || extra.isBlank())
+                focusDist = 1720;
+            else
+                focusDist = Float.parseFloat(extra);
+
+            if (playerDist < focusDist * focusDist) {
+                game.setCameraFocus(tileCenter);
+            }
+        }
+
         if (hasTag("enemy")) {
             for (Enemy enemy : game.getEnemies()) {
                 if (enemy.getParent().equals(this)) return;
@@ -407,7 +433,7 @@ public class Tile {
             } else {
                 Vector2 tileCenter = new Vector2(x * 64 + 32, y * 64 + 32);
                 float playerDist = game.player.getCenter().dst2(tileCenter);
-                if (playerDist > 1112 * 1112) {
+                if (playerDist > 1112 * 1112 && playerDist < 1720 * 1720) {
                     game.addEnemy(Enemy.createEnemy(x, y, game.player, this, tileType));
                 }
             }
@@ -476,6 +502,9 @@ public class Tile {
             game.inGameSetTile("normal", x, y, backgroundTile);
             game.inGameSetTile("background", x, y, tileToSwap);
         }
+        if (hasTag("decimator")) {
+            game.inGameSetTile("normal", x, y, null);
+        }
         if (hasTag("receiver")) {
             List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
             if (poweredTiles != null) {
@@ -491,7 +520,7 @@ public class Tile {
         if (o instanceof Tile) {
             Tile other = (Tile) o;
             if (imagesEqual(this, other)) {
-                if (ignoreTiling) {
+                if (ignoreTiling && !hasTag("wiring_component")) {
                     return x == other.x && y == other.y && tileType == other.tileType;
                 } else {
                     return x == other.x && y == other.y;
@@ -503,6 +532,6 @@ public class Tile {
 
     @Override
     public int hashCode() {
-        return image.hashCode() + (ignoreTiling ? tileType * tileType * tileType : 0) + x * x + y;
+        return image.hashCode() + (ignoreTiling && !hasTag("wiring_component") ? tileType * tileType * tileType : 0) + x * x + y;
     }
 }

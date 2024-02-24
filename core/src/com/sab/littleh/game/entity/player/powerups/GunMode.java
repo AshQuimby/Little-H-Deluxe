@@ -3,7 +3,6 @@ package com.sab.littleh.game.entity.player.powerups;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.game.entity.Entity;
 import com.sab.littleh.game.entity.Particle;
@@ -147,7 +146,7 @@ public class GunMode extends Powerup {
                 game.inGameRemoveTile(tile);
                 SoundEngine.playSound("coin.ogg");
                 game.player.coinCounts[tile.tileType]++;
-                if (game.player.shouldRenderCoinCounts[tile.tileType] && game.getcheckpointSavedTileCount("coin", tile.tileType) == 0) {
+                if (game.player.shouldRenderCoinCounts[tile.tileType] && game.getCheckpointSavedTileCount("coin", tile.tileType) == 0) {
                     SoundEngine.playSound("all_coins_collected.ogg");
                     game.notify("notify_all_coins", tile.tileType);
                 }

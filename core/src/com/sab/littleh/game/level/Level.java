@@ -50,6 +50,7 @@ public class Level {
     };
     public static Level currentLevel;
     public final SabData mapData;
+    private Vector2 cameraFocus;
     public HashMap<String, MapLayer> mapLayers;
 //    public List<Tile> backgroundTiles;
 //    public List<Tile> allTiles;
@@ -276,11 +277,7 @@ public class Level {
 
                 currentTime += 16 + (gameTick % 3 == 0 ? 0 : 1);
             }
-        }
 
-        if (player != null) {
-            if (!player.warpingOut())
-                LittleH.program.dynamicCamera.targetPosition = new Vector2(player.getCenterX(), player.y + player.height / 2);
             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && mapData.getValue("look_around").asBool()) {
                 if (Cursors.cursorIs("none")) {
                     Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
@@ -295,16 +292,19 @@ public class Level {
                     Cursors.switchCursor("none");
                 }
             }
-            float cameraScalar = Math.min(2400f / LittleH.program.getWidth(), 1350f / LittleH.program.getHeight());
-            LittleH.program.dynamicCamera.targetZoom = cameraScalar / Settings.localSettings.zoomScalar.asFloat();
+
+            cameraFocus = player.getCenter();
             player.update(this);
 
             for (Tile tile : updatableTiles) {
-                Vector2 tileCenter = new Vector2(tile.x * 64 + 32, tile.y * 64 + 32);
-                if (player.getCenter().dst2(tileCenter) < 1420 * 1420) {
-                    tile.update(this);
-                }
+                tile.update(this);
             }
+
+            float cameraScalar = Math.min(2400f / LittleH.program.getWidth(), 1350f / LittleH.program.getHeight());
+            LittleH.program.dynamicCamera.targetZoom = cameraScalar / Settings.localSettings.zoomScalar.asFloat();
+            if (!player.warpingOut())
+                LittleH.program.dynamicCamera.targetPosition = cameraFocus;
+
         }
 
         for (GameObject gameObject : gameObjects) {
@@ -363,13 +363,13 @@ public class Level {
                 mapLayer.tileMap.get(x).set(y, null);
             } else {
                 // Add a tile in game
-                if (tile.hasTag("checkpoint_saved")) {
+                if (tile.hasTag("checkpoint_saved") && !mapLayer.saveImportantTiles.contains(tile)) {
                     mapLayer.saveImportantTiles.add(tile);
                 }
-                if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
+                if ((tile.hasTag("notifiable") || tile.hasTag("notify")) && !notifiableTiles.contains(tile)) {
                     notifiableTiles.add(tile);
                 }
-                if (tile.hasTag("update")) {
+                if (tile.hasTag("update") && !updatableTiles.contains(tile)) {
                     updatableTiles.add(tile);
                 }
                 mapLayer.tileMap.get(x).set(y, tile);
@@ -381,16 +381,7 @@ public class Level {
 
     public void inGameRemoveTile(Tile tile) {
         if (tilesDesynced) {
-            if (tile.hasTag("checkpoint_saved")) {
-                getBaseLayer().saveImportantTiles.remove(tile);
-            }
-            if (tile.hasTag("notifiable") || tile.hasTag("notify")) {
-                notifiableTiles.remove(tile);
-            }
-            if (tile.hasTag("update")) {
-                updatableTiles.remove(tile);
-            }
-            getBaseLayer().tileMap.get(tile.x).set(tile.y, null);
+            inGameSetTile("normal", tile.x, tile.y, null);
         } else {
             throw new IllegalStateException("The Level must be desynced before calling this to avoid the permanent deletion of tiles");
         }
@@ -421,11 +412,12 @@ public class Level {
         return player != null;
     }
 
-    public int getcheckpointSavedTileCount(String tag, int tileType) {
+    public int getCheckpointSavedTileCount(String tag, int tileType) {
         int count = 0;
         for (Tile tile : getBaseLayer().saveImportantTiles) {
-            if (tile.hasTag(tag) && tile.tileType == tileType)
+            if (tile.hasTag(tag) && tile.tileType == tileType) {
                 count++;
+            }
         }
         return count;
     }
@@ -472,12 +464,6 @@ public class Level {
             mapLayer.saveImportantTiles.clear();
             for (Tile tile : mapLayer.checkpointState) {
                 Tile copy = tile.copy();
-                if (tile.hasTag("notifiable") || tile.hasTag("notify"))
-                    notifiableTiles.add(copy);
-                if (tile.hasTag("update")) {
-                    updatableTiles.add(copy);
-                }
-                mapLayer.saveImportantTiles.add(copy);
                 inGameSetTile(mapLayer, copy.x, copy.y, copy);
             }
         }
@@ -547,14 +533,19 @@ public class Level {
     }
 
     public void render(Graphics g) {
-        render(g, false, false);
+        render(g, false, false, false);
     }
 
-    public void render(Graphics g, boolean backgroundPriority, boolean wiringMode) {
+    public void render(Graphics g, boolean backgroundPriority, boolean wiringMode, boolean wiringComponentSelected) {
         List<Point> toDrawGrid = new ArrayList<>();
         if (wiringMode && !inGame()) {
-            toDrawGrid = renderWiring(g, backgroundPriority);
+            toDrawGrid = renderWiring(g, backgroundPriority, false);
         } else {
+            if (wiringComponentSelected) {
+                g.setTint(new Color(1, 1, 1, 0.5f));
+                renderWiring(g, false, true);
+                g.resetTint();
+            }
             Vector2 renderAround = g.getCameraPosition();
             int centerX = (int) (renderAround.x / 64);
             int centerY = (int) (renderAround.y / 64);
@@ -805,7 +796,7 @@ public class Level {
     }
 
     // Returns tile positioned run through for drawing the grid
-    private List<Point> renderWiring(Graphics g, boolean backgroundPriority) {
+    private List<Point> renderWiring(Graphics g, boolean backgroundPriority, boolean justWiring) {
         Vector2 renderAround = g.getCameraPosition();
         int centerX = (int) (renderAround.x / 64);
         int centerY = (int) (renderAround.y / 64);
@@ -815,20 +806,23 @@ public class Level {
         int startY = centerY - screenTileHeight / 2;
         int endX = startX + screenTileWidth;
         int endY = startY + screenTileHeight;
-        MapLayer layerToRender = mapLayers.get(backgroundPriority ? "background" : "normal");
         List<Point> tilesRendered = new ArrayList<>();
-        g.setTint(new Color(0.5f, 0.5f, 0.5f, 0.33f));
-        for (int i = startX; i < endX; i++) {
-            if (i < 0 || i >= getWidth()) continue;
-            for (int j = startY; j < endY; j++) {
-                if (j < 0 || j >= getHeight()) continue;
-                Tile tile = layerToRender.tileMap.get(i).get(j);
-                if (tile != null) tile.render(inGame(), g);
-                tilesRendered.add(new Point(i, j));
+        MapLayer layerToRender;
+        if (!justWiring) {
+            layerToRender = mapLayers.get(backgroundPriority ? "background" : "normal");
+            g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.4f));
+            for (int i = startX; i < endX; i++) {
+                if (i < 0 || i >= getWidth()) continue;
+                for (int j = startY; j < endY; j++) {
+                    if (j < 0 || j >= getHeight()) continue;
+                    Tile tile = layerToRender.tileMap.get(i).get(j);
+                    if (tile != null) tile.render(inGame(), g);
+                    tilesRendered.add(new Point(i, j));
+                }
             }
+            g.resetColor();
         }
         layerToRender = mapLayers.get("wiring");
-        g.resetTint();
         for (int i = startX; i < endX; i++) {
             if (i < 0 || i >= getWidth()) continue;
             for (int j = startY; j < endY; j++) {
@@ -1043,6 +1037,10 @@ public class Level {
 
     public long getTimeMillis() {
         return currentTime;
+    }
+
+    public void setCameraFocus(Vector2 position) {
+        cameraFocus = position;
     }
 
     private class Popup {

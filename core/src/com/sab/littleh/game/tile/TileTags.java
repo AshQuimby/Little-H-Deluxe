@@ -44,9 +44,9 @@ public class TileTags {
     }
 
     public String[] getTagParameters(String tag) {
-        String[] params = tags.get(tag).split("\\|");
+        String[] params = tags.get(tag).split("((?<!\\\\)\\|)");
         for (int i = 0; i < params.length; i++)
-            params[i] = params[i].trim();
+            params[i] = params[i].trim().replace("\\|", "|");
         return params;
     }
 
@@ -84,5 +84,15 @@ public class TileTags {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(super.toString());
+        builder.append("\n[ ");
+        for (String key : tags.keySet()) {
+            builder.append(key).append(": ").append(tags.get(key)).append(",\n");
+        }
+        return builder.replace(builder.length() - 2, builder.length(), " ]").toString();
     }
 }

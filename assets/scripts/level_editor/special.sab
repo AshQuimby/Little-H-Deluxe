@@ -2,7 +2,8 @@
 @1 tiles/sets/water
 @2 tiles/invisiblock
 @3 tiles/invisible_death
-@4 tiles/one_way
-@5 tiles/mud
-@6 tiles/gravity_swapper
-@7 tiles/wiring/button
+@4 tiles/camera_focus
+@5 tiles/one_way
+@6 tiles/mud
+@7 tiles/gravity_swapper
+@8 tiles/wiring/button

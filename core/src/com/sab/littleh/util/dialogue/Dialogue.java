@@ -321,7 +321,6 @@ public class Dialogue {
          g.drawString(lastBlock, LittleH.font, textArea, 8, LittleH.defaultFontScale * 0.95f, -1, 1);
 
       if (dialogueOptions != null) {
-         System.out.println("hewwo");
          Rectangle[] buttons = dialogueOptions.getItemButtons();
 
          for (int i = 0; i < dialogueOptions.items.length; i++) {

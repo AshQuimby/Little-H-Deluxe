@@ -146,14 +146,14 @@ public class Player extends Entity {
 
     public void setCoinCounts(Level game) {
         for (int i = 0; i < totalCoinCounts.length; i++) {
-            totalCoinCounts[i] = game.getcheckpointSavedTileCount("coin", i);
-            shouldRenderCoinCounts[i] = game.getcheckpointSavedTileCount("coin_box", i * 2) > 0 || game.getcheckpointSavedTileCount("coin_box", i * 2 + 1) > 0;
+            totalCoinCounts[i] = game.getCheckpointSavedTileCount("coin", i);
+            shouldRenderCoinCounts[i] = game.getCheckpointSavedTileCount("coin_box", i * 2) > 0 || game.getCheckpointSavedTileCount("coin_box", i * 2 + 1) > 0;
         }
     }
 
     public void updateCoinCounts(Level game) {
         for (int i = 0; i < coinCounts.length; i++) {
-            if (totalCoinCounts[i] > 0) coinCounts[i] = totalCoinCounts[i] - game.getcheckpointSavedTileCount("coin", i);
+            if (totalCoinCounts[i] > 0) coinCounts[i] = totalCoinCounts[i] - game.getCheckpointSavedTileCount("coin", i);
         }
     }
 
@@ -460,7 +460,6 @@ public class Player extends Entity {
             }
             if (pickup) {
                 if (playerHitbox.overlaps(tileHitbox)) {
-                    game.inGameRemoveTile(tile);
                     if (tile.hasTag("dialogue")) {
                         String key = tile.extra.trim();
                         Dialogue dialogue = Dialogues.getDialogue(key);
@@ -471,9 +470,9 @@ public class Player extends Entity {
                     if (tile.hasTag("coin")) {
                         SoundEngine.playSound("coin.ogg");
                         coinCounts[tile.tileType]++;
-                        if (shouldRenderCoinCounts[tile.tileType] && game.getcheckpointSavedTileCount("coin", tile.tileType) == 0) {
+                        if (shouldRenderCoinCounts[tile.tileType] && game.getCheckpointSavedTileCount("coin", tile.tileType) == 1) {
                             SoundEngine.playSound("all_coins_collected.ogg");
-                            game.notify("notify_all_coins", tile.tileType);
+                            game.notify("all_coins", tile.tileType);
                         }
                     }
                     if (tile.hasTag("powerup")) {
@@ -519,6 +518,7 @@ public class Player extends Entity {
                         }
                         game.timeLimit = Math.min(9999, game.timeLimit);
                     }
+                    game.inGameRemoveTile(tile);
                 }
             }
         }
