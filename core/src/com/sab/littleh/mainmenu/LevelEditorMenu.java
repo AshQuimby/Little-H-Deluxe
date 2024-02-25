@@ -605,6 +605,7 @@ public class LevelEditorMenu extends MainMenu {
         String[] parameters = tileAt.tags.getTagParameters("string_picker");
         String prompt = parameters[0];
         String regex = parameters[1];
+        System.out.println(regex);
         int maxSize = Integer.parseInt(parameters[2]);
 
         prompt = prompt.replace("\\n", "\n");
@@ -774,8 +775,10 @@ public class LevelEditorMenu extends MainMenu {
             else
                 exitWiringMode();
         } else if (ControlInput.localControls.isJustPressed("toggle_layer")) {
-            editingBackground = !editingBackground;
-            editor = editingBackground ? backgroundEditor : levelEditor;
+            if (!wiringMode) {
+                editingBackground = !editingBackground;
+                editor = editingBackground ? backgroundEditor : levelEditor;
+            }
         }
     }
 

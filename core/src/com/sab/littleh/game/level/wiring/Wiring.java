@@ -175,7 +175,7 @@ public class Wiring {
         }
 
         // Actuators can connect to other actuators that share a color
-        if (a.hasTag("actuator") && b.hasTag("actuator")) {
+        if (a.hasTag("wire_color_component") && b.hasTag("wire_color_component")) {
             return b.tileType == 4 || a.tileType == b.tileType;
         }
 

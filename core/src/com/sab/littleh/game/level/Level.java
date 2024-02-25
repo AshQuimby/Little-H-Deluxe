@@ -347,7 +347,7 @@ public class Level {
 
             float cameraScalar = Math.min(2400f / LittleH.program.getWidth(), 1350f / LittleH.program.getHeight());
             LittleH.program.dynamicCamera.targetZoom = cameraScalar / Settings.localSettings.zoomScalar.asFloat();
-            if (!player.warpingOut())
+            if (player != null && !player.warpingOut())
                 LittleH.program.dynamicCamera.targetPosition = cameraFocus;
 
         }
