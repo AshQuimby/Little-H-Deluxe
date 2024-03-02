@@ -57,7 +57,7 @@ public class Wiring {
                 System.out.println("]");
             }
 
-            System.out.println("\n Wiring Connections:");
+            System.out.println("\nWiring Connections:");
             for (Map.Entry<Tile, List<Tile>> entry : connections.entrySet()) {
                 String[] imagePath = entry.getKey().image.split("/");
                 System.out.printf("%s -> [ ", imagePath[imagePath.length - 1]);
@@ -137,28 +137,28 @@ public class Wiring {
             if (wireType.equals("green")) wireId = 2;
             if (wireType.equals("blue")) wireId = 3;
 
-            if (b.hasTag("repeater")) {
-                int dx = 0;
-                int dy = 0;
+            if (b.hasTag("inputs")) {
+                byte[] rotations = parseDirections(b.tags.getTagParameters("inputs"));
+                for (byte r : rotations) {
+                    int dx = dx(rotated(b.tileType, r));
+                    int dy = dy(rotated(b.tileType, r));
 
-                if (b.tileType == 0) {
-                    dx = 0;
-                    dy = 1;
+                    if (a.x == b.x + dx && a.y == b.y + dy) {
+                        return true;
+                    }
                 }
-                if (b.tileType == 1) {
-                    dx = 1;
-                    dy = 0;
-                }
-                if (b.tileType == 2) {
-                    dx = 0;
-                    dy = -1;
-                }
-                if (b.tileType == 3) {
-                    dx = -1;
-                    dy = 0;
-                }
+            }
 
-                return !(a.x == b.x + dx && a.y == b.y + dy);
+            if (b.hasTag("outputs")) {
+                byte[] rotations = parseDirections(b.tags.getTagParameters("outputs"));
+                for (byte r : rotations) {
+                    int dx = dx(rotated(b.tileType, r));
+                    int dy = dy(rotated(b.tileType, r));
+
+                    if (a.x == b.x + dx && a.y == b.y + dy) {
+                        return true;
+                    }
+                }
             }
 
             if (b.hasTag("powered")) {
@@ -180,5 +180,29 @@ public class Wiring {
         }
 
         return false;
+    }
+
+    public static int dx(byte direction) {
+        return direction == 1 ? 1 : direction == 3 ? -1 : 0;
+    }
+
+    public static int dy(byte direction) {
+        return direction == 0 ? 1 : direction == 2 ? -1 : 0;
+    }
+
+    private static byte[] parseDirections(String[] directions) {
+        byte[] rotations = new byte[directions.length];
+        for (int i = 0; i < rotations.length; i++) {
+            if (directions[i].equals("front")) rotations[i] = 0;
+            if (directions[i].equals("right")) rotations[i] = 1;
+            if (directions[i].equals("back")) rotations[i] = 2;
+            if (directions[i].equals("left")) rotations[i] = 3;
+        }
+
+        return rotations;
+    }
+
+    public static byte rotated(byte r, byte dr) {
+        return (byte) ((r + dr) % 4);
     }
 }

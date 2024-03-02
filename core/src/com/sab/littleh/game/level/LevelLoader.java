@@ -23,7 +23,8 @@ public class LevelLoader {
     public static final SabData tagsByTile;
     private static boolean invertY;
     private static boolean updateTilesets;
-    private static String[] expectedProperties = new String[] {
+
+    private static final String[] expectedProperties = new String[] {
             "crouching",
             "double_jumping",
             "wall_sliding",
@@ -35,30 +36,11 @@ public class LevelLoader {
             "version",
             "is_deluxe"
     };
-    private static String[] defaultValues = new String[] {
-            "true",
-            "true",
-            "true",
-            "true",
-            Settings.localSettings.authorName.value,
-            "My Level",
-            "mountains",
-            "-1",
-            LittleH.VERSION,
-            "true"
-    };
 
-    static {
-        try {
-            tagsByTile = SabReader.read(LevelLoader.class.getResourceAsStream("/scripts/base_tags.sab"));
-        } catch (SabParsingException e) {
-            System.out.println("AshQuimby forgot to put the file there :P");
-            throw new RuntimeException(e);
-        }
-    }
+    private static String[] defaultValues = getDefaultValues();
 
-    public static void refreshDefaults() {
-        defaultValues = new String[] {
+    private static String[] getDefaultValues() {
+        return new String[] {
                 "true",
                 "true",
                 "true",
@@ -70,6 +52,19 @@ public class LevelLoader {
                 LittleH.VERSION,
                 "true"
         };
+    }
+
+    static {
+        try {
+            tagsByTile = SabReader.read(LevelLoader.class.getResourceAsStream("/scripts/base_tags.sab"));
+        } catch (SabParsingException e) {
+            System.out.println("AshQuimby forgot to put the file there :P");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void refreshDefaults() {
+        defaultValues = getDefaultValues();
     }
 
     public static Level readInternalLevel(String streamSource) {
@@ -105,7 +100,7 @@ public class LevelLoader {
         List<Tile> tiles = new ArrayList<>();
         List<Tile> background = new ArrayList<>();
         List<Tile> wiring = new ArrayList<>();
-        List<Tile> powerSources = new ArrayList<>();
+        List<Tile> wiring_components = new ArrayList<>();
 
         int levelWidth = 31;
         int levelHeight = 31;
@@ -139,6 +134,8 @@ public class LevelLoader {
             // Load wiring
             if (nextLine.startsWith("@wiring_tiles")) {
                 while (scanner.hasNext()) {
+                    if (scanner.hasNext("@wiring_component_tiles"))
+                        break;
                     nextLine = scanner.nextLine();
                     if (nextLine.isBlank())
                         break;
@@ -150,6 +147,26 @@ public class LevelLoader {
                         if (tile.hasTag("start"))
                             LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                         wiring.add(tile);
+                        usedPositions.add(tilePosition);
+                    }
+                }
+                break;
+            }
+
+            // Load wiring
+            if (nextLine.startsWith("@wiring_component_tiles")) {
+                while (scanner.hasNext()) {
+                    nextLine = scanner.nextLine();
+                    if (nextLine.isBlank())
+                        break;
+                    Tile tile = getTile(nextLine);
+                    if (tile != null && !tile.image.equals("delete")) {
+                        Point tilePosition = new Point(tile.x, tile.y);
+                        levelWidth = Math.max(levelWidth, tile.x);
+                        levelHeight = Math.max(levelHeight, tile.y);
+                        if (tile.hasTag("start"))
+                            LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
+                        wiring_components.add(tile);
                         usedPositions.add(tilePosition);
                     }
                 }
@@ -235,6 +252,7 @@ public class LevelLoader {
         level.addTiles(tiles, levelWidth, levelHeight);
         level.addBackground(background);
         level.addWiring(wiring);
+        level.addWiringComponents(wiring_components);
 
         if (updateTilesets) {
             LevelEditor levelEditor = new LevelEditor(level, "normal");

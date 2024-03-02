@@ -52,4 +52,5 @@
 @decimator [ powered, decimator, notify(game_start), wiring_component, wire_color_component, states(5) ]
 @prop [ prop, invisible, string_picker(Set a path to the prop image:\\n | | -1), notify(game_start), ignore_background ]
 @observer [ wiring_component, checkpoint_saved, power_source, notify(game_start), update, observer ]
-@repeater [ wiring_component, power_source, powered, repeater, update, states(4) ]
+@repeater [ repeater, states(4), wiring_component, power_source, powered, inputs(left | right | back), outputs(front) ]
+@and_gate [ and_gate, states(4), update, wiring_component, powered, connectable(-1 | 1) ]

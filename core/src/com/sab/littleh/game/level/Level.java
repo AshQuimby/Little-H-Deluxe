@@ -84,6 +84,7 @@ public class Level {
 
     public Wiring wiring;
     private List<Tile> poweredTiles;
+    private List<Tile> oldPoweredTiles;
 
     public Level(SabData mapData) {
         mapLayers = new HashMap<>();
@@ -146,28 +147,29 @@ public class Level {
         for (Tile tile : getWiringLayer().allTiles) {
             // For wiring
             if (tile.hasTag("repeater")) {
-                int dx = 0;
-                int dy = 0;
-
-                if (tile.tileType == 0) {
-                    dx = 0;
-                    dy = 1;
-                }
-                if (tile.tileType == 1) {
-                    dx = 1;
-                    dy = 0;
-                }
-                if (tile.tileType == 2) {
-                    dx = 0;
-                    dy = -1;
-                }
-                if (tile.tileType == 3) {
-                    dx = -1;
-                    dy = 0;
-                }
+                int dx = Wiring.dx(tile.tileType);
+                int dy = Wiring.dy(tile.tileType);
                 Tile facing = getTileAt("wiring", tile.x + dx, tile.y + dy);
                 if (facing != null && facing.hasTag("wire")) {
                     facing.tags.addTag("receiver");
+                }
+            }
+            if (tile.hasTag("and_gate")) {
+                byte left = (byte) ((tile.tileType - 1) % 4);
+                byte right = (byte) ((tile.tileType + 1) % 4);
+
+                Tile other = getTileAt("wiring", tile.x + Wiring.dx(left), tile.y + Wiring.dy(left));
+                if (other != null && other.hasTag("wire")) {
+                    other.tags.addTag("receiver");
+                }
+                other = getTileAt("wiring", tile.x + Wiring.dx(right), tile.y + Wiring.dy(right));
+                if (other != null && other.hasTag("wire")) {
+                    other.tags.addTag("receiver");
+                }
+
+                Tile out = getTileAt("wiring", tile.x + Wiring.dx(tile.tileType), tile.y + Wiring.dy(tile.tileType));
+                if (out != null && out.hasTag("wire")) {
+                    out.tags.addTag("receiver");
                 }
             }
         }
@@ -253,10 +255,30 @@ public class Level {
         }
     }
 
+    public void addWiringComponents(List<Tile> tiles) {
+        MapLayer newLayer = new MapLayer();
+        mapLayers.put("wiring_components", newLayer);
+        newLayer.tileMap = new ArrayList<>(getWidth());
+        for (int i = 0; i < getWidth(); i++) {
+            newLayer.tileMap.add(i, new ArrayList<>(getHeight()));
+            for (int j = 0; j < getHeight(); j++) {
+                newLayer.tileMap.get(i).add(null);
+            }
+        }
+        newLayer.allTiles.addAll(tiles);
+        for (Tile tile : newLayer.allTiles) {
+            newLayer.tileMap.get(tile.x).set(tile.y, tile);
+        }
+    }
+
     public void powerTile(Tile tile) {
         if (!poweredTiles.contains(tile)) {
             poweredTiles.add(tile);
         }
+    }
+
+    public boolean wasPowered(Tile tile) {
+        return oldPoweredTiles.contains(tile);
     }
 
     public void mouseUp() {
@@ -289,7 +311,7 @@ public class Level {
         if (inGame()) {
             gameTick++;
 
-            List<Tile> oldPoweredTiles = poweredTiles;
+            oldPoweredTiles = poweredTiles;
             poweredTiles = new ArrayList<>();
             for (Tile powered : oldPoweredTiles) {
                 powered.signalReceived(this);

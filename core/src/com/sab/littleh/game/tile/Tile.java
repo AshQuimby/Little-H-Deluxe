@@ -11,6 +11,7 @@ import com.sab.littleh.game.entity.Prop;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.LevelLoader;
+import com.sab.littleh.game.level.wiring.Wiring;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
 
@@ -393,6 +394,23 @@ public class Tile {
     }
 
     public void update(Level game) {
+        if (hasTag("and_gate")) {
+            byte left = (byte) ((tileType - 1) % 4);
+            byte right = (byte) ((tileType + 1) % 4);
+
+            Tile a = game.getTileAt("wiring", x + Wiring.dx(left), y + Wiring.dy(left));
+            Tile b = game.getTileAt("wiring", x + Wiring.dx(right), y + Wiring.dy(right));
+            Tile out = game.getTileAt("wiring", x + Wiring.dx(tileType), y + Wiring.dy(tileType));
+
+            if (a != null && game.wasPowered(a) && b != null && game.wasPowered(b)) {
+                System.out.println("a");
+                if (out != null) {
+                    game.powerTile(out);
+                    System.out.println("a");
+                }
+            }
+        }
+
         if (hasTag("observer")) {
             Tile observing = game.getTileAt("normal", x, y);
             byte observedTileType = observing == null ? -1 : observing.tileType;
@@ -508,25 +526,8 @@ public class Tile {
 
         if (hasTag("receiver") || hasTag("repeater")) {
             if (hasTag("repeater")) {
-                int dx = 0;
-                int dy = 0;
-
-                if (tileType == 0) {
-                    dx = 0;
-                    dy = 1;
-                }
-                if (tileType == 1) {
-                    dx = 1;
-                    dy = 0;
-                }
-                if (tileType == 2) {
-                    dx = 0;
-                    dy = -1;
-                }
-                if (tileType == 3) {
-                    dx = -1;
-                    dy = 0;
-                }
+                int dx = Wiring.dx(tileType);
+                int dy = Wiring.dy(tileType);
                 Tile facing = game.getTileAt("wiring", x + dx, y + dy);
                 if (facing != null && facing.hasTag("receiver")) {
                     game.powerTile(facing);
