@@ -394,36 +394,19 @@ public class Tile {
     }
 
     public void update(Level game) {
-        if (hasTag("and_gate")) {
-            byte left = (byte) ((tileType - 1) % 4);
-            byte right = (byte) ((tileType + 1) % 4);
-
-            Tile a = game.getTileAt("wiring", x + Wiring.dx(left), y + Wiring.dy(left));
-            Tile b = game.getTileAt("wiring", x + Wiring.dx(right), y + Wiring.dy(right));
-            Tile out = game.getTileAt("wiring", x + Wiring.dx(tileType), y + Wiring.dy(tileType));
-
-            if (a != null && game.wasPowered(a) && b != null && game.wasPowered(b)) {
-                System.out.println("a");
-                if (out != null) {
-                    game.powerTile(out);
-                    System.out.println("a");
-                }
-            }
-        }
-
         if (hasTag("observer")) {
             Tile observing = game.getTileAt("normal", x, y);
             byte observedTileType = observing == null ? -1 : observing.tileType;
 
             if (tileType != observedTileType) {
-                List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
-                if (poweredTiles != null) {
-                    for (Tile powered : poweredTiles) {
-                        powered.signalReceived(game);
-                    }
-                }
-
-                tileType = observedTileType;
+//                List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
+//                if (poweredTiles != null) {
+//                    for (Tile powered : poweredTiles) {
+//                        powered.signalReceived(game);
+//                    }
+//                }
+//
+//                tileType = observedTileType;
             }
         }
 
@@ -512,6 +495,26 @@ public class Tile {
         }
     }
 
+    public void wiringUpdate(Wiring wiring) {
+        if (hasTag("repeater")) {
+            int poweredInputs = wiring.poweredInputCount(this);
+            if (poweredInputs > 0) {
+                if (wiring.isInGroup(x + Wiring.dx(tileType), y + Wiring.dy(tileType))) {
+                    wiring.power(wiring.getGroup(x + Wiring.dx(tileType), y + Wiring.dy(tileType)).id);
+                }
+            }
+        }
+
+        if (hasTag("and_gate")) {
+            int poweredInputs = wiring.poweredInputCount(this);
+            if (poweredInputs == 2) {
+                if (wiring.isInGroup(x + Wiring.dx(tileType), y + Wiring.dy(tileType))) {
+                    wiring.power(wiring.getGroup(x + Wiring.dx(tileType), y + Wiring.dy(tileType)).id);
+                }
+            }
+        }
+    }
+
     public void signalReceived(Level game) {
         if (hasTag("actuator")) {
             Tile tileToSwap = game.getTileAt("normal", x, y);
@@ -522,24 +525,6 @@ public class Tile {
         }
         if (hasTag("decimator")) {
             game.inGameSetTile("normal", x, y, null);
-        }
-
-        if (hasTag("receiver") || hasTag("repeater")) {
-            if (hasTag("repeater")) {
-                int dx = Wiring.dx(tileType);
-                int dy = Wiring.dy(tileType);
-                Tile facing = game.getTileAt("wiring", x + dx, y + dy);
-                if (facing != null && facing.hasTag("receiver")) {
-                    game.powerTile(facing);
-                }
-            }
-
-            List<Tile> poweredTiles = game.wiring.getPoweredTiles(this);
-            if (poweredTiles != null) {
-                for (Tile powered : poweredTiles) {
-                    game.powerTile(powered);
-                }
-            }
         }
     }
 

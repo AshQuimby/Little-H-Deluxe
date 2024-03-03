@@ -83,8 +83,6 @@ public class Level {
     private boolean ignoreDialogue;
 
     public Wiring wiring;
-    private List<Tile> poweredTiles;
-    private List<Tile> oldPoweredTiles;
 
     public Level(SabData mapData) {
         mapLayers = new HashMap<>();
@@ -175,7 +173,6 @@ public class Level {
         }
 
         wiring = new Wiring(this);
-        poweredTiles = new ArrayList<>();
         saveCheckpointState();
     }
 
@@ -271,16 +268,6 @@ public class Level {
         }
     }
 
-    public void powerTile(Tile tile) {
-        if (!poweredTiles.contains(tile)) {
-            poweredTiles.add(tile);
-        }
-    }
-
-    public boolean wasPowered(Tile tile) {
-        return oldPoweredTiles.contains(tile);
-    }
-
     public void mouseUp() {
         if (currentDialogue != null) {
             currentDialogue.mouseUp();
@@ -310,12 +297,7 @@ public class Level {
     public void update() {
         if (inGame()) {
             gameTick++;
-
-            oldPoweredTiles = poweredTiles;
-            poweredTiles = new ArrayList<>();
-            for (Tile powered : oldPoweredTiles) {
-                powered.signalReceived(this);
-            }
+            wiring.update();
 
             if (currentDialogue != null) {
                 currentDialogue.update();
