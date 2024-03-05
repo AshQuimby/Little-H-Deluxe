@@ -3,7 +3,7 @@ Editing
 
     Sometimes you aren't the Little h, and instead are an omnipotent creator. In the level editor you will have access to many tiles and tools used to place them. You use your mouse and click on the tile in the top left. From this menu you can select which tile you wish to place. Some tiles will also have a little gear on the lower right side of their icon, this means that the tile has multiple properties you can choose from, be it color, style, size, or rotation.
 
-    On the top right of the screen you will see an assortment of tools that can be selected, these are:
+    On the top right of the menu you will see an assortment of tools that can be selected, these are:
      -Pencil: Attempts to place a tile at your cursor every tick, also used to edit the properties of special tiles with extra data (e.g. text, dynamic color cubes).
      -Eraser: Attempts to erase the tile at your cursor every tick.
      -Pen: Like the pencil but fills in the line between the placed tiles (this allows you to draw smoother).

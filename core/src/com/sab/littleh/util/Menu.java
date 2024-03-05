@@ -2,7 +2,6 @@ package com.sab.littleh.util;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.sab.littleh.mainmenu.MainMenu;
 
 import java.util.function.Consumer;
 
@@ -67,7 +66,7 @@ public class Menu<E> {
         return items.length - 1;
     }
 
-    public void setSubMenu(Menu<? extends E> menu) {
+    public void setSubScreen(Menu<? extends E> menu) {
         subMenu = menu;
     }
 
@@ -88,7 +87,7 @@ public class Menu<E> {
         rectangle.y = y - rectangle.height / 2;
     }
 
-    public void setMenuRectangle(int x, int y, int maxHeight, boolean expandLeft) {
+    public void setScreenRectangle(int x, int y, int maxHeight, boolean expandLeft) {
         int height = Math.max(elementHeight + itemOffset * 2, maxHeight);
         height = height / (elementHeight + itemOffset) *  (elementHeight + itemOffset) + itemOffset;
         int maxElement = height / (elementHeight + itemOffset);
@@ -141,11 +140,11 @@ public class Menu<E> {
         }
     }
 
-    public Rectangle getMenuRectangle() {
+    public Rectangle getScreenRectangle() {
         return rectangle;
     }
 
-    public boolean hasSubMenu() {
+    public boolean hasSubScreen() {
         return subMenu != null;
     }
 
@@ -153,7 +152,7 @@ public class Menu<E> {
         return items[index];
     }
 
-    public void renderMenuRectangle(Graphics g, Patch patch) {
+    public void renderScreenRectangle(Graphics g, Patch patch) {
         g.drawPatch(patch, rectangle, 8);
     }
 

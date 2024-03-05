@@ -11,13 +11,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.campaign.SaveFile;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.controls.ControlInput;
-import com.sab.littleh.game.level.LevelEditor;
-import com.sab.littleh.mainmenu.*;
+import com.sab.littleh.game.level.editor.LevelEditor;
+import com.sab.littleh.game.level.editor.LevelEditorScreen;
+import com.sab.littleh.screen.Screen;
+import com.sab.littleh.screen.*;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 
@@ -37,7 +38,7 @@ import java.util.zip.Deflater;
 public class LittleH extends ApplicationAdapter implements InputProcessor, ControllerListener {
     public static final String TITLE = "The Little H Deluxe";
     public static final String VERSION = "0.1.5";
-    public static MainMenu pendingMenu;
+    public static Screen pendingScreen;
     private static List<Controller> controllers = new ArrayList<>();
     private int tick;
     public static BitmapFont font;
@@ -53,7 +54,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     private NestedFrameBuffer bufferHoldover;
     public OrthographicCamera staticCamera;
     public DynamicCamera dynamicCamera;
-    private MainMenu mainMenu;
+    private Screen screen;
     private String hoverInfo;
     private Stack<ShaderProgram> shaderStack = new Stack<>();
     private boolean dontRender, hardPause;
@@ -61,7 +62,6 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static File mapsFolder;
     private String savedMapsPath;
     private String savedDataPath;
-
     @Override
     public void create() {
         program = this;
@@ -99,7 +99,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         } catch (Exception e) {
             controllersNotSupported = true;
         }
-        MainMenu.program = this;
+        Screen.program = this;
         Patch.cacheButtonPatch("button", "ui/buttons/button");
         Patch.cacheButtonPatch("square_button", "ui/buttons/square_button");
         Patch.cacheButtonPatch("tile_button", "ui/buttons/tile_button");
@@ -123,7 +123,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         Fonts.loadFont("comic_snas.ttf", 100);
         Fonts.loadFont("comic_snas.ttf", 100, new Color(0.5f, 0.5f, 0.5f, 1f), 10);
         updateFont();
-        switchMenu(new TitleMenu());
+        switchScreen(new TitleScreen());
         Gdx.input.setInputProcessor(this);
         Cursors.switchCursor("cursor");
         dontRender = false;
@@ -194,7 +194,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         if (tick == 0) {
             resetWindow();
         }
-        mainMenu.update();
+        screen.update();
 
         staticCamera.viewportWidth = getWidth();
         staticCamera.viewportHeight = getHeight();
@@ -202,9 +202,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         dynamicCamera.viewportWidth = getWidth();
         dynamicCamera.viewportHeight = getHeight();
         dynamicCamera.updateCamera();
-        if (pendingMenu != null) {
-            switchMenu(pendingMenu);
-            pendingMenu = null;
+        if (pendingScreen != null) {
+            switchScreen(pendingScreen);
+            pendingScreen = null;
         }
         MouseUtil.updateJustPressed();
     }
@@ -246,11 +246,15 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         return LittleH.class.getResourceAsStream("/maps/" + path);
     }
 
-    public void switchMenu(MainMenu newMenu) {
-        if (newMenu == null) return;
-        if (mainMenu != null) mainMenu.close();
-        mainMenu = newMenu;
-        mainMenu.start();
+    public static InputStream getScript(String path) {
+        return LittleH.class.getResourceAsStream("/scripts/" + path);
+    }
+
+    public void switchScreen(Screen newScreen) {
+        if (newScreen == null) return;
+        if (screen != null) screen.close();
+        screen = newScreen;
+        screen.start();
         dontRender = true;
     }
 
@@ -284,38 +288,38 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             for (int i = 3; i < size; i += 4) {
                 pixels.put(i, (byte) 255);
             }
-            String imagePath = (Images.inArchive ? "screenshots/" : "../screenshots/") + Calendar.getInstance().getTime().toString().replace(":", "-").replace(" ", "-") + ".png";
+            String imagePath = (Images.inArchive ? "menushots/" : "../screenshots/") + Calendar.getInstance().getTime().toString().replace(":", "-").replace(" ", "-") + ".png";
             PixmapIO.writePNG(Gdx.files.local(imagePath), pixmap, Deflater.DEFAULT_COMPRESSION, true);
             pixmap.dispose();
         }
         ControlInput.localControls.press(keycode);
-        mainMenu.keyDown(keycode);
+        screen.keyDown(keycode);
         return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
         ControlInput.localControls.release(keycode);
-        mainMenu.keyUp(keycode);
+        screen.keyUp(keycode);
         return true;
     }
 
     @Override
     public boolean keyTyped(char character) {
-        mainMenu.keyTyped(character);
+        screen.keyTyped(character);
         return true;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        mainMenu.mouseDown(button);
+        screen.mouseDown(button);
         MouseUtil.leftMouseDown();
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        mainMenu.mouseUp(button);
+        screen.mouseUp(button);
         return true;
     }
 
@@ -339,7 +343,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        mainMenu.mouseScrolled(amountY);
+        screen.mouseScrolled(amountY);
         return false;
     }
 
@@ -465,18 +469,18 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         }
     }
 
-    public MainMenu getMenu() {
-        return mainMenu;
+    public Screen getScreen() {
+        return screen;
     }
 
     public boolean attemptClose() {
         System.out.println("hello");
-        if (mainMenu instanceof LevelEditorMenu) {
+        if (screen instanceof LevelEditorScreen) {
             System.out.println("im here");
-            LevelEditorMenu menu = (LevelEditorMenu) mainMenu;
+            LevelEditorScreen screen = (LevelEditorScreen) this.screen;
             if (!LevelEditor.saved) {
                 System.out.println("im living in the wall");
-                menu.confirmProgramExit();
+                screen.confirmProgramExit();
                 return false;
             }
         }
@@ -503,7 +507,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
         useStaticCamera();
 
-        mainMenu.render(g);
+        screen.render(g);
 
         if (hoverInfo != null) {
             Rectangle hoverInfoRect = Fonts.getStringBounds(hoverInfo, font, MouseUtil.getMouseX() + 32, MouseUtil.getMouseY(), defaultFontScale * 0.75f, -1);
@@ -533,7 +537,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             buffer.begin();
             shaderProgram.bind();
             g.setShader(shaderProgram);
-            g.draw(tex, MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+            g.draw(tex, Screen.relZeroX(), -Screen.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
             g.flush();
             buffer.end();
         });
@@ -541,7 +545,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         g.resetShader();
 
         g.flush();
-        g.draw(buffer.getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+        g.draw(buffer.getColorBufferTexture(), Screen.relZeroX(), -Screen.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
 
         g.end();
 
@@ -568,7 +572,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     }
 
     public void drawTempBuffer() {
-        g.draw(tempBuffers[tempBufferLayer + 1].getColorBufferTexture(), MainMenu.relZeroX(), -MainMenu.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+        g.draw(tempBuffers[tempBufferLayer + 1].getColorBufferTexture(), Screen.relZeroX(), -Screen.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
     }
 
     public NestedFrameBuffer getFrameBuffer() {

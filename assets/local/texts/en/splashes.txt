@@ -20,9 +20,9 @@ You'll never guess what game the Strawberry power fruit is based off of.
 %split%
 BALL MODE was added because BALL MODE BALL MODE BALL MODE!!!!!!!!!!!!!!!!!!!!!!
 %split%
-The coin counter in the top right of the screen only shows up on levels with appropriate coin boxes.
+The coin counter in the top right of the menu only shows up on levels with appropriate coin boxes.
 %split%
-Pressing a key will make the next loading screen splash show up
+Pressing a key will make the next loading menu splash show up
 %split%
 I wonder what happens if you dash into the ground after eating a strawberry...
 %split%
@@ -34,6 +34,6 @@ You open the fridge
 You see all the bodies there
 The Among Us Man
 %split%
-Due to fast load times, you likely won't ever be able to read one of these in a legitimate loading screen.
+Due to fast load times, you likely won't ever be able to read one of these in a legitimate loading menu.
 %split%
 The horses of the Little h are hardy and strong and make up for in endurance what they lack in speed.

@@ -5,19 +5,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.level.Level;
-import com.sab.littleh.mainmenu.MainMenu;
-import com.sab.littleh.mainmenu.MenuButton;
+import com.sab.littleh.screen.Screen;
+import com.sab.littleh.screen.ScreenButton;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
-import com.sun.tools.javac.Main;
 
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Dialogue {
-   protected Menu<MenuButton> dialogueOptions;
+   protected Menu<ScreenButton> dialogueOptions;
    protected boolean started;
    private Map<String, Integer> breakPoints;
    private String[] text;
@@ -55,30 +52,30 @@ public class Dialogue {
    }
 
    public void setDialogueOptions(String[] options, String[] breakPoints) {
-      MenuButton[] buttons = new MenuButton[options.length];
+      ScreenButton[] buttons = new ScreenButton[options.length];
       for (int i = 0; i < options.length; i++) {
          final int finalI = i;
-         buttons[i] = new MenuButton("button", options[i], 0, 0, 512, 64, () -> {
+         buttons[i] = new ScreenButton("button", options[i], 0, 0, 512, 64, () -> {
             runCommand("gB", breakPoints[finalI]);
             dialogueOptions = null;
          });
       }
-      dialogueOptions = new Menu<MenuButton>(buttons, 512, 64, 8);
+      dialogueOptions = new Menu<ScreenButton>(buttons, 512, 64, 8);
       update();
    }
 
    public void update() {
       if (dialogueOptions != null) {
-         dialogueOptions.setMenuRectangle(0, 0, 73 * 2, false);
+         dialogueOptions.setScreenRectangle(0, 0, 73 * 2, false);
          dialogueOptions.setCenterX(0);
-         dialogueOptions.setCenterY(MainMenu.relZeroY() + 196 + 48 + dialogueOptions.items.length / 2 * 32);
-         dialogueOptions.forEach(MenuButton::update);
+         dialogueOptions.setCenterY(Screen.relZeroY() + 196 + 48 + dialogueOptions.items.length / 2 * 32);
+         dialogueOptions.forEach(ScreenButton::update);
       }
    }
 
    public boolean mouseUp() {
       if (dialogueOptions != null)
-         dialogueOptions.forEach(MenuButton::mouseClicked);
+         dialogueOptions.forEach(ScreenButton::mouseClicked);
       else
          return true;
       return false;
@@ -294,25 +291,25 @@ public class Dialogue {
    }
 
    public void render(Graphics g) {
-      g.drawPatch(Patch.get("menu"), new Rectangle(MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192), 8);
+      g.drawPatch(Patch.get("menu"), new Rectangle(Screen.relZeroX(), Screen.relZeroY(), 192, 192), 8);
 
       if (getPortrait().endsWith("player")) {
          g.setColor(Images.getHColor());
-         g.draw(Images.getImage(getPortrait() + "_color.png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
+         g.draw(Images.getImage(getPortrait() + "_color.png"), Screen.relZeroX(), Screen.relZeroY(), 192, 192);
          g.resetColor();
-         g.draw(Images.getImage(getPortrait() + ".png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
+         g.draw(Images.getImage(getPortrait() + ".png"), Screen.relZeroX(), Screen.relZeroY(), 192, 192);
       } else {
-         g.draw(Images.getImage(getPortrait()), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192);
+         g.draw(Images.getImage(getPortrait()), Screen.relZeroX(), Screen.relZeroY(), 192, 192);
       }
       g.setColor(new Color(0, 0, 0, 0.5f));
-      g.draw(Images.getImage("pixel.png"), MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 48);
+      g.draw(Images.getImage("pixel.png"), Screen.relZeroX(), Screen.relZeroY(), 192, 48);
       g.resetColor();
 
-      g.drawPatch(Patch.get("menu_hollow"), new Rectangle(MainMenu.relZeroX(), MainMenu.relZeroY(), 192, 192), 8);
+      g.drawPatch(Patch.get("menu_hollow"), new Rectangle(Screen.relZeroX(), Screen.relZeroY(), 192, 192), 8);
 
-      g.drawString(getName(), LittleH.font, MainMenu.relZeroX() + 192 / 2, MainMenu.relZeroY() + 32, LittleH.defaultFontScale * 0.9f, 0);
+      g.drawString(getName(), LittleH.font, Screen.relZeroX() + 192 / 2, Screen.relZeroY() + 32, LittleH.defaultFontScale * 0.9f, 0);
 
-      Rectangle textArea = new Rectangle(MainMenu.relZeroX() + 192, MainMenu.relZeroY(), LittleH.program.getWidth() - 192, 192);
+      Rectangle textArea = new Rectangle(Screen.relZeroX() + 192, Screen.relZeroY(), LittleH.program.getWidth() - 192, 192);
       g.drawPatch(Patch.get("menu_globbed"), textArea, 8);
       textArea.y -= 32;
       textArea.x += 16;
@@ -326,19 +323,19 @@ public class Dialogue {
          for (int i = 0; i < dialogueOptions.items.length; i++) {
             dialogueOptions.getItem(i).set(buttons[i]);
          }
-         dialogueOptions.forEach(menuButton -> menuButton.render(g));
+         dialogueOptions.forEach(screenButton -> screenButton.render(g));
       }
 
       if (finishedBlock() && autoTime > 120) {
          LittleH.borderedFont.setColor(new Color(1, 1, 1, MathUtils.sinDeg(autoTime * 2) / 2f + 0.5f));
          if (finished()) {
-            g.drawString("Press 'select' (enter) to end dialogue", LittleH.borderedFont, -MainMenu.relZeroX() - 4, MainMenu.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
+            g.drawString("Press 'select' (enter) to end dialogue", LittleH.borderedFont, -Screen.relZeroX() - 4, Screen.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
          } else {
-            g.drawString("Press 'select' (enter) to continue", LittleH.borderedFont, -MainMenu.relZeroX() - 4, MainMenu.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
+            g.drawString("Press 'select' (enter) to continue", LittleH.borderedFont, -Screen.relZeroX() - 4, Screen.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
          }
       } else if (!started) {
          LittleH.borderedFont.setColor(new Color(1, 1, 1, MathUtils.sinDeg(LittleH.getTick() * 2) / 2f + 0.5f));
-         g.drawString("Press 'select' (enter) to start dialogue", LittleH.borderedFont, -MainMenu.relZeroX() - 4, MainMenu.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
+         g.drawString("Press 'select' (enter) to start dialogue", LittleH.borderedFont, -Screen.relZeroX() - 4, Screen.relZeroY() + 16, LittleH.defaultFontScale * 0.75f, 1);
       }
       LittleH.borderedFont.setColor(Color.WHITE);
    }

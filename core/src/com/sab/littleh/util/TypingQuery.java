@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.ControlInput;
-import com.sab.littleh.mainmenu.MenuButton;
+import com.sab.littleh.screen.ScreenButton;
 
 import java.util.regex.Pattern;
 
@@ -14,8 +14,8 @@ public class TypingQuery {
     private String prompt;
     private StringBuilder query;
     protected int headerPosition;
-    private MenuButton acceptButton;
-    private MenuButton rejectButton;
+    private ScreenButton acceptButton;
+    private ScreenButton rejectButton;
     public boolean complete;
     public boolean accepted;
     private Pattern regex;
@@ -27,9 +27,9 @@ public class TypingQuery {
         query = new StringBuilder(startingString);
         headerPosition = query.length();
         if (hasConfirmButtons) {
-            acceptButton = new MenuButton("square_button", "Okay", rectangle.x + rectangle.width / 2 - 128 - 16, rectangle.y - 80, 128, 64,
+            acceptButton = new ScreenButton("square_button", "Okay", rectangle.x + rectangle.width / 2 - 128 - 16, rectangle.y - 80, 128, 64,
                     () -> complete(true));
-            rejectButton = new MenuButton("square_button", "Nope", rectangle.x + rectangle.width / 2 + 16, rectangle.y - 80, 128, 64,
+            rejectButton = new ScreenButton("square_button", "Nope", rectangle.x + rectangle.width / 2 + 16, rectangle.y - 80, 128, 64,
                     () -> complete(false));
             acceptButton.setDisabled(true);
             rejectButton.setDisabled(true);

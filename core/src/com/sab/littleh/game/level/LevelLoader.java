@@ -1,16 +1,12 @@
 package com.sab.littleh.game.level;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Version;
 import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
+import com.sab.littleh.game.level.editor.LevelEditor;
+import com.sab.littleh.game.level.editor.LevelEditorScreen;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.game.tile.TileTags;
-import com.sab.littleh.mainmenu.InternalLevelMenu;
-import com.sab.littleh.mainmenu.LevelEditorMenu;
-import com.sab.littleh.mainmenu.LevelErrorMenu;
 import com.sab.littleh.settings.Settings;
-import com.sab.littleh.util.LoadingUtil;
 import com.sab.littleh.util.sab_format.*;
 
 import java.awt.*;
@@ -120,13 +116,11 @@ public class LevelLoader {
                         break;
                     Tile tile = getTile(nextLine);
                     if (tile != null && !tile.image.equals("delete")) {
-                        Point tilePosition = new Point(tile.x, tile.y);
                         levelWidth = Math.max(levelWidth, tile.x);
                         levelHeight = Math.max(levelHeight, tile.y);
                         if (tile.hasTag("start"))
                             LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                         background.add(tile);
-                        usedPositions.add(tilePosition);
                     }
                 }
             }
@@ -141,13 +135,11 @@ public class LevelLoader {
                         break;
                     Tile tile = getTile(nextLine);
                     if (tile != null && !tile.image.equals("delete")) {
-                        Point tilePosition = new Point(tile.x, tile.y);
                         levelWidth = Math.max(levelWidth, tile.x);
                         levelHeight = Math.max(levelHeight, tile.y);
                         if (tile.hasTag("start"))
                             LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                         wiring.add(tile);
-                        usedPositions.add(tilePosition);
                     }
                 }
                 break;
@@ -407,7 +399,7 @@ public class LevelLoader {
         try {
             levelFile.createNewFile();
         } catch (IOException e) {
-            LittleH.pendingMenu = new LevelErrorMenu("Program does not have the permission to create files or one with the same file name already exists");
+            LittleH.pendingScreen = new LevelErrorScreen("Program does not have sufficient permissions to create files or one with the same file name already exists");
         }
         SabData mapData = new SabData();
         for (i = 0; i < defaultValues.length; i++) {
@@ -425,6 +417,6 @@ public class LevelLoader {
 
         LevelLoader.saveLevel(levelFile, level);
 
-        LittleH.pendingMenu = new LevelEditorMenu(levelFile, level);
+        LittleH.pendingScreen = new LevelEditorScreen(levelFile, level);
     }
 }

@@ -12,7 +12,7 @@ import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.powerups.*;
 import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.tile.Tile;
-import com.sab.littleh.mainmenu.MainMenu;
+import com.sab.littleh.screen.Screen;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.dialogue.Dialogue;
@@ -599,8 +599,8 @@ public class Player extends Entity {
         for (int i = 0; i < totalCoinCounts.length; i++) {
             int total = totalCoinCounts[i];
             if (shouldRenderCoinCounts[i]) {
-                g.drawString(coinCounts[i] + "/" + total, LittleH.borderedFont, -MainMenu.relZeroX() - 48, -MainMenu.relZeroY() - 48 - 48 * drawnCoins + 32 - 70 - 18, LittleH.defaultFontScale, 1);
-                g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-MainMenu.relZeroX() - 40, -MainMenu.relZeroY() - 48 - 48 * drawnCoins - 64 - 12, 32, 40), new Rectangle(0, 5 * i, 4, 5));
+                g.drawString(coinCounts[i] + "/" + total, LittleH.borderedFont, -Screen.relZeroX() - 48, -Screen.relZeroY() - 48 - 48 * drawnCoins + 32 - 70 - 18, LittleH.defaultFontScale, 1);
+                g.drawImage(Images.getImage("ui/coins.png"), new Rectangle(-Screen.relZeroX() - 40, -Screen.relZeroY() - 48 - 48 * drawnCoins - 64 - 12, 32, 40), new Rectangle(0, 5 * i, 4, 5));
                 drawnCoins++;
             }
         }

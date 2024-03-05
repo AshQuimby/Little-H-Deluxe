@@ -19,7 +19,7 @@ public class Gui<E> {
     // private boolean useImages;
 
     // These are not pointless
-    public Gui<? extends E> subMenu;
+    public Gui<? extends E> subScreen;
     private Rectangle rectangle;
     public int elementWidth;
     public int elementHeight;
@@ -46,8 +46,8 @@ public class Gui<E> {
     }
 
     public boolean contains(Vector2 point) {
-        if (subMenu != null) {
-            return rectangle.contains(point) || subMenu.contains(point);
+        if (subScreen != null) {
+            return rectangle.contains(point) || subScreen.contains(point);
         }
         return rectangle.contains(point);
     }
@@ -68,8 +68,8 @@ public class Gui<E> {
         return items.size() - 1;
     }
 
-    public void setSubMenu(Gui<? extends E> menu) {
-        subMenu = menu;
+    public void setSubScreen(Gui<? extends E> screen) {
+        subScreen = screen;
     }
 
     public E getSelectedItem() {
@@ -89,7 +89,7 @@ public class Gui<E> {
         rectangle.y = y - rectangle.height / 2;
     }
 
-    public void setMenuRectangle(float x, float y, int maxHeight, boolean expandLeft) {
+    public void setScreenRectangle(float x, float y, int maxHeight, boolean expandLeft) {
         int height = Math.max(elementHeight + itemOffset * 2, maxHeight);
         height = height / (elementHeight + itemOffset) *  (elementHeight + itemOffset) + itemOffset;
         int maxElement = height / (elementHeight + itemOffset);
@@ -142,12 +142,12 @@ public class Gui<E> {
         }
     }
 
-    public Rectangle getMenuRectangle() {
+    public Rectangle getScreenRectangle() {
         return rectangle;
     }
 
-    public boolean hasSubMenu() {
-        return subMenu != null;
+    public boolean hasSubScreen() {
+        return subScreen != null;
     }
 
     public E getItem(int index) {
@@ -158,7 +158,7 @@ public class Gui<E> {
         return items.add(item);
     }
 
-    public void renderMenuRectangle(Graphics g, Patch patch) {
+    public void renderScreenRectangle(Graphics g, Patch patch) {
         g.drawPatch(patch, rectangle, 3);
     }
 

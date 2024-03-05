@@ -3,13 +3,11 @@ package com.sab.littleh.settings;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.mainmenu.MenuButton;
+import com.sab.littleh.screen.ScreenButton;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
 
-import java.awt.*;
-
-public class SettingButton extends MenuButton {
+public class SettingButton extends ScreenButton {
     private static final int BOOL = 0;
     private static final int LIST = 1;
     private static final int PERCENT = 2;

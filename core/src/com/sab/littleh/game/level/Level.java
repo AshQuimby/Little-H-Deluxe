@@ -14,10 +14,10 @@ import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.entity.player.powerups.GunMode;
+import com.sab.littleh.game.level.editor.LevelEditorScreen;
 import com.sab.littleh.game.level.wiring.Wiring;
 import com.sab.littleh.game.tile.Tile;
-import com.sab.littleh.mainmenu.LevelEditorMenu;
-import com.sab.littleh.mainmenu.MainMenu;
+import com.sab.littleh.screen.Screen;
 import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
@@ -329,7 +329,7 @@ public class Level {
 
             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && mapData.getValue("look_around").asBool()) {
                 if (Cursors.cursorIs("none")) {
-                    Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
+                    Gdx.input.setCursorPosition(-Screen.relZeroX(), -Screen.relZeroY());
                     Cursors.switchCursor("magnifier");
                 }
                 LittleH.program.dynamicCamera.setPosition(player.getCenter());
@@ -337,7 +337,7 @@ public class Level {
                 LittleH.program.dynamicCamera.setPosition(MouseUtil.getDynamicMousePosition());
             } else {
                 if (Cursors.cursorIs("magnifier")) {
-                    Gdx.input.setCursorPosition(-MainMenu.relZeroX(), -MainMenu.relZeroY());
+                    Gdx.input.setCursorPosition(-Screen.relZeroX(), -Screen.relZeroY());
                     Cursors.switchCursor("none");
                 }
             }
@@ -498,8 +498,8 @@ public class Level {
         particles.clear();
         gameObjects.clear();
         syncTiles();
-        if (LittleH.program.getMenu() instanceof LevelEditorMenu) {
-            ((LevelEditorMenu) LittleH.program.getMenu()).resetToolCursor();
+        if (LittleH.program.getScreen() instanceof LevelEditorScreen) {
+            ((LevelEditorScreen) LittleH.program.getScreen()).resetToolCursor();
             SoundEngine.playMusic(Settings.localSettings.buildingSong.value);
         }
     }
@@ -793,9 +793,9 @@ public class Level {
         LittleH.program.useStaticCamera();
 
         if (wiringMode) {
-            g.drawString("WIRING MODE", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
+            g.drawString("WIRING MODE", LittleH.borderedFont, -Screen.relZeroX() - 96, -Screen.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
         } else if (backgroundPriority) {
-            g.drawString("EDITING BACKGROUND", LittleH.borderedFont, -MainMenu.relZeroX() - 96, -MainMenu.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
+            g.drawString("EDITING BACKGROUND", LittleH.borderedFont, -Screen.relZeroX() - 96, -Screen.relZeroY() - 96, LittleH.defaultFontScale * 0.75f, 1);
         }
 
         if (inGame())
@@ -823,9 +823,9 @@ public class Level {
 
                 for (int i = 0; i < levelOptions.length; i++) {
                     g.draw(Images.getImage(levelOptionImages[i]),
-                            -MainMenu.relZeroX() - levelOptions.length * 80 + i * 80 + 8, MainMenu.relZeroY() + 8, 64, 64);
+                            -Screen.relZeroX() - levelOptions.length * 80 + i * 80 + 8, Screen.relZeroY() + 8, 64, 64);
                     g.draw(Images.getImage(mapData.getValue(levelOptions[i]).asBool() ? "ui/level_setting_on.png" : "ui/level_setting_off.png"),
-                            -MainMenu.relZeroX() - levelOptions.length * 80 + i * 80, MainMenu.relZeroY(), 80, 80);
+                            -Screen.relZeroX() - levelOptions.length * 80 + i * 80, Screen.relZeroY(), 80, 80);
                 }
 
                 g.resetColor();
@@ -1008,10 +1008,10 @@ public class Level {
         g.resetTint();
         g.resetShader();
         if (timeLimit > -1) {
-            g.draw(Images.getImage("ui/buttons/icons/clock.png"), -MainMenu.relZeroX() - 72, -MainMenu.relZeroY() - 72, 64, 64);
-            g.drawString("" + timeLimit, LittleH.borderedFont, -MainMenu.relZeroX() - 80, -MainMenu.relZeroY() - 28 - 14, LittleH.defaultFontScale, 1);
+            g.draw(Images.getImage("ui/buttons/icons/clock.png"), -Screen.relZeroX() - 72, -Screen.relZeroY() - 72, 64, 64);
+            g.drawString("" + timeLimit, LittleH.borderedFont, -Screen.relZeroX() - 80, -Screen.relZeroY() - 28 - 14, LittleH.defaultFontScale, 1);
         }
-        g.drawString(getTime(), LittleH.borderedFont, MainMenu.relZeroX() + 16, -MainMenu.relZeroY() - 28, LittleH.defaultFontScale, -1);
+        g.drawString(getTime(), LittleH.borderedFont, Screen.relZeroX() + 16, -Screen.relZeroY() - 28, LittleH.defaultFontScale, -1);
     }
 
     public void reset() {

@@ -31,7 +31,7 @@ public class Settings {
             "Windowed Fullscreen",
             "Fullscreen"
     });
-    public final BoolSetting screenShake = new BoolSetting("screen_shake", "Screen Shake", true);
+    public final BoolSetting screenShake = new BoolSetting("menu_shake", "Menu Shake", true);
     public final BoolSetting rainbowTitle = new BoolSetting("rainbow_title", "Rainbow Title", false);
     public final BoolSetting grid = new BoolSetting("grid_enabled", "Grid Enabled", true);
     public final BoolSetting useShaders = new BoolSetting("use_shaders", "Use Shaders", true);
