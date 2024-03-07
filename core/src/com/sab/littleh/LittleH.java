@@ -3,6 +3,8 @@ package com.sab.littleh;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.campaign.SaveFile;
 import com.sab.littleh.controls.Controls;
 import com.sab.littleh.controls.ControlInput;
@@ -25,6 +28,7 @@ import com.sab.littleh.util.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.sab.littleh.util.Graphics;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +44,11 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static final String VERSION = "0.1.5";
     public static Screen pendingScreen;
     private static List<Controller> controllers = new ArrayList<>();
+    private Lwjgl3Window window;
     private int tick;
     public static BitmapFont font;
     public static BitmapFont borderedFont;
     public static float defaultFontScale = 0.2f;
-    public static final int resolutionX = 1024;
-    public static final int resolutionY = 576;
     public static LittleH program;
     private Graphics g;
     private NestedFrameBuffer buffer;
@@ -62,6 +65,10 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     public static File mapsFolder;
     private String savedMapsPath;
     private String savedDataPath;
+    private int newWidth;
+    private int newHeight;
+    private boolean resizeQueued;
+
     @Override
     public void create() {
         program = this;
@@ -90,8 +97,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SaveFile.load();
 
         g = new Graphics();
-        staticCamera = new OrthographicCamera(resolutionX, resolutionY);
-        dynamicCamera = new DynamicCamera(resolutionX, resolutionY);
+        staticCamera = new OrthographicCamera(getWidth(), getHeight());
+        dynamicCamera = new DynamicCamera(getWidth(), getHeight());
         SoundEngine.load();
         Cursors.loadCursors();
         try {
@@ -100,9 +107,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             controllersNotSupported = true;
         }
         Screen.program = this;
-        Patch.cacheButtonPatch("button", "ui/buttons/button");
-        Patch.cacheButtonPatch("square_button", "ui/buttons/square_button");
-        Patch.cacheButtonPatch("tile_button", "ui/buttons/tile_button");
+        Patch.cacheButtonPatch("button", "ui/buttons/button", true);
+        Patch.cacheButtonPatch("square_button", "ui/buttons/square_button", true);
+        Patch.cacheButtonPatch("tile_button", "ui/buttons/tile_button", false);
         Patch.cachePatch("menu", new Patch("ui/menu/menu.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_globbed", new Patch("ui/menu/menu_globbed.png", 7, 7, 3, 3));
         Patch.cachePatch("menu_light_globbed", new Patch("ui/menu/menu_light_globbed.png", 7, 7, 3, 3));
@@ -131,14 +138,17 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         SoundEngine.update();
         Images.cacheHColor();
 //        VnDialogue.load();
-        buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
-        bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
+        bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
         tempBuffers = new NestedFrameBuffer[4];
-        tempBuffers[0] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
-        tempBuffers[1] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
-        tempBuffers[2] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
-        tempBuffers[3] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, (int) staticCamera.viewportWidth, (int) staticCamera.viewportHeight, false);
+        tempBuffers[0] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
+        tempBuffers[1] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
+        tempBuffers[2] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
+        tempBuffers[3] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
         recheckShaderStack();
+
+        // Hijacking libGDX's backend here, may be unsafe, need to test further...
+        window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
     }
 
     public static void updateFont() {
@@ -147,6 +157,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         borderedFont = Fonts.getFont(Settings.localSettings.font.asRawValue() + "_bordered");
         borderedFont.setColor(Color.WHITE);
         defaultFontScale = Settings.localSettings.font.getFontSize();
+
     }
 
     public static void setTitle(String title) {
@@ -189,6 +200,11 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     }
 
     public void update() {
+        if (resizeQueued) {
+            // Incredibly scuffed to only allow window sizes of even numbers to prevent blurry FrameBuffers
+            GLFW.glfwSetWindowSize(window.getWindowHandle(), newWidth, newHeight);
+            resizeQueued = false;
+        }
         SoundEngine.update();
         Images.cacheHColor();
         if (tick == 0) {
@@ -325,7 +341,27 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void resize(int width, int height) {
+        newWidth = width;
+        newHeight = height;
+        if (width % 2 != 0) {
+            newWidth += 1;
+            resizeQueued = true;
+        }
+        if (height % 2 != 0) {
+            newHeight += 1;
+            resizeQueued = true;
+        }
         try {
+            staticCamera.viewportWidth = width;
+            staticCamera.viewportHeight = height;
+            dynamicCamera.viewportWidth = width;
+            dynamicCamera.viewportHeight = height;
+            buffer.dispose();
+            bufferHoldover.dispose();
+            tempBuffers[0].dispose();
+            tempBuffers[1].dispose();
+            tempBuffers[2].dispose();
+            tempBuffers[3].dispose();
             buffer = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
             bufferHoldover = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
             tempBuffers[0] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
@@ -489,9 +525,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
     @Override
     public void render() {
-        if (hardPause)
-            return;
-        update();
+        if (!hardPause)
+            update();
 
         if (dontRender) {
             dontRender = false;
@@ -517,7 +552,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             hoverInfoRect.y -= 16 + 48;
             hoverInfoRect.width += 16;
             hoverInfoRect.height += 24;
-            g.drawPatch(Patch.get("menu_globbed"), hoverInfoRect, 8);
+            g.drawPatch(Patch.get("menu_globbed"), hoverInfoRect, 6);
             g.drawString(hoverInfo, font, hoverInfoRect.x + 8, hoverInfoRect.y + hoverInfoRect.height / 2 + 4, defaultFontScale * 0.75f, -1);
         }
 
@@ -531,13 +566,14 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
 
         shaderStack.forEach(shaderProgram -> {
             TextureRegion tex = new TextureRegion(buffer.getColorBufferTexture());
+            tex.flip(false, true);
             NestedFrameBuffer temp = buffer;
             buffer = bufferHoldover;
             bufferHoldover = temp;
             buffer.begin();
             shaderProgram.bind();
             g.setShader(shaderProgram);
-            g.draw(tex, Screen.relZeroX(), -Screen.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+            g.draw(tex, Screen.relZeroX(), Screen.relZeroY());
             g.flush();
             buffer.end();
         });
@@ -545,7 +581,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         g.resetShader();
 
         g.flush();
-        g.draw(buffer.getColorBufferTexture(), Screen.relZeroX(), -Screen.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+        TextureRegion tex = new TextureRegion(buffer.getColorBufferTexture());
+        tex.flip(false, true);
+        g.draw(tex, Screen.relZeroX(), Screen.relZeroY());
 
         g.end();
 
@@ -572,7 +610,9 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
     }
 
     public void drawTempBuffer() {
-        g.draw(tempBuffers[tempBufferLayer + 1].getColorBufferTexture(), Screen.relZeroX(), -Screen.relZeroY(), staticCamera.viewportWidth, -staticCamera.viewportHeight);
+        TextureRegion tex = new TextureRegion(tempBuffers[tempBufferLayer + 1].getColorBufferTexture());
+        tex.flip(false, true);
+        g.draw(tex, Screen.relZeroX(), Screen.relZeroY());
     }
 
     public NestedFrameBuffer getFrameBuffer() {

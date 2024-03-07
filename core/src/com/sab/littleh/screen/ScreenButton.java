@@ -51,7 +51,10 @@ public class ScreenButton extends Rectangle {
     }
 
     public Patch getPatch() {
-        return Patch.get(patchString + (disabled ? "_disabled" : hovered ? pressed ? "_pressed" : "_hovered" : ""));
+        return Patch.getButton(patchString, hovered, pressed, disabled);
+    }
+    public boolean hasDepth() {
+        return Patch.buttonHasDepth(patchString);
     }
     public void onHover() {
 
@@ -59,6 +62,11 @@ public class ScreenButton extends Rectangle {
     public void onDown() {
 
     }
+
+    public float getTextOffsetY(int patchScale) {
+        return -(pressed && hovered && hasDepth() ? patchScale : 0);
+    }
+
     public void update() {
         if (!disabled && contains(dynamic ? MouseUtil.getDynamicMousePosition() : MouseUtil.getMousePosition())) {
             if (!hovered) {
@@ -77,8 +85,7 @@ public class ScreenButton extends Rectangle {
             }
         } else {
             hovered = false;
-            if (!MouseUtil.isLeftMouseDown())
-                pressed = false;
+            pressed = false;
         }
     }
 
@@ -109,16 +116,12 @@ public class ScreenButton extends Rectangle {
         g.drawPatch(getPatch(), this, patchScale);
         if (text != null && !text.isBlank()) {
             LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
-            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? patchScale : 0), LittleH.defaultFontScale, 0);
+            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 + getTextOffsetY(patchScale), LittleH.defaultFontScale, 0);
         }
     }
 
     public void render(Graphics g) {
-        g.drawPatch(getPatch(), this, 8);
-        if (text != null && !text.isBlank()) {
-            LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
-            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 - (pressed && hovered ? 8 : 0), LittleH.defaultFontScale, 0);
-        }
+        render(g, 8);
     }
 
     public void render(int i, Graphics g) {

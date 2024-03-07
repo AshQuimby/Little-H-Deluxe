@@ -29,9 +29,14 @@ public class ImageButton extends ScreenButton {
     }
 
     @Override
-    public void render(Graphics g) {
+    public float getTextOffsetY(int patchScale) {
+        return imageOffsetY - (pressed && hovered && hasDepth() ? patchScale : 0);
+    }
+
+    @Override
+    public void render(Graphics g, int patchScale) {
         if (patchString != null)
-            g.drawPatch(getPatch(), this, 8);
-        g.draw(Images.getImage(text), x + imageOffsetX, y + imageOffsetY - (pressed && hovered ? 8 : 0), imageWidth, imageHeight);
+            g.drawPatch(getPatch(), this, patchScale);
+        g.draw(Images.getImage(text), x + imageOffsetX, y + getTextOffsetY(patchScale), imageWidth, imageHeight);
     }
 }

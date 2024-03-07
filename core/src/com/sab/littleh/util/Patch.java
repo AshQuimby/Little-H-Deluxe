@@ -7,9 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
 
 public class Patch {
     public static final Map<String, Patch> cache = new HashMap<>();
+    private static final Map<String, Boolean> hasDepthCache = new HashMap<>();
     public final String imagePath;
     private final int imageWidth, imageHeight, x1, y1;
 
@@ -22,18 +24,35 @@ public class Patch {
     }
 
     public static Patch get(String key) {
+        if (!cache.containsKey(key)) throw new IllegalStateException(String.format("Patch with key \"%s\" does not exist.", key));
         return cache.get(key);
+    }
+
+    public static Patch getButton(String key, boolean hovered, boolean pressed, boolean disabled) {
+        if (disabled)
+            return get(key + "_disabled");
+        if (pressed)
+            return get(key + "_pressed");
+        if (hovered)
+            return get(key + "_hovered");
+        return get(key);
     }
 
     public static void cachePatch(String key, Patch patch) {
         cache.put(key, patch);
     }
 
-    public static void cacheButtonPatch(String key, String imageId) {
-        Patch.cachePatch(key, new Patch(imageId + ".png", 7, 7, 3, 3));
-        Patch.cachePatch(key + "_hovered", new Patch(imageId + "_hovered.png", 7, 7, 3, 3));
-        Patch.cachePatch(key + "_pressed", new Patch(imageId + "_pressed.png", 7, 7, 3, 3));
-        Patch.cachePatch(key + "_disabled", new Patch(imageId + "_disabled.png", 7, 7, 3, 3));
+    public static void cacheButtonPatch(String key, String imageId, boolean hasDepth) {
+        cachePatch(key, new Patch(imageId + ".png", 7, 7, 3, 3));
+        cachePatch(key + "_hovered", new Patch(imageId + "_hovered.png", 7, 7, 3, 3));
+        cachePatch(key + "_pressed", new Patch(imageId + "_pressed.png", 7, 7, 3, 3));
+        cachePatch(key + "_disabled", new Patch(imageId + "_disabled.png", 7, 7, 3, 3));
+        hasDepthCache.put(key, hasDepth);
+    }
+
+    public static boolean buttonHasDepth(String key) {
+        if (!hasDepthCache.containsKey(key)) throw new IllegalStateException(String.format("Button patch with key \"%s\" does not exist.", key));
+        return hasDepthCache.get(key);
     }
 
     public void render(Graphics g, int patchScale, float x, float y, float width, float height) {

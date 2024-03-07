@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.sab.littleh.LittleH;
 
 import java.util.Stack;
 
@@ -26,7 +27,7 @@ public class NestedFrameBuffer extends FrameBuffer {
 
     @Override
     public void end() {
-        this.end(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+        this.end(0, 0, LittleH.program.getWidth(), LittleH.program.getHeight());
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.screen.ScreenButton;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
+import com.sab.littleh.util.Patch;
 
 public class TileButton extends ScreenButton {
     private final Tile tile;
@@ -15,6 +16,7 @@ public class TileButton extends ScreenButton {
         super(null, "", x, y, 60, 60, null);
         this.tile = tile;
         this.drawGear = tile.hasTag("states");
+        this.text = tile.image;
     }
 
     public TileButton quickCreate(Tile tile, Runnable onPress) {
@@ -24,17 +26,17 @@ public class TileButton extends ScreenButton {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, int patchScale) {
         if (tile.hasTag("render_color") && tile.extra != null && !tile.extra.isBlank()) {
             g.setColor(Color.valueOf("#" + tile.extra.toUpperCase().trim()));
         }
         g.drawImage(tile.getImage(), x + 6, y + 6, 48, 48, tile.getDrawSection());
         g.resetColor();
         if (drawGear && tile.hasTag("states")) {
-            g.draw(Images.getImage("ui/properties_gear.png"), x + 12, y, 48, 48);
+            g.draw(Images.getImage("ui/properties_gear.png"), x + 6, y + 6, 48, 48);
         }
         if (tile.extra != null && !tile.extra.isBlank()) {
-            g.draw(Images.getImage("ui/copy_paper.png"), x + 12, y, 48, 48);
+            g.draw(Images.getImage("ui/copy_paper.png"), x + 6, y + 6, 48, 48);
         }
     }
 
