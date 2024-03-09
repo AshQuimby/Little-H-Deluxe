@@ -5,7 +5,7 @@ import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
 
 public class ImageButton extends ScreenButton {
-    private float imageOffsetX, imageOffsetY, imageWidth, imageHeight;
+    protected float imageOffsetX, imageOffsetY, imageWidth, imageHeight;
     public ImageButton(String patchString, String image, float x, float y, float width, float height, float imageOffsetX, float imageOffsetY, float imageDrawWidth, float imageDrawHeight, Runnable onPress) {
         super(patchString, image, x, y, width, height, onPress);
         this.imageOffsetX = imageOffsetX;
@@ -34,9 +34,17 @@ public class ImageButton extends ScreenButton {
     }
 
     @Override
-    public void render(Graphics g, int patchScale) {
+    public void render(Graphics g, int patchScale, float fontScale) {
         if (patchString != null)
             g.drawPatch(getPatch(), this, patchScale);
-        g.draw(Images.getImage(text), x + imageOffsetX, y + getTextOffsetY(patchScale), imageWidth, imageHeight);
+        float xOff = 0;
+        float yOff = 0;
+        if (imageWidth < 0) {
+            xOff = -imageWidth;
+        }
+        if (imageHeight < 0) {
+            yOff = -imageHeight;
+        }
+        g.draw(Images.getImage(text), x + imageOffsetX + xOff, y + getTextOffsetY(patchScale) + yOff, imageWidth, imageHeight);
     }
 }

@@ -2,12 +2,10 @@ package com.sab.littleh.settings;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
-import com.sab.littleh.screen.ControlsScreen;
+import com.sab.littleh.controls.ControlsScreen;
 import com.sab.littleh.screen.Screen;
 import com.sab.littleh.screen.ScreenButton;
 import com.sab.littleh.screen.VisualButton;
-import com.sab.littleh.settings.SettingButton;
-import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.Graphics;
 
@@ -74,7 +72,14 @@ public class SettingsScreen extends Screen {
         audioSettings.add(new SettingButton(Settings.localSettings.masterVolume, -256 / 2, -64));
         audioSettings.add(new SettingButton(Settings.localSettings.sfxVolume, -256 / 2 - 272, -64));
         audioSettings.add(new SettingButton(Settings.localSettings.musicVolume, -256 / 2 + 272, -64));
-        audioSettings.add(new ScreenButton("square_button", "Test SFX", -272 / 2, -96 * 2, 272, 64, this::playTestSound));
+        audioSettings.add(new ScreenButton("square_button", "Test SFX", -272 / 2, -96 * 2, 272, 64) {
+            @Override
+            public void mouseClicked() {
+                if (!disabled && hovered) {
+                    SoundEngine.playSound("coin.ogg");
+                }
+            }
+        });
 
         gameSettings.add(new SettingButton(Settings.localSettings.debugMode, -72 / 2 - 96 * 2 - 32, 96));
         gameSettings.add(new SettingButton(Settings.localSettings.backgroundVisibility, -72 / 2 + 96 * 2 + 32, 96));
@@ -109,8 +114,8 @@ public class SettingsScreen extends Screen {
         miscSettings.add(new SettingButton(Settings.localSettings.hColor, -361 / 2 - 40 + 8, -16, 361));
         miscSettings.add(new VisualButton("menu_flat", new Rectangle(-361 / 2 + 361 - 8, -48 + 16, 64, 64)) {
             @Override
-            public void render(Graphics g, int patchScale) {
-                super.render(g, patchScale);
+            public void render(Graphics g, int patchScale, float fontScale) {
+                super.render(g, patchScale, fontScale);
                 g.setColor(Images.getHColor());
                 g.draw(Images.getImage("pixel.png"), x + 16, y + 16, 32, 32);
                 g.resetColor();
@@ -189,7 +194,7 @@ public class SettingsScreen extends Screen {
 
     @Override
     public void render(Graphics g) {
-        super.render(g);
+        drawBackground(g, 3);
 
         Rectangle screenPanel = new Rectangle(-1024 / 2, -576 / 2, 1024, 576);
         g.drawPatch(Patch.get("menu"), screenPanel, 3);

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.sab.littleh.game.entity.GameObject;
 import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.Prop;
 import com.sab.littleh.game.entity.enemy.Enemy;
@@ -141,14 +140,14 @@ public class Tile {
         return cachedDrawRect;
     }
 
-    public int getPropertyCount() {
+    public int getStateCount() {
         if (hasTag("states")) {
             return Integer.parseInt(tags.getTag("states"));
         }
         return 0;
     }
 
-    public int getPropertyIndex() {
+    public int getStateIndex() {
         if (hasTag("states")) {
             return tileType;
         }

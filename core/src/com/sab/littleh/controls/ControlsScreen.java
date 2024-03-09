@@ -1,4 +1,4 @@
-package com.sab.littleh.screen;
+package com.sab.littleh.controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,6 +9,8 @@ import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.Control;
 import com.sab.littleh.controls.ControlTypingBox;
 import com.sab.littleh.controls.Controls;
+import com.sab.littleh.screen.Screen;
+import com.sab.littleh.screen.ScreenButton;
 import com.sab.littleh.settings.SettingsScreen;
 import com.sab.littleh.util.*;
 
@@ -16,14 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ControlsScreen extends Screen {
-    private SettingsScreen settingsScreen;
-    private List<ControlTypingBox> inputFields;
-    private List<ScreenButton> buttons;
+    private final List<ControlTypingBox> inputFields;
+    private final List<ScreenButton> buttons;
     private Vector2 previousMousePos;
     private float scroll;
     private float effectiveScroll;
     public ControlsScreen(SettingsScreen settingsScreen) {
-        this.settingsScreen = settingsScreen;
         inputFields = new ArrayList<>();
         buttons = new ArrayList<>();
         int y = 128;
@@ -72,7 +72,7 @@ public class ControlsScreen extends Screen {
 
         int n = 0;
         for (TypingBox typingBox : inputFields) {
-            typingBox.rectangle.y = scroll - 96 * n + 96;
+            typingBox.y = scroll - 96 * n + 96;
             n++;
         }
     }
@@ -109,10 +109,10 @@ public class ControlsScreen extends Screen {
 
     @Override
     public void render(Graphics g) {
-        super.render(g);
+        drawBackground(g, 3);
 
         Rectangle screenPanel = new Rectangle(-1024 / 2, -576 / 2, 1024, 576);
-        g.drawPatch(Patch.get("menu"), screenPanel, 8);
+        g.drawPatch(Patch.get("menu"), screenPanel, 3);
 
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
@@ -125,9 +125,9 @@ public class ControlsScreen extends Screen {
                 LittleH.font, 0, scroll + 128 + 96 + 24, LittleH.defaultFontScale * 0.8f, 0);
 
         for (TypingBox typingBox : inputFields) {
-            typingBox.render(g);
+            typingBox.render(g, 4);
         }
-        g.drawPatch(Patch.get("menu_hollow"), screenPanel, 8);
+        g.drawPatch(Patch.get("menu_hollow"), screenPanel, 3);
 
         if (pop)
             ScissorStack.popScissors();
@@ -135,7 +135,7 @@ public class ControlsScreen extends Screen {
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
         for (ScreenButton button : buttons) {
-            button.render(g);
+            button.render(g, 3);
         }
     }
 }

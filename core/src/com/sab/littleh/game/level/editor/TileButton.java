@@ -19,14 +19,26 @@ public class TileButton extends ScreenButton {
         this.text = tile.image;
     }
 
+    public TileButton(Tile tile, Rectangle rect) {
+        super(null, "", rect.x, rect.y, rect.width, rect.height, null);
+        this.tile = tile;
+        this.drawGear = tile.hasTag("states");
+        this.text = tile.image;
+    }
+
     public TileButton quickCreate(Tile tile, Runnable onPress) {
         TileButton button = new TileButton(tile.copy(), x, y);
         button.drawGear = drawGear;
         return button;
     }
 
+    public TileButton hideGear() {
+        drawGear = false;
+        return this;
+    }
+
     @Override
-    public void render(Graphics g, int patchScale) {
+    public void render(Graphics g, int patchScale, float fontScale) {
         if (tile.hasTag("render_color") && tile.extra != null && !tile.extra.isBlank()) {
             g.setColor(Color.valueOf("#" + tile.extra.toUpperCase().trim()));
         }

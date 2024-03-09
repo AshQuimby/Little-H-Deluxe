@@ -497,7 +497,7 @@ public class Player extends Entity {
                     if (tile.hasTag("timer")) {
                         SoundEngine.playSound("powerup_get.ogg");
                         if (game.timeLimit > -1) {
-                            switch (tile.getPropertyIndex()) {
+                            switch (tile.getStateIndex()) {
                                 case 0:
                                     game.timeLimit += 10;
                                     game.startPopup("+10 seconds", 180);

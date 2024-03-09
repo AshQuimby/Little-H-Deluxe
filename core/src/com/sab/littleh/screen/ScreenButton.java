@@ -9,7 +9,7 @@ import com.sab.littleh.util.MouseUtil;
 import com.sab.littleh.util.Patch;
 import com.sab.littleh.util.SoundEngine;
 
-public class ScreenButton extends Rectangle {
+public class ScreenButton extends ScreenElement {
     public boolean dynamic;
     public String text;
     protected String patchString;
@@ -53,7 +53,8 @@ public class ScreenButton extends Rectangle {
     public Patch getPatch() {
         return Patch.getButton(patchString, hovered, pressed, disabled);
     }
-    public boolean hasDepth() {
+    public final boolean hasDepth() {
+        if (patchString == null) return false;
         return Patch.buttonHasDepth(patchString);
     }
     public void onHover() {
@@ -67,6 +68,7 @@ public class ScreenButton extends Rectangle {
         return -(pressed && hovered && hasDepth() ? patchScale : 0);
     }
 
+    @Override
     public void update() {
         if (!disabled && contains(dynamic ? MouseUtil.getDynamicMousePosition() : MouseUtil.getMousePosition())) {
             if (!hovered) {
@@ -92,6 +94,7 @@ public class ScreenButton extends Rectangle {
     public void mouseDown() {
     }
 
+    @Override
     public void mouseClicked() {
         if (!disabled && hovered && onPress != null) {
             onPress.run();
@@ -104,6 +107,7 @@ public class ScreenButton extends Rectangle {
         return this;
     }
 
+    @Override
     public void render(Graphics g, int patchScale, float fontScale) {
         g.drawPatch(getPatch(), this, patchScale);
         if (text != null && !text.isBlank()) {
@@ -112,33 +116,7 @@ public class ScreenButton extends Rectangle {
         }
     }
 
-    public void render(Graphics g, int patchScale) {
-        g.drawPatch(getPatch(), this, patchScale);
-        if (text != null && !text.isBlank()) {
-            LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
-            g.drawString(text, LittleH.font, getCenterX(), getCenterY() + 4 + getTextOffsetY(patchScale), LittleH.defaultFontScale, 0);
-        }
-    }
-
-    public void render(Graphics g) {
-        render(g, 8);
-    }
-
-    public void render(int i, Graphics g) {
-        render(g);
-    }
-
-    public float getCenterX() {
-        return getCenter().x;
-    }
-
-    public float getCenterY() {
-        return getCenter().y;
-    }
-    public Vector2 getCenter() {
-        return getCenter(new Vector2());
-    }
-    public Vector2 getPosition() {
-        return getPosition(new Vector2());
+    public boolean isDisabled() {
+        return disabled;
     }
 }

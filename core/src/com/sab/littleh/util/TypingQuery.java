@@ -6,11 +6,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.screen.ScreenButton;
+import com.sab.littleh.screen.ScreenElement;
 
 import java.util.regex.Pattern;
 
-public class TypingQuery {
-    public final Rectangle rectangle;
+public class TypingQuery extends ScreenElement {
     private String prompt;
     private StringBuilder query;
     protected int headerPosition;
@@ -22,7 +22,7 @@ public class TypingQuery {
     private int maxSize;
 
     public TypingQuery(String prompt, String startingString, Rectangle rectangle, boolean hasConfirmButtons) {
-        this.rectangle = rectangle;
+        super(rectangle);
         this.prompt = prompt;
         query = new StringBuilder(startingString);
         headerPosition = query.length();
@@ -74,6 +74,7 @@ public class TypingQuery {
     public boolean isValid(char c) {
         return c > 31 && c < 127;
     }
+    @Override
     public void update() {
         if (acceptButton != null) {
             if (!MouseUtil.isLeftMouseDown()) {
@@ -93,14 +94,14 @@ public class TypingQuery {
         // Backspace
         if (character == 0x08) {
             if (headerPosition > 0) {
-                query = query.deleteCharAt(headerPosition - 1);
+                query.deleteCharAt(headerPosition - 1);
                 headerPosition--;
             }
             // Delete
         } else if (character == 0x7F) {
             if (!query.toString().isEmpty() && headerPosition < length()) {
                 headerPosition++;
-                query = query.deleteCharAt(headerPosition - 1);
+                query.deleteCharAt(headerPosition - 1);
                 headerPosition--;
             }
             // ASCII alphanumerics and symbols
@@ -125,6 +126,8 @@ public class TypingQuery {
     public int length() {
         return query.length();
     }
+
+    @Override
     public void mouseClicked() {
         if (acceptButton != null) {
             acceptButton.mouseClicked();
@@ -138,21 +141,18 @@ public class TypingQuery {
         return prompt;
     }
 
-    public void render(Graphics g) {
-        render(g, 8);
-    }
-
-    public void render(Graphics g, int patchScale) {
-        g.drawPatch(Patch.get("menu"), rectangle, patchScale);
-        Rectangle textRect = new Rectangle(rectangle);
+    @Override
+    public void render(Graphics g, int patchScale, float fontScale) {
+        g.drawPatch(Patch.get("menu"), this, patchScale);
+        Rectangle textRect = new Rectangle(this);
         textRect.x += 16;
         textRect.y += 16;
         textRect.width -= 32;
         textRect.height -= 32;
-        g.drawString(prompt + getDisplayQuery(), LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.825f, 0, 0);
+        g.drawString(prompt + getDisplayQuery(), LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.825f * fontScale, 0, 0);
         if (acceptButton != null) {
-            acceptButton.render(g);
-            rejectButton.render(g);
+            acceptButton.render(g, patchScale, fontScale);
+            rejectButton.render(g, patchScale, fontScale);
         }
     }
 }

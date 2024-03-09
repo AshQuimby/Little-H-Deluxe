@@ -41,8 +41,8 @@ public abstract class Screen {
     public void close() {
     }
 
-    public void drawBackground(Graphics g) {
-        g.drawPatch(Patch.get("menu_indented"), relZeroX(), relZeroY(), program.getWidth(), program.getHeight(), 8);
+    public void drawBackground(Graphics g, int patchScale) {
+        g.drawPatch(Patch.get("menu_indented"), relZeroX(), relZeroY(), program.getWidth(), program.getHeight(), patchScale);
         g.setColor(Images.getHColor());
         g.draw(Images.getImage("title_color.png"), -568 / 2, -424 / 2, 568, 424);
         g.resetColor();
@@ -53,7 +53,7 @@ public abstract class Screen {
     }
 
     public void render(Graphics g) {
-        drawBackground(g);
+        drawBackground(g, 8);
     }
 
     public void mouseScrolled(float amountY) {

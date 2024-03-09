@@ -1072,6 +1072,12 @@ public class Level {
             this.currentDialogue = dialogue;
     }
 
+    public static int indexOfBackground(String background) {
+        for (int i = 0; i < backgrounds.length; i++)
+            if (backgrounds[i].equals(background)) return i;
+        return -1;
+    }
+
     public boolean hasDialogue() {
         return currentDialogue != null;
     }

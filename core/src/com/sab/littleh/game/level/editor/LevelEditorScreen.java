@@ -521,7 +521,7 @@ public class LevelEditorScreen extends Screen {
                                 if (tileAt.ignoreTiling)
                                     tile.tileType = tileAt.tileType;
                                 if (tile.hasTag("states")) {
-                                    ScreenButton[] buttons = new ScreenButton[tile.getPropertyCount() + 1];
+                                    ScreenButton[] buttons = new ScreenButton[tile.getStateCount() + 1];
                                     buttons[0] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64, 0, 0, 64, 64, null);
                                     for (int i = 1; i < buttons.length; i++) {
                                         newTile = tile.copy();
@@ -816,7 +816,7 @@ public class LevelEditorScreen extends Screen {
                         tileButtons.setItemIndex(newIndex);
                         Tile tile = getEditorTile();
                         if (tile.hasTag("states")) {
-                            ScreenButton[] buttons = new ScreenButton[tile.getPropertyCount() + 1];
+                            ScreenButton[] buttons = new ScreenButton[tile.getStateCount() + 1];
                             buttons[0] = new ImageButton(null, "back_arrow.png", 0, 0, 64, 64, 0, 0, 64, 64, null);
                             for (int i = 1; i < buttons.length; i++) {
                                 Tile newTile = tile.copy();

@@ -16,7 +16,7 @@ public class TypingBox extends TypingQuery {
 
     @Override
     public void mouseClicked() {
-        focused = rectangle.contains(MouseUtil.getMousePosition());
+        focused = contains(MouseUtil.getMousePosition());
     }
 
     @Override
@@ -36,22 +36,23 @@ public class TypingBox extends TypingQuery {
     }
 
     @Override
-    public void render(Graphics g) {
-        g.drawPatch(Patch.get(focused ? "menu_flat" : "menu_flat_dark"), rectangle, 8);
-        Rectangle textRect = new Rectangle(rectangle);
+    public void render(Graphics g, int patchScale, float fontSize) {
+        g.drawPatch(Patch.get(focused ? "menu_flat" : "menu_flat_dark"), this, patchScale);
+        Rectangle textRect = new Rectangle(this);
         textRect.x += 16;
         textRect.y += 16;
         textRect.width -= 32;
         textRect.height -= 32;
         String display = focused ? getDisplayQuery() : getQuery();
-        while (Fonts.getStringWidth(display, LittleH.font, LittleH.defaultFontScale * 0.825f) > textRect.width) {
+        while (Fonts.getStringWidth(display, LittleH.font, LittleH.defaultFontScale * 0.775f) > textRect.width) {
             if (focused) {
                 display = display.substring(1);
             } else {
                 display = display.substring(0, display.length() - 1);
             }
         }
-        g.drawString(display, LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.825f, -1, 0);
-        g.drawString(getPrompt(), LittleH.font, textRect.x - 12, textRect.y + 14, LittleH.defaultFontScale * 0.825f, 1);
+        g.drawString(display, LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.775f, -1, 0);
+        textRect.x -= textRect.width + patchScale * 4;
+        g.drawString(getPrompt(), LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.775f, 1, 0);
     }
 }

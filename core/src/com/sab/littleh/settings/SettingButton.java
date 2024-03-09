@@ -118,7 +118,7 @@ public class SettingButton extends ScreenButton {
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, int patchScale, float fontScale) {
         LittleH.font.setColor(disabled ? Color.GRAY : Color.WHITE);
         switch (type) {
             case BOOL :
@@ -157,9 +157,6 @@ public class SettingButton extends ScreenButton {
         if (bonusText != null)
             if (drawText)
                 g.drawString(getBonusText(), LittleH.font, getCenterX(), y - 48, LittleH.defaultFontScale * 0.6f, 0);
-    }
-    public void render(Graphics g, int patchScale) {
-        render(g);
     }
 
     public String getBonusText() {

@@ -12,7 +12,7 @@
 @checkpoint [ checkpoint_saved, checkpoint ]
 @strong_checkpoint [ checkpoint_saved, checkpoint, notifiable, notify_checkpoint, notified_reset_type ]
 @coin [ checkpoint_saved, pickup, coin, states(4) ]
-@coin_box [ checkpoint_saved, coin_box, notify(all_coins), notified_alternate_type, states(15) ]
+@coin_box [ checkpoint_saved, coin_box, notify(all_coins), notified_alternate_type, states(8) ]
 @color_cube [ states(15) ]
 @dynamic_color_cube [ string_picker(Set the hex code for this tile:\\n# | \(\[A-F\]\\|\[0-9\]\\|\[a-f\]\) | 6), render_color, states(4) ]
 @dialogue_trigger [ string_picker(Set the path to the dialogue file:\\n| | -1), pickup, invisible, dialogue, ignore_background ]

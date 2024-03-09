@@ -23,7 +23,7 @@ public class ControlTypingBox extends TypingBox {
 
     @Override
     public void mouseClicked() {
-        focused = rectangle.contains(MouseUtil.getMousePosition());
+        focused = contains(MouseUtil.getMousePosition());
     }
 
     @Override

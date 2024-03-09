@@ -1,164 +1,164 @@
 package com.sab.littleh.game.level.editor;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.screen.ImageButton;
-import com.sab.littleh.screen.ScreenButton;
+import com.sab.littleh.screen.Screen;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
-import com.sab.littleh.util.MouseUtil;
-import com.sab.littleh.util.Patch;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileSelector extends Rectangle {
-    private final ArrayList<TileButton> tileSelection;
-    private final boolean vertical;
-    private final ScreenButton revealButton;
-    private final ScreenButton hideButton;
-    private ScreenButton toggleButton;
-    private int selectedIndex;
-    private boolean focused;
+public class TileSelector extends Selector<TileButton> {
+    private Selector<TileButton> stateSelection;
 
-    public TileSelector(float x, float y, float width, float height, boolean vertical) {
-        super(x, y, width, height);
-        tileSelection = new ArrayList<>();
-        selectedIndex = 0;
-        this.vertical = vertical;
-        revealButton = new ImageButton("tile_button", "null", new Rectangle(0, 0, 60, 60),
+    public TileSelector(float x, float y, float width, float height, boolean vertical, boolean inverted) {
+        super(x, y, width, height, vertical, inverted);
+
+        // Incredibly scuffed, but not worth overcomplicating ImageButton for this single use, if I end up with more reasons to fix it, I will.
+        revealButton = new ImageButton("tile_button", "ui/menu_dots.png", new Rectangle(0, 0, 60, 60),
                 6, 6, 48, 48, () -> {
             setFocused(true);
-        });
-        hideButton = new ImageButton("tile_button", "ui/back_arrow.png", new Rectangle(0, 0, 42, 60),
-                -6, 6, 48, 48, () -> {
-            setFocused(false);
-        });
-
-        setFocused(false);
+        }) {
+            @Override
+            public void render(Graphics g, int patchScale, float fontScale) {
+                if (patchString != null)
+                    g.drawPatch(getPatch(), this, patchScale);
+                float xOff = 0;
+                float yOff = 0;
+                if (imageWidth < 0) {
+                    xOff = -imageWidth;
+                }
+                if (imageHeight < 0) {
+                    yOff = -imageHeight;
+                }
+                Tile tile = getSelectedItem().getTile();
+                g.draw(new TextureRegion(tile.getImage(), (int) tile.getDrawSection().x, (int) tile.getDrawSection().y,
+                        (int) tile.getDrawSection().width, (int) tile.getDrawSection().height),
+                        x + imageOffsetX + xOff, y + getTextOffsetY(patchScale) + yOff, imageWidth, imageHeight);
+            }
+        };
+        toggleButton = revealButton;
     }
     public TileSelector(float x, float y, float width, float height) {
-        this(x, y, width, height, false);
+        this(x, y, width, height, false, false);
     }
 
+    @Override
     public void updateBounds(Rectangle bounds) {
-        bounds.width = (int) (bounds.width / 60f) * 60;
-        float oldHeight = bounds.height;
-        bounds.height = (int) (bounds.height / 60f) * 60;
-        bounds.y += oldHeight - bounds.height;
-        set(bounds);
-        for (int i = 0; i < size(); i++) {
-            formatItem(i);
-        }
-        checkBounds();
+        super.updateBounds(bounds);
+        if (stateSelection != null)
+            updateStateBounds(bounds);
     }
-    public void update() {
-        toggleButton.update();
-        if (!focused) {
-            revealButton.text = getSelectedItem().text;
-        } else {
-            tileSelection.forEach(TileButton::update);
-        }
-    }
-    public void checkBounds() {
-        float xMax = 0;
-        float yMax = 0;
-        for (int i = 0; i < tileSelection.size(); i++) {
-            Rectangle rect = getItem(i);
-            xMax = Math.max(xMax, rect.x + rect.width - x);
-            yMax = Math.max(yMax, rect.y + rect.height - y);
-        }
-        width = xMax;
-        height = yMax;
+    private void updateStateBounds(Rectangle bounds) {
+        stateSelection.updateBounds(new Rectangle(x + width, bounds.y,
+                60, bounds.height), false);
 
-        revealButton.x = x;
-        revealButton.y = y + height - revealButton.height;
-        hideButton.x = x + width - 6;
-        hideButton.y = y + height / 2 - hideButton.height / 2;
-    }
-    public void setFocused(boolean value) {
-        if (value) {
-            toggleButton = hideButton;
-        } else {
-            toggleButton = revealButton;
-        }
-        focused = value;
     }
 
-    public void mouseClicked() {
-        toggleButton.mouseClicked();
-        if (!focused) {
-        } else {
-            for (int i = 0; i < tileSelection.size(); i++)
-                if (tileSelection.get(i).contains(MouseUtil.getMousePosition())) select(i);
+    @Override
+    public void onFocusedUpdate() {
+        if (stateSelection != null) {
+            stateSelection.update();
+            if (!stateSelection.isFocused())
+                closeStateSelector();
         }
+        super.onFocusedUpdate();
     }
 
-    private void select(int index) {
-        selectedIndex = index;
-    }
-    public void addItem(Tile tile) {
-        tileSelection.add(new TileButton(tile, 1, 1));
-        formatItem(tileSelection.size() - 1);
-        checkBounds();
-    }
-    public void addAll(List<Tile> tiles) {
-        for (Tile tile : tiles)
-            uncheckedAddItem(tile);
-        updateBounds(this);
-    }
-    public void resetTo(List<Tile> tiles) {
-        tileSelection.clear();
-        addAll(tiles);
-    }
-    private void uncheckedAddItem(Tile tile) {
-        tileSelection.add(new TileButton(tile, 1, 1));
-    }
-    private Rectangle formatItem(int index) {
-        TileButton button = tileSelection.get(index);
-        int gridX = vertical ? index / getCapacity() : index % getCapacity();
-        int gridY = vertical ? index % getCapacity() : index / getCapacity();
-        button.setPosition(x + gridX * 60, getAdjustedY() - 60 - gridY * 60);
-        return button;
+    // Tile state stuff (This shit's important)
+    private void createStateSelector(Tile tile) {
+        stateSelection = new Selector<>(x + width, getAdjustedY(), 256, 256, true, false);
+        stateSelection.addNewSelection(new ArrayList<>());
+        for (int i = 0; i < tile.getStateCount(); i++) {
+            Tile propertyTile = tile.copy();
+            propertyTile.setTileType(i);
+            stateSelection.uncheckedAddItem(0, new TileButton(propertyTile, elementSize).hideGear());
+        }
+        stateSelection.setSelection(0);
+        stateSelection.setFocused(true);
+        updateStateBounds(assignedRect);
+        toggleButton.setDisabled(true);
     }
 
-    public boolean isSelectedIndex(int index) {
-        return selectedIndex == index;
-    }
-    public int size() {
-        return tileSelection.size();
-    }
-    public TileButton getSelectedItem() {
-        return tileSelection.get(selectedIndex);
-    }
-    public TileButton getItem(int index) {
-        return tileSelection.get(index);
-    }
-    public int getCapacity() {
-        return vertical ? getYCapacity() : getXCapacity();
-    }
-    public int getXCapacity() {
-        return Math.max(1, (int) width / 60);
-    }
-    public int getYCapacity() {
-        return Math.max(1, (int) height / 60);
-    }
-    public float getAdjustedY() {
-        return y + height;
-    }
-
-    public void render(Graphics g) {
-        toggleButton.render(g, 6);
-        if (!focused) {
-        } else {
-            g.drawPatch(Patch.get("menu_flat"), this, 6);
-            for (int i = 0; i < tileSelection.size(); i++) {
-                TileButton tile = tileSelection.get(i);
-                tile.render(g, 6);
-                if (isSelectedIndex(i))
-                    g.draw(Images.getImage("ui/selected_tile.png"), tile.x, tile.y, tile.width, tile.height);
+    public boolean selectorClicked() {
+        boolean selectorUsed = super.selectorClicked();
+        if (!selectorUsed && stateSelection != null) {
+            selectorUsed = stateSelection.selectorClicked();
+            if (selectorUsed) {
+                Tile tile = stateSelection.getSelectedItem().getTile();
+                getSelectedItem().getTile().setTileType(tile.tileType);
             }
         }
+        return selectorUsed;
+    }
+    @Override
+    protected void select(int index) {
+        super.select(index);
+        Tile selected = getSelectedItem().getTile();
+        if (selected.hasTag("states"))
+            createStateSelector(selected);
+        else
+            closeStateSelector();
+    }
+
+    private void uncheckedAddTile(int selectionIndex, Tile tile) {
+        getSelection(selectionIndex).add(new TileButton(tile, elementSize));
+    }
+    public void addTile(Tile tile) {
+        getCurrentSelection().add(new TileButton(tile, elementSize));
+        formatItem(getCurrentSelection().size() - 1);
+        checkRectBounds();
+    }
+    public void addNewTileSelection(List<Tile> tiles) {
+        getSelections().add(new ArrayList<>());
+        if (!tiles.isEmpty())
+            addAllTiles(getPageCount() - 1, tiles);
+    }
+    public void addAllTiles(int index, List<Tile> tiles) {
+        for (Tile tile : tiles)
+            uncheckedAddTile(index, tile);
+        updateBounds(this);
+    }
+
+    public void addTileSelections(List<List<Tile>> selections) {
+        for (List<Tile> tiles : selections) {
+            addNewTileSelection(tiles);
+        }
+    }
+    public void resetTileSelections(List<List<Tile>> selections) {
+        this.getSelections().clear();
+        for (int i = 0; i < getPageCount(); i++) {
+            addNewSelection(new ArrayList<>());
+            resetTo(i, getSelections().get(i));
+        }
+    }
+    public void resetTilesTo(int index, List<Tile> tiles) {
+        if (index >= getPageCount()) {
+            addNewSelection(new ArrayList<>());
+        } else {
+            getSelection(index).clear();
+        }
+        addAllTiles(index, tiles);
+    }
+    public void closeStateSelector() {
+        stateSelection = null;
+        toggleButton.setDisabled(false);
+    }
+
+    @Override
+    public void render(Graphics g, int patchScale, float fontScale) {
+        super.render(g, patchScale, fontScale);
+        if (stateSelection != null)
+            stateSelection.render(g, patchScale, fontScale);
+    }
+    @Override
+    public void renderItem(Graphics g, int patchScale, float fontScale, int index, TileButton tileButton) {
+        super.renderItem(g, patchScale, fontScale, index, tileButton);
+        if (isSelectedIndex(index))
+            g.draw(Images.getImage("ui/selected_tile.png"), tileButton.x, tileButton.y, tileButton.width, tileButton.height);
     }
 }

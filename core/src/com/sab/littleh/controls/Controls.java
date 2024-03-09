@@ -101,8 +101,8 @@ public class Controls {
         controlMap.put("playtest", new Control("Quick Test", false, ENTER));
         controlMap.put("toggle_layer", new Control("Toggle Background Editor", false, TAB));
         controlMap.put("toggle_wiring", new Control("Toggle Wiring Mode", true, TAB));
-        controlMap.put("prev_selection", new Control("Previous Tile Menu", false, Q));
-        controlMap.put("next_selection", new Control("Next Tile Menu", false, E));
+        controlMap.put("prev_selection", new Control("Previous Tile Page", false, Q));
+        controlMap.put("next_selection", new Control("Next Tile Page", false, E));
         controlMap.put("drag_camera", new Control("Drag Camera", false, SHIFT_LEFT));
         controlMap.put("move_selection", new Control("Move Selection", false, ALT_LEFT));
         controlMap.put("drag_selection", new Control("Drag Selection", false, CONTROL_LEFT));
