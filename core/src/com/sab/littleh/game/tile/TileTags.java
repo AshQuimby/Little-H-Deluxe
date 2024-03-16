@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class TileTags {
+    public static final TileTags EMPTY = new TileTags();
     private boolean modified;
     private Map<String, String> tags;
 
@@ -15,6 +16,7 @@ public class TileTags {
 
     public TileTags(TileTags tags) {
        this.tags = tags.tags;
+       this.modified = tags.modified;
     }
 
     public boolean hasTag(String tag) {

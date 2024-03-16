@@ -61,4 +61,7 @@ public abstract class Screen {
 
     public void mouseScrolled(float amountY) {
     }
+
+    public void resize(int width, int height) {
+    }
 }

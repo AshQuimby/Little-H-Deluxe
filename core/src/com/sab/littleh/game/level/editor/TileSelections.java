@@ -18,23 +18,27 @@ public class TileSelections {
     public static final List<Tile> specialTiles = new ArrayList<>();
     public static final List<Tile> decorationTiles = new ArrayList<>();
     public static final List<Tile> developerTiles = new ArrayList<>();
+    public static final List<Tile> wiringTiles = new ArrayList<>();
     static {
-        addTiles(groundTiles, SabReader.read(LittleH.getScript("level_editor/ground.sab")));
-        addTiles(levelTiles, SabReader.read(LittleH.getScript("level_editor/level.sab")));
-        addTiles(dangerTiles, SabReader.read(LittleH.getScript("level_editor/danger.sab")));
-        addTiles(pickupTiles, SabReader.read(LittleH.getScript("level_editor/pickups.sab")));
-        addTiles(specialTiles, SabReader.read(LittleH.getScript("level_editor/special.sab")));
-        addTiles(decorationTiles, SabReader.read(LittleH.getScript("level_editor/decoration.sab")));
-        addTiles(developerTiles, SabReader.read(LittleH.getScript("level_editor/developer.sab")));
+        addTiles(groundTiles, SabReader.read(LittleH.getScript("level_editor/ground.sab")), true);
+        addTiles(levelTiles, SabReader.read(LittleH.getScript("level_editor/level.sab")), true);
+        addTiles(dangerTiles, SabReader.read(LittleH.getScript("level_editor/danger.sab")), true);
+        addTiles(pickupTiles, SabReader.read(LittleH.getScript("level_editor/pickups.sab")), true);
+        addTiles(specialTiles, SabReader.read(LittleH.getScript("level_editor/special.sab")), true);
+        addTiles(decorationTiles, SabReader.read(LittleH.getScript("level_editor/decoration.sab")), true);
+        addTiles(developerTiles, SabReader.read(LittleH.getScript("level_editor/developer.sab")), true);
 
         for (List<Tile> selection : selections)
             allTiles.addAll(selection);
+
+        addTiles(wiringTiles, SabReader.read(LittleH.getScript("level_editor/wiring.sab")), false);
     }
 
-    private static void addTiles(List<Tile> selection, SabData data) {
+    private static void addTiles(List<Tile> selection, SabData data, boolean addToSelections) {
         for (String string : data.getValues().keySet()) {
             selection.add(new Tile(data.getRawValue(string)));
         }
-        selections.add(selection);
+        if (addToSelections)
+            selections.add(selection);
     }
 }

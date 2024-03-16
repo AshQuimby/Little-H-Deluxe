@@ -9,6 +9,7 @@ import com.sab.littleh.settings.Settings;
 import com.sab.littleh.util.DynamicCamera;
 import com.sab.littleh.util.Graphics;
 import com.sab.littleh.util.Images;
+import com.sab.littleh.util.MouseUtil;
 
 import java.awt.*;
 import java.util.*;

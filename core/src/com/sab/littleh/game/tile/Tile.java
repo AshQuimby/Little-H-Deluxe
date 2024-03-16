@@ -63,6 +63,8 @@ public class Tile {
         if (!image.equals("delete")) {
             setTags();
             setTileType(0);
+        } else {
+            tags = TileTags.EMPTY;
         }
     }
 
@@ -329,7 +331,7 @@ public class Tile {
     }
 
     public Tile copy() {
-        if (image.equals("delete")) return new Tile("delete");
+        if (image.equals("delete")) return new Tile(x, y, "delete");
         return new Tile(x, y, image, tileType, tags, extra, ignoreTiling, cachedDrawRect);
     }
 

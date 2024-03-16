@@ -182,8 +182,7 @@ public class Level {
             throw new IllegalStateException("Do NOT call removeTile() in-game, it will PERMANENTLY delete a tile from the level while in the level editor and will NOT be reset to checkpoint states.");
         Tile toRemove = getTileAt(layer, x, y);
         if (toRemove != null) {
-            while (mapLayers.get(layer).allTiles.contains(toRemove))
-                mapLayers.get(layer).allTiles.remove(toRemove);
+            mapLayers.get(layer).allTiles.remove(toRemove);
         }
     }
 
@@ -871,6 +870,15 @@ public class Level {
                 }
             }
             g.resetColor();
+        }
+        layerToRender = mapLayers.get("wiring_components");
+        for (int i = startX; i < endX; i++) {
+            if (i < 0 || i >= getWidth()) continue;
+            for (int j = startY; j < endY; j++) {
+                if (j < 0 || j >= getHeight()) continue;
+                Tile tile = layerToRender.tileMap.get(i).get(j);
+                if (tile != null) tile.render(inGame(), g);
+            }
         }
         layerToRender = mapLayers.get("wiring");
         for (int i = startX; i < endX; i++) {

@@ -104,4 +104,8 @@ public class ControlInput {
             justReleased.put(input, true);
         }
     }
+
+    public boolean commandMode() {
+        return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
+    }
 }

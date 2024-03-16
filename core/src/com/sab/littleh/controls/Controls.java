@@ -97,10 +97,10 @@ public class Controls {
         controlMap.put("line", new Control("Line Tool", false, NUM_5, L));
         controlMap.put("eyedropper", new Control("Tile Picker", false, NUM_6, C));
         controlMap.put("selection", new Control("Selection", false, NUM_7, V));
-        controlMap.put("quick_test", new Control("Quick Test", false, NUM_8, T));
-        controlMap.put("playtest", new Control("Quick Test", false, ENTER));
-        controlMap.put("toggle_layer", new Control("Toggle Background Editor", false, TAB));
-        controlMap.put("toggle_wiring", new Control("Toggle Wiring Mode", true, TAB));
+        controlMap.put("quick_test", new Control("Quick Test (Tool)", false, NUM_8, T));
+        controlMap.put("playtest", new Control("Playtest", false, ENTER));
+        controlMap.put("cycle_layer", new Control("Cycle Layer", false, TAB));
+        controlMap.put("reverse_cycle_layer", new Control("Cycle Backwards", true, TAB));
         controlMap.put("prev_selection", new Control("Previous Tile Page", false, Q));
         controlMap.put("next_selection", new Control("Next Tile Page", false, E));
         controlMap.put("drag_camera", new Control("Drag Camera", false, SHIFT_LEFT));

@@ -7,8 +7,8 @@ import com.sab.littleh.game.tile.Tile;
 import java.awt.*;
 
 public class UndoTile extends UndoAction {
-    private Tile undo;
-    private Tile redo;
+    private final Tile undo;
+    private final Tile redo;
     public UndoTile(Tile redo, Tile undo) {
         this.undo = undo.copy();
         this.redo = redo.copy();

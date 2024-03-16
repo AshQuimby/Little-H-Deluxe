@@ -28,7 +28,7 @@ public class ControlsScreen extends Screen {
         buttons = new ArrayList<>();
         int y = 128;
         for (Control control : Controls.getControls()) {
-            ControlTypingBox typingBox = new ControlTypingBox(control, new Rectangle(0, y, 256, 64));
+            ControlTypingBox typingBox = new ControlTypingBox(control, new Rectangle(0, y, 384, 64));
             inputFields.add(typingBox);
             y -= 96;
         }
@@ -113,6 +113,7 @@ public class ControlsScreen extends Screen {
 
         Rectangle screenPanel = new Rectangle(-1024 / 2, -576 / 2, 1024, 576);
         g.drawPatch(Patch.get("menu"), screenPanel, 3);
+        g.flush();
 
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
@@ -125,7 +126,7 @@ public class ControlsScreen extends Screen {
                 LittleH.font, 0, scroll + 128 + 96 + 24, LittleH.defaultFontScale * 0.8f, 0);
 
         for (TypingBox typingBox : inputFields) {
-            typingBox.render(g, 4);
+            typingBox.render(g, 4, 0.95f);
         }
         g.drawPatch(Patch.get("menu_hollow"), screenPanel, 3);
 
@@ -133,6 +134,7 @@ public class ControlsScreen extends Screen {
             ScissorStack.popScissors();
 
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+        g.flush();
 
         for (ScreenButton button : buttons) {
             button.render(g, 3);

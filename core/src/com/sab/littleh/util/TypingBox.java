@@ -51,8 +51,8 @@ public class TypingBox extends TypingQuery {
                 display = display.substring(0, display.length() - 1);
             }
         }
-        g.drawString(display, LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.775f, -1, 0);
-        textRect.x -= textRect.width + patchScale * 4;
-        g.drawString(getPrompt(), LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.775f, 1, 0);
+        g.drawString(display, LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.775f * fontSize, -1, 0);
+        textRect.x -= textRect.width + patchScale * 6;
+        g.drawString(getPrompt(), LittleH.font, textRect, 8, LittleH.defaultFontScale * 0.775f * fontSize, 1, 0);
     }
 }

@@ -371,6 +371,8 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
             tempBuffers[3] = new NestedFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
         } catch (Exception e) {
         }
+
+        screen.resize(width, height);
     }
 
     @Override
