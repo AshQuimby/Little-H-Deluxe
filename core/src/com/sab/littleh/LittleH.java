@@ -219,6 +219,7 @@ public class LittleH extends ApplicationAdapter implements InputProcessor, Contr
         dynamicCamera.viewportHeight = getHeight();
         dynamicCamera.updateCamera();
         if (pendingScreen != null) {
+            pendingScreen.onLoad();
             switchScreen(pendingScreen);
             pendingScreen = null;
         }

@@ -1,6 +1,7 @@
 package com.sab.littleh.game.level.editor;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.controls.ControlInput;
 import com.sab.littleh.screen.ImageButton;
 import com.sab.littleh.screen.ScreenButton;
@@ -185,7 +186,7 @@ public class Selector<E extends Rectangle> extends ScreenElement {
         return selectorUsed;
     }
 
-    protected void select(int index) {
+    public void select(int index) {
         selectedIndex = index;
     }
     public void nextPage() {
@@ -326,11 +327,18 @@ public class Selector<E extends Rectangle> extends ScreenElement {
     public boolean isMultiPage() {
         return getPageCount() > 1;
     }
+    public boolean contains(Vector2 point) {
+        if (focused) {
+            return super.contains(point) || toggleButton.contains(point);
+        } else {
+            return toggleButton.contains(point);
+        }
+    }
 
     @Override
     public void render(Graphics g, int patchScale, float fontScale) {
         if (!toggleButton.isDisabled())
-        toggleButton.render(g, patchScale);
+            toggleButton.render(g, patchScale);
         if (!focused) {
         } else {
             g.drawPatch(Patch.get("menu_flat"), this, patchScale);

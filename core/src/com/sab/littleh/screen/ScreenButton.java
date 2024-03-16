@@ -119,4 +119,9 @@ public class ScreenButton extends ScreenElement {
     public boolean isDisabled() {
         return disabled;
     }
+
+    public void run() {
+        if (onPress != null)
+            onPress.run();
+    }
 }

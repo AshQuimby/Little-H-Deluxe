@@ -14,6 +14,7 @@ import com.sab.littleh.game.entity.Particle;
 import com.sab.littleh.game.entity.enemy.Enemy;
 import com.sab.littleh.game.entity.player.Player;
 import com.sab.littleh.game.entity.player.powerups.GunMode;
+import com.sab.littleh.game.level.editor.LevelEditor;
 import com.sab.littleh.game.level.editor.LevelEditorScreen;
 import com.sab.littleh.game.level.wiring.Wiring;
 import com.sab.littleh.game.tile.Tile;
@@ -92,8 +93,6 @@ public class Level {
         notifiableTiles = new ArrayList<>();
         updatableTiles = new ArrayList<>();
         this.mapData = mapData;
-        background = mapData.getRawValue("background");
-        timeLimit = mapData.getValue("time_limit").asInt();
         if (mapData.hasValue("movement_options")) {
             String value = mapData.getRawValue("movement_options");
             mapData.remove("movement_options");
@@ -111,6 +110,8 @@ public class Level {
     }
 
     public void init() {
+        background = mapData.getRawValue("background");
+        timeLimit = mapData.getValue("time_limit").asInt();
         parallaxBackground = new ParallaxBackground(background, mapData.getValue("bonus_background"));
     }
 
@@ -205,7 +206,7 @@ public class Level {
     }
 
     public void addTiles(List<Tile> tiles, int levelWidth, int levelHeight) {
-        MapLayer newLayer = new MapLayer();
+        MapLayer newLayer = new MapLayer(this, "normal");
         mapLayers.put("normal", newLayer);
         newLayer.tileMap = new ArrayList<>(levelWidth);
         for (int i = 0; i < levelWidth; i++) {
@@ -221,7 +222,7 @@ public class Level {
     }
 
     public void addBackground(List<Tile> tiles) {
-        MapLayer newLayer = new MapLayer();
+        MapLayer newLayer = new MapLayer(this, "background");
         mapLayers.put("background", newLayer);
         newLayer.tileMap = new ArrayList<>(getWidth());
         for (int i = 0; i < getWidth(); i++) {
@@ -237,7 +238,7 @@ public class Level {
     }
 
     public void addWiring(List<Tile> tiles) {
-        MapLayer newLayer = new MapLayer();
+        MapLayer newLayer = new MapLayer(this, "wiring");
         mapLayers.put("wiring", newLayer);
         newLayer.tileMap = new ArrayList<>(getWidth());
         for (int i = 0; i < getWidth(); i++) {
@@ -253,7 +254,7 @@ public class Level {
     }
 
     public void addWiringComponents(List<Tile> tiles) {
-        MapLayer newLayer = new MapLayer();
+        MapLayer newLayer = new MapLayer(this, "wiring_components");
         mapLayers.put("wiring_components", newLayer);
         newLayer.tileMap = new ArrayList<>(getWidth());
         for (int i = 0; i < getWidth(); i++) {
@@ -1096,6 +1097,10 @@ public class Level {
 
     public void setCameraFocus(Vector2 position) {
         cameraFocus = position;
+    }
+
+    public LevelEditor getEditor(String layer) {
+        return mapLayers.get(layer).editor;
     }
 
     private class Popup {

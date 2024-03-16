@@ -48,13 +48,16 @@ public class OptionsPanel extends ScreenElement {
         String string = timeLimit.value;
         if (string.equals("-1")) timeLimit.value = "";
         settings.add(timeLimit);
+        BoolSetting lookAround = new BoolSetting("look_around", "Magnifying Glass", mapSettings.getValue("look_around").asBool());
+        settings.add(lookAround);
 
-        buttons.add(new SettingButton(airJump, (int) x + 64, (int) y + 240));
-        buttons.add(new SettingButton(wallSliding, (int) x + 64, (int) y + 144));
-        buttons.add(new SettingButton(crouching, (int) x + 64, (int) y + 48));
+        buttons.add(new SettingButton(airJump, (int) x + 64, (int) y + 336));
+        buttons.add(new SettingButton(wallSliding, (int) x + 64, (int) y + 240));
+        buttons.add(new SettingButton(crouching, (int) x + 64, (int) y + 144));
         buttons.add(new SettingButton(background, (int) (x + width) - 360, (int) y + 40));
         timeLimitBox = new TypingBox("Time Limit: ", timeLimit.value, new Rectangle(x + 162, y + height - 68, 256, 52));
         buttons.add(timeLimitBox);
+        buttons.add(new SettingButton(lookAround, (int) x + 64, (int) y + 48));
     }
 
     @Override

@@ -12,6 +12,9 @@ public abstract class Screen {
     public void start() {
     }
 
+    public void onLoad() {
+    }
+
     public void update() {
     }
 

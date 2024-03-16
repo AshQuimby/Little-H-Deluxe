@@ -10,6 +10,7 @@ import com.sab.littleh.game.level.Level;
 import com.sab.littleh.game.level.editor.LevelEditorScreen;
 import com.sab.littleh.game.level.LevelErrorScreen;
 import com.sab.littleh.game.level.LevelLoader;
+import com.sab.littleh.game.level.editor.NewLevelEditorScreen;
 import com.sab.littleh.util.*;
 import com.sab.littleh.util.sab_format.SabData;
 import com.sab.littleh.util.sab_format.SabReader;
@@ -60,20 +61,15 @@ public class LevelOptionsScreen extends Screen {
                         LittleH.pendingScreen = new LevelErrorScreen("Error reading level file. File is corrupted!");
                         return;
                     }
-                    LevelEditorScreen editorScreen = new LevelEditorScreen(file, level);
-                    LittleH.pendingScreen = editorScreen;
+                    LittleH.pendingScreen = new NewLevelEditorScreen(file, level);
                 } catch (IOException e) {
                     e.printStackTrace();
                     LittleH.pendingScreen = new LevelErrorScreen("Error reading level file. File is corrupted!");
                 }
             });
         });
-        buttons[2] = new ScreenButton("square_button", "Rename", 0, 0, 160, 80, () -> {
-            askForRename();
-        });
-        buttons[3] = new ScreenButton("square_button", "Delete", 0, 0, 160, 80, () -> {
-            askDeleteConfirmation();
-        });
+        buttons[2] = new ScreenButton("square_button", "Rename", 0, 0, 160, 80, this::askForRename);
+        buttons[3] = new ScreenButton("square_button", "Delete", 0, 0, 160, 80, this::askDeleteConfirmation);
         buttons[4] = new ScreenButton("square_button", "Back", 0, 0, 160, 80, () -> {
             program.switchScreen(new LevelSelectScreen());
         });

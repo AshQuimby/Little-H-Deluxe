@@ -187,6 +187,11 @@ public class LevelEditorScreen extends Screen {
         SoundEngine.playMusic(Settings.localSettings.buildingSong.value);
     }
 
+    @Override
+    public void onLoad() {
+        level.init();
+    }
+
     private void enterWiringMode() {
         editor = wiringEditor;
         tileButtons = wiringTileButtons;
@@ -281,7 +286,6 @@ public class LevelEditorScreen extends Screen {
     @Override
     public void start() {
         setToolIndex(toolButtons.itemIndex);
-        level.init();
 
         tileSelections = new ArrayList<>();
         String[] selections = new String[]{
@@ -312,7 +316,6 @@ public class LevelEditorScreen extends Screen {
         for (String string : data.getValues().keySet()) {
             wireSelection.add(new Tile(data.getRawValue(string)));
         }
-
 
         resetTileScreen();
     }
@@ -482,7 +485,7 @@ public class LevelEditorScreen extends Screen {
                         }
                     }
                     break;
-                // Eraser (just simulates a right click (erases)
+                // Eraser (just simulates a right click (erases))
                 case 1:
                     useTool(false);
                     break;
@@ -752,7 +755,7 @@ public class LevelEditorScreen extends Screen {
             if (editor.hasSelection()) {
                 editor.endSelection();
             } else if (!level.inGame() && level.escapePressed()) {
-                program.switchScreen(new EditorPauseScreen(this));
+//                program.switchScreen(new EditorPauseScreen(this));
             } else if (level.escapePressed()) {
                 level.endGame();
                 setToolIndex(toolButtons.itemIndex);
@@ -930,7 +933,6 @@ public class LevelEditorScreen extends Screen {
     public void mouseScrolled(float amountY) {
         camera.targetPosition.sub(mousePosition.cpy().scl(amountY).scl(addZoom(amountY / 2f)));
     }
-
     // Returns by how much zoom changed
     public float addZoom(float zoom) {
         float zoomBefore = camera.targetZoom;

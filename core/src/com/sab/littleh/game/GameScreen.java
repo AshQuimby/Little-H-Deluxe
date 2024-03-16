@@ -33,8 +33,12 @@ public class GameScreen extends Screen {
     }
 
     @Override
-    public void start() {
+    public void onLoad() {
         level.init();
+    }
+
+    @Override
+    public void start() {
         Cursors.switchCursor("none");
     }
 

@@ -2,6 +2,7 @@ package com.sab.littleh.game.level.editor;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.sab.littleh.LittleH;
 import com.sab.littleh.game.tile.Tile;
 import com.sab.littleh.screen.ImageButton;
@@ -96,7 +97,7 @@ public class TileSelector extends Selector<TileButton> {
         return selectorUsed;
     }
     @Override
-    protected void select(int index) {
+    public void select(int index) {
         super.select(index);
         Tile selected = getSelectedItem().getTile();
         if (selected.hasTag("states"))
@@ -147,6 +148,11 @@ public class TileSelector extends Selector<TileButton> {
     public void closeStateSelector() {
         stateSelection = null;
         toggleButton.setDisabled(false);
+    }
+    public boolean contains(Vector2 point) {
+        boolean contains = super.contains(point);
+        if (!contains && stateSelection != null) contains = stateSelection.contains(point);
+        return contains;
     }
 
     @Override

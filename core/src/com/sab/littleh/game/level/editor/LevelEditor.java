@@ -28,6 +28,8 @@ public class LevelEditor {
     protected List<UndoAction> undoQueue;
     protected int undoIndex;
     protected String layer;
+    protected Point lineToolOrigin;
+    protected Tile lineToolTile;
 
     public LevelEditor(Level level, String layer) {
         this.level = level;
@@ -35,6 +37,37 @@ public class LevelEditor {
         fillTiles = new HashSet<>();
         undoQueue = new ArrayList<>();
         this.layer = layer;
+    }
+
+    public void usePencil(Tile tile, int x, int y) {
+        addTile(tile, x, y, true);
+    }
+    public void useEraser(int x, int y) {
+        addTile(new Tile("delete"), x, y, true);
+    }
+    public void usePen(Tile tile, int startX, int startY, int endX, int endY) {
+        drawLine(tile, startX, startY, endX, endY);
+    }
+    public void useFillTool(Tile tile, int x, int y) {
+        fill(tile, x, y);
+    }
+    public void useLineTool(Tile tile, int x, int y) {
+        if (lineToolOrigin == null) {
+            lineToolTile = tile;
+            lineToolOrigin = new Point(x, y);
+        }
+    }
+    public void mouseReleased(int x, int y) {
+        if (lineToolOrigin != null) {
+            drawLine(lineToolTile, x, y, lineToolOrigin.x, lineToolOrigin.y);
+            lineToolTile = null;
+            lineToolOrigin = null;
+        }
+    }
+
+    public void update(boolean canPlaceTiles) {
+        if (!canPlaceTiles)
+            lineToolOrigin = null;
     }
 
     public void setSaved(boolean value) {
@@ -665,5 +698,13 @@ public class LevelEditor {
                 break;
         }
         return points;
+    }
+
+    public void render(Graphics g, int x, int y) {
+        if (lineToolOrigin != null) {
+            for (Point point : getLinePoints(x, y, lineToolOrigin.x, lineToolOrigin.y)) {
+                g.draw(Images.getImage("ui/selector.png"), point.x * 64, point.y * 64, 64, 64);
+            }
+        }
     }
 }

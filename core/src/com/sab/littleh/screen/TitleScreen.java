@@ -1,7 +1,9 @@
 package com.sab.littleh.screen;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.sab.littleh.LittleH;
 import com.sab.littleh.campaign.overworld.OverworldScreen;
+import com.sab.littleh.game.level.LevelLoader;
 import com.sab.littleh.game.level.editor.NewLevelEditorScreen;
 import com.sab.littleh.settings.SettingsScreen;
 import com.sab.littleh.util.*;
@@ -33,7 +35,7 @@ public class TitleScreen extends Screen {
             System.exit(0);
         }));
         buttons.add(new ScreenButton("button", "Testing", buttonRect, () -> {
-            program.switchScreen(new NewLevelEditorScreen());
+            LittleH.pendingScreen = new NewLevelEditorScreen(null, LevelLoader.readInternalLevel("meadows.map"));
         }));
     }
 
