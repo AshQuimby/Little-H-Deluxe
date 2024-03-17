@@ -13,14 +13,12 @@ public class Wiring {
 
     private final List<WireGroup> groups;
     private final Map<Point, Integer> ids;
-    private final Set<Tile> queuedGates;
-    private final Set<Tile> queuedComponents;
+    private final Set<Integer> queuedGroups;
 
     public Wiring(Level level) {
         groups = new ArrayList<>();
         ids = new HashMap<>();
-        queuedGates = new HashSet<>();
-        queuedComponents = new HashSet<>();
+        queuedGroups = new HashSet<>();
 
         List<Tile> wiring = new ArrayList<>(level.getWiringLayer().allTiles);
         List<Tile> wires = new ArrayList<>();
@@ -96,17 +94,8 @@ public class Wiring {
         return groups.get(ids.get(new Point(x, y)));
     }
 
-    public boolean power(int groupId) {
-        WireGroup group = groups.get(groupId);
-        boolean wasPowered = group.powered;
-        group.powered = true;
-
-        if (!wasPowered) {
-            queuedGates.addAll(group.connectedGates);
-            queuedComponents.addAll(group.connectedComponents);
-        }
-
-        return wasPowered;
+    public void power(int groupId) {
+        queuedGroups.add(groupId);
     }
 
     public int poweredInputCount(Tile tile) {
@@ -126,6 +115,17 @@ public class Wiring {
     }
 
     public void update(Level level) {
+        Set<Tile> queuedGates = new HashSet<>();
+        Set<Tile> queuedComponents = new HashSet<>();
+
+        for (int id : queuedGroups) {
+            WireGroup group = groups.get(id);
+            group.powered = true;
+            queuedGates.addAll(group.connectedGates);
+            queuedComponents.addAll(group.connectedComponents);
+        }
+        queuedGroups.clear();
+
         for (Tile gate : queuedGates) {
             gate.wiringUpdate(this);
         }
@@ -133,8 +133,6 @@ public class Wiring {
             component.signalReceived(level);
         }
 
-        queuedGates.clear();
-        queuedComponents.clear();
         for (WireGroup group : groups) {
             group.powered = false;
         }
