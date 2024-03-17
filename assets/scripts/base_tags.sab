@@ -54,3 +54,4 @@
 @observer [ wiring_component, checkpoint_saved, power_source, notify(game_start), update, observer ]
 @repeater [ repeater, states(4), inputs(left | right | back), outputs(front), wiring ]
 @and_gate [ and_gate, states(4), inputs(left | right), outputs(front), wiring ]
+@clock [ clock, wiring_component, update ]
