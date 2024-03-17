@@ -447,9 +447,8 @@ public class Player extends Entity {
         }
         if (tile.hasTag("button") && tile.tileType < 4) {
             tile.setTileType(tile.tileType + 4);
-            Tile receiver = game.getTileAt("wiring", tile.x, tile.y);
-            if (receiver != null) {
-                receiver.signalReceived(game);
+            if (game.wiring.isInGroup(tile.x, tile.y)) {
+                game.wiring.power(game.wiring.getGroup(tile.x, tile.y).id);
             }
         }
         if (tile.hasTag("pickup")) {

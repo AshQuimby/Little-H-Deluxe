@@ -133,46 +133,6 @@ public class Level {
         Cursors.switchCursor("none");
         notify("game_start", startPos.x, startPos.y);
 
-        // This cannot be moved. It must happen here
-        for (Tile tile : getBaseLayer().allTiles) {
-            // For wiring
-            if (tile.hasTag("power_source")) {
-                Tile wiringTile = getTileAt("wiring", tile.x, tile.y);
-                if (wiringTile != null && wiringTile.hasTag("wire")) {
-                    wiringTile.tags.addTag("receiver");
-                }
-            }
-        }
-        for (Tile tile : getWiringLayer().allTiles) {
-            // For wiring
-            if (tile.hasTag("repeater")) {
-                int dx = Wiring.dx(tile.tileType);
-                int dy = Wiring.dy(tile.tileType);
-                Tile facing = getTileAt("wiring", tile.x + dx, tile.y + dy);
-                if (facing != null && facing.hasTag("wire")) {
-                    facing.tags.addTag("receiver");
-                }
-            }
-            if (tile.hasTag("and_gate")) {
-                byte left = (byte) ((tile.tileType - 1) % 4);
-                byte right = (byte) ((tile.tileType + 1) % 4);
-
-                Tile other = getTileAt("wiring", tile.x + Wiring.dx(left), tile.y + Wiring.dy(left));
-                if (other != null && other.hasTag("wire")) {
-                    other.tags.addTag("receiver");
-                }
-                other = getTileAt("wiring", tile.x + Wiring.dx(right), tile.y + Wiring.dy(right));
-                if (other != null && other.hasTag("wire")) {
-                    other.tags.addTag("receiver");
-                }
-
-                Tile out = getTileAt("wiring", tile.x + Wiring.dx(tile.tileType), tile.y + Wiring.dy(tile.tileType));
-                if (out != null && out.hasTag("wire")) {
-                    out.tags.addTag("receiver");
-                }
-            }
-        }
-
         wiring = new Wiring(this);
         saveCheckpointState();
     }
@@ -297,7 +257,7 @@ public class Level {
     public void update() {
         if (inGame()) {
             gameTick++;
-            wiring.update();
+            wiring.update(this);
 
             if (currentDialogue != null) {
                 currentDialogue.update();
@@ -388,6 +348,10 @@ public class Level {
 
     public MapLayer getWiringLayer() {
         return mapLayers.get("wiring");
+    }
+
+    public MapLayer getWiringComponentsLayer() {
+        return mapLayers.get("wiring_components");
     }
 
     public void inGameSetTile(String layer, int x, int y, Tile tile) {

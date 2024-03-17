@@ -14,11 +14,13 @@ public class Wiring {
     private final List<WireGroup> groups;
     private final Map<Point, Integer> ids;
     private final Set<Tile> queuedGates;
+    private final Set<Tile> queuedComponents;
 
     public Wiring(Level level) {
         groups = new ArrayList<>();
         ids = new HashMap<>();
         queuedGates = new HashSet<>();
+        queuedComponents = new HashSet<>();
 
         List<Tile> wiring = new ArrayList<>(level.getWiringLayer().allTiles);
         List<Tile> wires = new ArrayList<>();
@@ -60,7 +62,7 @@ public class Wiring {
                     group.connectedComponents.add(component);
 
                     if (logWiringInfo) {
-                        System.out.printf("Registered component %s with group %s", component.image, group.id);
+                        System.out.printf("Registered component %s with group %s\n", component.image, group.id);
                     }
                 }
             }
@@ -101,6 +103,7 @@ public class Wiring {
 
         if (!wasPowered) {
             queuedGates.addAll(group.connectedGates);
+            queuedComponents.addAll(group.connectedComponents);
         }
 
         return wasPowered;
@@ -122,12 +125,16 @@ public class Wiring {
         return powered;
     }
 
-    public void update() {
+    public void update(Level level) {
         for (Tile gate : queuedGates) {
             gate.wiringUpdate(this);
         }
+        for (Tile component: queuedComponents) {
+            component.signalReceived(level);
+        }
 
         queuedGates.clear();
+        queuedComponents.clear();
         for (WireGroup group : groups) {
             group.powered = false;
         }
@@ -186,68 +193,6 @@ public class Wiring {
         if (b == null) return false;
         return (a.hasTag("wire") && b.hasTag("wire") && a.tags.getTag("wire").equals(b.tags.getTag("wire")));
     }
-
-//    private static boolean canConnect(Tile a, Tile b) {
-//        if (b == null) return false;
-//
-//        if (a.hasTag("wire")) {
-//            // Wires of the same color can connect
-//            if (b.hasTag("wire") && a.tags.getTag("wire").equals(b.tags.getTag("wire"))) {
-//                return true;
-//            }
-//
-//            // Wires can connect to actuators that share a color
-//            String wireType = a.tags.getTag("wire");
-//            byte wireId = 0;
-//            if (wireType.equals("red")) wireId = 0;
-//            if (wireType.equals("yellow")) wireId = 1;
-//            if (wireType.equals("green")) wireId = 2;
-//            if (wireType.equals("blue")) wireId = 3;
-//
-//            if (b.hasTag("inputs")) {
-//                byte[] rotations = parseDirections(b.tags.getTagParameters("inputs"));
-//                for (byte r : rotations) {
-//                    int dx = dx(rotated(b.tileType, r));
-//                    int dy = dy(rotated(b.tileType, r));
-//
-//                    if (a.x == b.x + dx && a.y == b.y + dy) {
-//                        return true;
-//                    }
-//                }
-//            }
-//
-//            if (b.hasTag("outputs")) {
-//                byte[] rotations = parseDirections(b.tags.getTagParameters("outputs"));
-//                for (byte r : rotations) {
-//                    int dx = dx(rotated(b.tileType, r));
-//                    int dy = dy(rotated(b.tileType, r));
-//
-//                    if (a.x == b.x + dx && a.y == b.y + dy) {
-//                        return true;
-//                    }
-//                }
-//            }
-//
-//            if (b.hasTag("powered")) {
-//                if (b.hasTag("wire_color_component")) {
-//                    return b.tileType == 4 || b.tileType == wireId;
-//                }
-//                return true;
-//            }
-//
-//            // Wires can connect to junctions and power sources
-//            if (b.hasTag("junction") || b.hasTag("power_source")) {
-//                return true;
-//            }
-//        }
-//
-//        // Actuators can connect to other actuators that share a color
-//        if (a.hasTag("wire_color_component") && b.hasTag("wire_color_component")) {
-//            return b.tileType == 4 || a.tileType == b.tileType;
-//        }
-//
-//        return false;
-//    }
 
     public static int dx(byte direction) {
         return direction == 1 ? 1 : direction == 3 ? -1 : 0;

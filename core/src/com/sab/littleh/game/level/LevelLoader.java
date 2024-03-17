@@ -123,6 +123,7 @@ public class LevelLoader {
                         background.add(tile);
                     }
                 }
+                continue;
             }
 
             // Load wiring
@@ -142,10 +143,10 @@ public class LevelLoader {
                         wiring.add(tile);
                     }
                 }
-                break;
+                continue;
             }
 
-            // Load wiring
+            // Load wiring components
             if (nextLine.startsWith("@wiring_component_tiles")) {
                 while (scanner.hasNext()) {
                     nextLine = scanner.nextLine();
@@ -153,16 +154,14 @@ public class LevelLoader {
                         break;
                     Tile tile = getTile(nextLine);
                     if (tile != null && !tile.image.equals("delete")) {
-                        Point tilePosition = new Point(tile.x, tile.y);
                         levelWidth = Math.max(levelWidth, tile.x);
                         levelHeight = Math.max(levelHeight, tile.y);
                         if (tile.hasTag("start"))
                             LittleH.program.dynamicCamera.setPosition(new Vector2(tile.x * 64 + 32, tile.y * 64 + 32));
                         wiring_components.add(tile);
-                        usedPositions.add(tilePosition);
                     }
                 }
-                break;
+                continue;
             }
 
             Tile tile = getTile(nextLine);
@@ -221,6 +220,12 @@ public class LevelLoader {
                 if (minY == 0 && minX == 0) break;
             }
 
+            for (Tile tile : wiring_components) {
+                minX = Math.min(tile.x, minX);
+                minY = Math.min(tile.y, minY);
+                if (minY == 0 && minX == 0) break;
+            }
+
             if (minY != 0 || minX != 0) {
                 for (Tile tile : tiles) {
                     tile.x -= minX;
@@ -238,6 +243,11 @@ public class LevelLoader {
                     tile.x -= minX;
                     tile.y -= minY;
                 }
+
+                for (Tile tile : wiring_components) {
+                    tile.x -= minX;
+                    tile.y -= minY;
+                }
             }
         }
 
@@ -250,6 +260,8 @@ public class LevelLoader {
             LevelEditor levelEditor = new LevelEditor(level, "normal");
             LevelEditor backgroundEditor = new LevelEditor(level, "background");
             LevelEditor wiringEditor = new LevelEditor(level, "wiring");
+            LevelEditor wiringComponentsEditor = new LevelEditor(level, "wiring_components");
+
             for (Tile tile : tiles) {
                 levelEditor.checkTiling(levelEditor.getNeighbors(tile, tile.x, tile.y), tile);
             }
@@ -258,6 +270,9 @@ public class LevelLoader {
             }
             for (Tile tile : wiring) {
                 wiringEditor.checkTiling(wiringEditor.getNeighbors(tile, tile.x, tile.y), tile);
+            }
+            for (Tile tile : wiring_components) {
+                wiringComponentsEditor.checkTiling(wiringComponentsEditor.getNeighbors(tile, tile.x, tile.y), tile);
             }
         }
 
@@ -369,6 +384,15 @@ public class LevelLoader {
             if (level.getWiringLayer().allTiles.size() > 0) {
                 writer.write("@wiring_tiles\n");
                 for (Tile tile : level.getWiringLayer().allTiles) {
+                    writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
+                    if (tile.extra != null)
+                        writer.write(tile.extra + " ");
+                    writer.write("\n");
+                }
+            }
+            if (level.getWiringComponentsLayer().allTiles.size() > 0) {
+                writer.write("@wiring_component_tiles\n");
+                for (Tile tile : level.getWiringComponentsLayer().allTiles) {
                     writer.write(tile.x + " " + tile.y + " " + tile.image + " " + tile.tileType + " ");
                     if (tile.extra != null)
                         writer.write(tile.extra + " ");
