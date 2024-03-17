@@ -317,7 +317,7 @@ public class NewLevelEditorScreen extends Screen {
     }
 
     public LevelEditor getEditor() {
-        if (getSelectedTile().hasTag("wire"))
+        if (getSelectedTile().hasTag("wiring"))
             return level.getEditor("wiring");
         return level.getEditor(getLayer());
     }
